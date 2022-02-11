@@ -1,3 +1,4 @@
+import 'package:everyone_know_app/api/auth/user.dart';
 import 'package:everyone_know_app/color/app_color.dart';
 import 'package:everyone_know_app/component/custom_button.dart';
 import 'package:everyone_know_app/mixin/manual_navigator.dart';
@@ -12,6 +13,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:slide_countdown/slide_countdown.dart';
 
+import '../../api/auth/login.dart';
+import '../home/navigation_screen.dart';
+import 'otp_screen.dart';
+
 class OtpVerficationScreen extends StatefulWidget {
   const OtpVerficationScreen({Key? key}) : super(key: key);
 
@@ -22,8 +27,7 @@ class OtpVerficationScreen extends StatefulWidget {
 class _OtpVerficationScreenState extends State<OtpVerficationScreen>
     with ManualNavigatorMixin {
   final defaultDuration = const Duration(minutes: 2, seconds: 0);
-  TextEditingController otpVerfController = TextEditingController();
-  int valueLength = 0;
+  TextEditingController pinController =  TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,9 +70,9 @@ class _OtpVerficationScreenState extends State<OtpVerficationScreen>
                   top: 15,
                 ),
                 child: PinCodeTextField(
+                  controller: pinController,
                   length: 4,
                   obscureText: false,
-                  controller: otpVerfController,
                   keyboardType: TextInputType.number,
                   animationType: AnimationType.fade,
                   animationDuration: const Duration(milliseconds: 300),
@@ -78,9 +82,7 @@ class _OtpVerficationScreenState extends State<OtpVerficationScreen>
                     activeColor: const Color.fromRGBO(82, 67, 194, 1),
                   ),
                   onChanged: (value) {
-                    setState(() {
-                      valueLength = value.length;
-                    });
+                    setState(() {});
                   },
                   appContext: context,
                 ),
@@ -127,18 +129,34 @@ class _OtpVerficationScreenState extends State<OtpVerficationScreen>
                 ),
                 child: CustomButton(
                   buttonTextPaste: "Göndər",
-                  callback: () {
-                    if (valueLength < 4) {
-                      Fluttertoast.showToast(
-                        gravity: ToastGravity.TOP,
-                        msg: "Zəhmət olmasa kodu daxil edin",
-                      );
-                    } else {
+                  callback: () async {
+                    var result = await Login.sendOtp( pinController.text );
+                    if( result == "success")
+                    {
+                      var checkUserInfo = await User.getInfo( );
+                      if ( checkUserInfo == "completed" )
+                      {
+                        manualNavigatorTransition(
+                          context,
+                          const NavigationScreen(),
+                        );
+                      }
+                      else
+                      {
+                        manualNavigatorTransition(
+                          context,
+                          const AuthRegisterScreen(),
+                        );
+                      }
+                    }
+                    else
+                    {
                       manualNavigatorTransition(
                         context,
-                        const AuthRegisterScreen(),
+                        const OtpScreen(),
                       );
                     }
+
                   },
                 ),
               ),

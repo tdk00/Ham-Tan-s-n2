@@ -1,3 +1,4 @@
+import 'package:everyone_know_app/api/auth/otp.dart';
 import 'package:everyone_know_app/color/app_color.dart';
 import 'package:everyone_know_app/component/custom_button.dart';
 import 'package:everyone_know_app/mixin/manual_navigator.dart';
@@ -19,7 +20,7 @@ class OtpScreen extends StatefulWidget {
 
 class _OtpScreenState extends State<OtpScreen> with ManualNavigatorMixin {
   final formGlobalKey = GlobalKey<FormState>();
-  TextEditingController otpController = TextEditingController();
+  TextEditingController phoneController =  TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,7 +60,7 @@ class _OtpScreenState extends State<OtpScreen> with ManualNavigatorMixin {
                           padding: EdgeInsets.only(left: 23, top: 60),
                           child: CustomTextView(
                             textPaste:
-                                'Qeyd etdiyiniz mobil nömrəyə qısa müddətdə\nbirdəfəlik kod göndəriləcək.',
+                            'Qeyd etdiyiniz mobil nömrəyə qısa müddətdə\nbirdəfəlik kod göndəriləcək.',
                             textSize: 13,
                             textColor: textColor,
                             fontWeight: FontWeight.w500,
@@ -83,8 +84,8 @@ class _OtpScreenState extends State<OtpScreen> with ManualNavigatorMixin {
                               ),
                               Expanded(
                                 child: TextFormField(
+                                  controller: phoneController,
                                   keyboardType: TextInputType.number,
-                                  controller: otpController,
                                   inputFormatters: [
                                     maskFormatter,
                                   ],
@@ -122,18 +123,16 @@ class _OtpScreenState extends State<OtpScreen> with ManualNavigatorMixin {
                           ),
                           child: CustomButton(
                             buttonTextPaste: "Göndər",
-                            callback: () {
-                              if (otpController.text.length < 9) {
-                                Fluttertoast.showToast(
-                                  gravity: ToastGravity.TOP,
-                                  msg: "Zəhmət olmasa nömrənizi daxil edin",
-                                );
-                              } else {
+                            callback: () async {
+                              var result = await Otp.register( phoneController.text );
+                              if( result == "sent")
+                              {
                                 manualNavigatorTransition(
                                   context,
                                   const OtpVerficationScreen(),
                                 );
                               }
+
                             },
                           ),
                         ),

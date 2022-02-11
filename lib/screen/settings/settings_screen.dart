@@ -6,6 +6,10 @@ import 'package:everyone_know_app/screen/settings/security_screen.dart';
 import 'package:everyone_know_app/utils/size/size.dart';
 import 'package:everyone_know_app/view/text/text_view.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../app/app.dart';
+import '../splash/splash_scree.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({Key? key}) : super(key: key);
@@ -96,7 +100,12 @@ class _SettingScreenState extends State<SettingScreen>
                 right: screenWidth(context, 0.03),
               ),
               child: ListTile(
-                onTap: () {},
+                onTap: () async {
+                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                  await prefs.setString('token', '');
+                  Navigator.pushAndRemoveUntil(context,
+                      MaterialPageRoute(builder: (_) => const SplashScreen()), (route) => false);
+                },
                 title: const CustomTextView(
                   textPaste: "Sistemdən çıxış",
                   textSize: 16,

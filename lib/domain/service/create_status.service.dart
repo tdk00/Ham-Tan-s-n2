@@ -15,7 +15,7 @@ class CreateStatusService {
   }) async {
     Map<String, dynamic> headers =  Map<String, dynamic>();
     headers.putIfAbsent("Authorization",
-        () => 'Token 8658f8a99120274f79e6e0390276046d44303beb');
+        () => 'Token 07f96707138a508f80418e0bd5dd31f80a56f204');
     headers.putIfAbsent("Content-Type", () => "multipart/form-data");
     headers.putIfAbsent(
         "X-CSRFToken",
@@ -40,9 +40,12 @@ class CreateStatusService {
         headers: headers,
       ),
     );
+    print(response.statusCode.toString() + "sssssssssssssssss");
     if (response.statusCode == 201) {
-      Logger().i("Create User Status : " + response.data);
+      //Logger().i("Create User Status : " + response.data);
+      print(response.data);
       return UserCreateStatus.fromJson(response.data);
+
     } else {
        Logger().i("Create User Status Error : " + response.statusCode.toString());
       Fluttertoast.showToast(

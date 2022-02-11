@@ -1,7 +1,8 @@
+import 'package:everyone_know_app/api/main/statuses.dart';
 import 'package:everyone_know_app/color/app_color.dart';
+import 'package:everyone_know_app/domain/state/navigation_cubit/navigation_cubit_cubit.dart';
 import 'package:everyone_know_app/local/fake_locations.dart';
 import 'package:everyone_know_app/mixin/manual_navigator.dart';
-import 'package:everyone_know_app/domain/state/navigation_cubit/navigation_cubit_cubit.dart';
 import 'package:everyone_know_app/screen/home/status_view.dart';
 import 'package:everyone_know_app/utils/enums/navbar_item.dart';
 import 'package:everyone_know_app/utils/size/size.dart';
@@ -9,7 +10,9 @@ import 'package:everyone_know_app/view/auth/choose_region_view.dart';
 import 'package:everyone_know_app/view/text/text_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:story_viewer/models/story_item.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../constants/constants.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -21,6 +24,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
   int lastIndex = -1;
   String locationName = "Tərtər";
+  var _future = Statuses.getAll(1);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,11 +70,14 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
                                       physics: const BouncingScrollPhysics(),
                                       itemBuilder: (ctx, index) {
                                         return GestureDetector(
-                                          onTap: () {
+                                          onTap: () async{
+                                            SharedPreferences prefs = await SharedPreferences.getInstance();
+                                            prefs.setInt("statusLocation", index + 1);
                                             setState(() {
+                                              _future = Statuses.getAll(index + 1);
                                               Navigator.pop(context);
                                               locationName =
-                                                  fakeLocations[index];
+                                              fakeLocations[index];
                                               lastIndex = index;
                                             });
                                           },
@@ -148,7 +155,7 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
             ),
             Padding(
               padding:
-                  EdgeInsets.only(left: 14, top: screenHeight(context, 0.07)),
+              EdgeInsets.only(left: 14, top: screenHeight(context, 0.07)),
               child: const CustomTextView(
                 textPaste: "Təkliflər",
                 textSize: 20,
@@ -163,46 +170,64 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
                   right: 15,
                   top: 20,
                 ),
-                child: GridView.builder(
-                  physics: const BouncingScrollPhysics(),
-                  itemCount: 12,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    crossAxisSpacing: 20,
-                    mainAxisSpacing: 20,
-                    childAspectRatio: MediaQuery.of(context).size.width /
-                        (MediaQuery.of(context).size.height / 1.2),
-                  ),
-                  itemBuilder: (ctx, index) {
-                    return GestureDetector(
-                      onTap: () {
-                        manualNavigatorTransition(
-                          context,
-                          const StatusViewScreen(
-                            checkUserStory: true,
-                            storyItems: [
-                              StoryItemModel(
-                                imageProvider: NetworkImage(
-                                  "https://www.publicdomainpictures.net/pictures/420000/velka/queen-princess-redhead-cosplay-1631168365cxQ.jpg",
+                child: FutureBuilder(
+                  future: _future,
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    if (snapshot.hasData && snapshot.data.length > 0) {
+                      return GridView.builder(
+                        physics: const BouncingScrollPhysics(),
+                        itemCount: snapshot.data.length,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          crossAxisSpacing: 20,
+                          mainAxisSpacing: 20,
+                          childAspectRatio: MediaQuery.of(context).size.width /
+                              (MediaQuery.of(context).size.height / 1.2),
+                        ),
+                        itemBuilder: (BuildContext context, int index) {
+                          return GestureDetector(
+                            onTap: () {
+                              manualNavigatorTransition(
+                                context,
+                                const StatusViewScreen(
+                                  checkUserStory: true,
                                 ),
-                              ),
-                              StoryItemModel(
-                                imageProvider: NetworkImage(
-                                  "https://www.publicdomainpictures.net/pictures/420000/velka/queen-princess-redhead-cosplay-1631168365cxQ.jpg",
+                              );
+                            },
+                            child: friendOfferGridItem(snapshot.data[index].image, snapshot.data[index].name, snapshot.data[index].business),
+                          );
+                        },
+                      );
+                    }
+                    else
+                    {
+                      return GridView.builder(
+                        physics: const BouncingScrollPhysics(),
+                        itemCount: 12,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          crossAxisSpacing: 20,
+                          mainAxisSpacing: 20,
+                          childAspectRatio: MediaQuery.of(context).size.width /
+                              (MediaQuery.of(context).size.height / 1.2),
+                        ),
+                        itemBuilder: (ctx, index) {
+                          return GestureDetector(
+                            onTap: () {
+                              manualNavigatorTransition(
+                                context,
+                                const StatusViewScreen(
+                                  checkUserStory: true,
                                 ),
-                              ),
-                              StoryItemModel(
-                                imageProvider: NetworkImage(
-                                  "https://www.publicdomainpictures.net/pictures/420000/velka/queen-princess-redhead-cosplay-1631168365cxQ.jpg",
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                      child: friendOfferGridItem(),
-                    );
+                              );
+                            },
+                            child: friendOfferGridItem("https://www.inpixio.com/remove-background/images/main-before.jpg", 'Natavan', "0"),
+                          );
+                        },
+                      );
+                    }
                   },
+
                 ),
               ),
             ),
@@ -212,7 +237,8 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
     );
   }
 
-  SizedBox friendOfferGridItem() {
+  SizedBox friendOfferGridItem(String image, String name, String business) {
+    String imageLink = image;
     return SizedBox(
       width: 90,
       height: 170,
@@ -235,11 +261,11 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
                 width: 82,
                 height: 82,
                 margin: const EdgeInsets.all(3),
-                decoration: const BoxDecoration(
+                decoration:  BoxDecoration(
                   shape: BoxShape.circle,
                   image: DecorationImage(
                     image: NetworkImage(
-                      "https://www.inpixio.com/remove-background/images/main-before.jpg",
+                      imageLink,
                     ),
                     fit: BoxFit.cover,
                   ),
@@ -250,8 +276,8 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
           const SizedBox(
             height: 8,
           ),
-          const CustomTextView(
-            textPaste: "Natavan",
+          CustomTextView(
+            textPaste: name,
             textSize: 16,
             textColor: textColor,
             fontWeight: FontWeight.w500,
@@ -259,8 +285,10 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
           const SizedBox(
             height: 8,
           ),
-          const CustomTextView(
-            textPaste: "Dərzi",
+          CustomTextView(
+            textPaste: sampleBiznesModels.elementAt(
+                (( int.tryParse(business) ?? 0 ) + 1) < sampleBiznesModels.length &&  (( int.tryParse(business) ?? 0 ) + 1) > - 1 ?
+                (( int.tryParse(business) ?? 0 ) + 1) : 0),
             textSize: 13,
             textAlign: TextAlign.center,
             textColor: textColor,

@@ -6,10 +6,5 @@ List<String> maritalStatus = [
 
 List<String> sampleBiznesModels = [
   "Dərzi",
-  "Usta",
-  "Texnik",
-  "Geyim",
-  "Satış",
-  "Kommersiya",
-  "Maliyyə",
+  "Aşpaz"
 ];

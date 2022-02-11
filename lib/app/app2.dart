@@ -11,7 +11,9 @@ import 'package:everyone_know_app/screen/splash/splash_scree.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class MyApp extends StatelessWidget {
+import '../screen/home/navigation_screen.dart';
+
+class MyApp2 extends StatelessWidget {
   var repo = UserProfileUploadRepository();
   var userAllRepo = UserAllDataRepository();
   var statusRepository = CreateUserRepository();
@@ -38,7 +40,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: const SplashScreen(),
+        home: const NavigationScreen(),
       ),
     );
   }

@@ -47,6 +47,7 @@ dependencies:
   fluttertoast: ^8.0.8
   slide_countdown: ^0.1.1
   logger: ^1.1.0
+  shared_preferences: ^2.0.12
 
 dev_dependencies:
   flutter_test:

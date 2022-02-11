@@ -8,6 +8,7 @@ import 'package:everyone_know_app/view/auth/choose_region_view.dart';
 import 'package:everyone_know_app/view/text/text_view.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ChooseRegionScreen extends StatefulWidget {
   const ChooseRegionScreen({Key? key}) : super(key: key);
@@ -19,7 +20,6 @@ class ChooseRegionScreen extends StatefulWidget {
 class _ChooseRegionScreenState extends State<ChooseRegionScreen>
     with ManualNavigatorMixin {
   bool visibleSpinner = false;
-  bool isChoosed = false;
   int lastIndex = -1;
   @override
   Widget build(BuildContext context) {
@@ -97,41 +97,44 @@ class _ChooseRegionScreenState extends State<ChooseRegionScreen>
             ),
             visibleSpinner == true
                 ? Align(
-                    alignment: Alignment.center,
-                    child: Container(
-                      width: screenWidth(context, 1),
-                      height: 135,
-                      margin: const EdgeInsets.only(
-                        left: 37,
-                        right: 37,
-                        top: 80,
+              alignment: Alignment.center,
+              child: Container(
+                width: screenWidth(context, 1),
+                height: 135,
+                margin: const EdgeInsets.only(
+                  left: 37,
+                  right: 37,
+                  top: 80,
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                  color: const Color.fromRGBO(238, 236, 249, 1),
+                ),
+                child: ListView.builder(
+                  itemCount: fakeLocations.length,
+                  physics: const BouncingScrollPhysics(),
+                  itemBuilder: (ctx, index) {
+                    return InkWell(
+                      onTap: () async {
+                        print(index.toString() + 'indexxxxxxxxxx');
+                        SharedPreferences prefs = await SharedPreferences.getInstance();
+                        prefs.setString("region_id", '0');
+                        prefs.setString("region_id", (index + 1).toString());
+                        setState(() {
+                          lastIndex = index;
+                        });
+                      },
+                      child: regionListItem(
+                        context,
+                        fakeLocations[index],
+                        index,
+                        lastIndex,
                       ),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        color: const Color.fromRGBO(238, 236, 249, 1),
-                      ),
-                      child: ListView.builder(
-                        itemCount: fakeLocations.length,
-                        physics: const BouncingScrollPhysics(),
-                        itemBuilder: (ctx, index) {
-                          return InkWell(
-                            onTap: () {
-                              setState(() {
-                                lastIndex = index;
-                                isChoosed = true;
-                              });
-                            },
-                            child: regionListItem(
-                              context,
-                              fakeLocations[index],
-                              index,
-                              lastIndex,
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  )
+                    );
+                  },
+                ),
+              ),
+            )
                 : const SizedBox(),
             Align(
               alignment: Alignment.bottomCenter,
@@ -141,16 +144,26 @@ class _ChooseRegionScreenState extends State<ChooseRegionScreen>
                 ),
                 child: CustomButton(
                   callback: () {
-                    if (isChoosed == false) {
+                    if( lastIndex == -1 )
+                    {
                       Fluttertoast.showToast(
-                          gravity: ToastGravity.TOP,
-                          msg: "Zəhmət olmasa regionu seçin");
-                    } else {
+                          msg: "Region Seçin",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.CENTER,
+                          timeInSecForIosWeb: 1,
+                          backgroundColor: Colors.red,
+                          textColor: Colors.white,
+                          fontSize: 16.0
+                      );
+                    }
+                    else
+                    {
                       manualNavigatorTransition(
                         context,
                         const OtpScreen(),
                       );
                     }
+
                   },
                   buttonTextPaste: "Davam et",
                 ),

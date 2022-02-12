@@ -11,10 +11,26 @@ class CreateStatusInitial extends CreateStatusState {}
 
 class CreateStatusLoading extends CreateStatusState {}
 
+class CreateStatusImageNotSelected extends CreateStatusState {}
+
+class CreateStatusImageSelected extends CreateStatusState {
+  final File image;
+
+  const CreateStatusImageSelected({
+    required this.image,
+  });
+
+  @override
+  List<Object> get props => [image];
+}
+
 class CreateStatusLoaded extends CreateStatusState {
   final UserCreateStatus createStatus;
 
   const CreateStatusLoaded(this.createStatus);
+
+  @override
+  List<Object> get props => [createStatus];
 }
 
 class CreateStatusError extends CreateStatusState {

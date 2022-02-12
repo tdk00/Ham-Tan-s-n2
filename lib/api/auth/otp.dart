@@ -1,9 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
-import 'dart:math';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 
@@ -32,23 +33,29 @@ class Otp {
     String jsonBody = json.encode(body);
     final encoding = Encoding.getByName('utf-8');
 
-
+    log('${body}');
 
     prefs.setString("phone", phone2);
 
-    return await post(
+    final result = await http.post(uri, body: body);
+
+      log('${result.body}');
+
+    return await http.post(
       uri,
       headers: headers,
       body: jsonBody,
       encoding: encoding,
     ).then(onValue)
-        .catchError(onError);
+       ;
   }
 
-  static Future<String> onValue (Response response) async {
+  static Future<String> onValue (http.Response response) async {
     var result ;
 
+    log(response.body);
     final Map<String, dynamic> responseData = json.decode(response.body);
+
     if( response.statusCode == 200 )
     {
       if( responseData['id'] != null && responseData['id'] > 0 )
@@ -73,7 +80,7 @@ class Otp {
   }
 
   static onError(error){
-    print('the error is ${error.detail}');
+    // print('the error is ${error}');
     return {
       'status':false,
       'message':'Unsuccessful Request',

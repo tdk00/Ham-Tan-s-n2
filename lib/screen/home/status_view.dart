@@ -1,14 +1,17 @@
+import 'dart:developer';
+
 import 'package:everyone_know_app/component/message_send_button.dart';
 import 'package:everyone_know_app/utils/size/size.dart';
 import 'package:everyone_know_app/view/story/custom_story_view.dart';
 import 'package:everyone_know_app/view/text/text_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:story_view/story_view.dart';
 import 'package:story_viewer/story_viewer.dart';
 
 class StatusViewScreen extends StatefulWidget {
   final bool? checkUserStory;
-  final List<StoryItemModel>? storyItems;
+  final List<StoryItem>? storyItems;
   final String? statusUserName;
   final String? statusUserImgUrl;
   final String? statusImageText;
@@ -26,15 +29,16 @@ class StatusViewScreen extends StatefulWidget {
 }
 
 class _StatusViewScreenState extends State<StatusViewScreen> {
-  late StoryViewerController controller = StoryViewerController();
+  final StoryController controller = StoryController();
+
   @override
   void initState() {
     super.initState();
-    controller.addListener(
-      onComplated: () {
-        Navigator.pop(context);
-      },
-    );
+    // controller.addListener(
+    //   onComplated: () {
+    //     Navigator.pop(context);
+    //   },
+    // );
   }
 
   @override
@@ -42,46 +46,21 @@ class _StatusViewScreenState extends State<StatusViewScreen> {
     return Scaffold(
       backgroundColor: Colors.black,
       body: SafeArea(
-        child: Stack(
-          children: [
-            Container(
-              width: double.infinity,
-              height: double.infinity,
-              margin: EdgeInsets.only(
-                top: screenHeight(context, 0.04),
-                bottom: widget.checkUserStory == false
-                    ? screenHeight(context, 0.3)
-                    : screenHeight(context, 0.28),
+        child: SizedBox(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: CustomStoryView(
+                  userName: widget.statusUserName ?? "Natavan",
+                  storyItems: widget.storyItems!,
+                  controller: controller,
+                  imageUrl: widget.statusUserImgUrl ??
+                            "https://i.pinimg.com/564x/8b/30/de/8b30dead52fb583f2561eee302f6a672.jpg",
+                      ),
               ),
-              child: CustomStoryView(
-                userName: widget.statusUserName ?? "Natavan",
-                storyItems: widget.storyItems,
-                controller: controller,
-                imageUrl: widget.statusUserImgUrl ??
-                    "https://i.pinimg.com/564x/8b/30/de/8b30dead52fb583f2561eee302f6a672.jpg",
-              ),
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: EdgeInsets.only(
-                  bottom: widget.checkUserStory == true
-                      ? screenHeight(context, 0.12)
-                      : screenHeight(context, 0.15),
-                  left: 37,
-                  right: 37,
-                ),
-                child: CustomTextView(
-                  textPaste: widget.statusImageText ??
-                      """Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis nec dolor tempus, sollicitudin enim et, maximus massa.""",
-                  textSize: 16,
-                  textAlign: TextAlign.start,
-                  textColor: Colors.white,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-            widget.checkUserStory == false
+                     widget.checkUserStory == false
                 ? const SizedBox()
                 : Align(
                     alignment: Alignment.topRight,
@@ -90,7 +69,8 @@ class _StatusViewScreenState extends State<StatusViewScreen> {
                       child: IconButton(
                         onPressed: () {
                           setState(() {
-                            controller.infoPause();
+                            // controller.infoPause();
+                            controller.pause();
                           });
                           showCupertinoDialog(
                             context: context,
@@ -109,21 +89,93 @@ class _StatusViewScreenState extends State<StatusViewScreen> {
                       ),
                     ),
                   ),
-            widget.checkUserStory == false
-                ? Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      child: MessageSendButton(
-                        sendMessage: () {},
-                        hideImageIcon: true,
-                      ),
-                    ),
-                  )
-                : const SizedBox(),
-          ],
-        ),
+            ],
+          ),
+        ) ,
       ),
+      // body: SafeArea(
+      //   child: Stack(
+      //     children: [
+      //       Container(
+      //         width: double.infinity,
+      //         height: double.infinity,
+      //         margin: EdgeInsets.only(
+      //           top: screenHeight(context, 0.04),
+      //           bottom: widget.checkUserStory == false
+      //               ? screenHeight(context, 0.3)
+      //               : screenHeight(context, 0.28),
+      //         ),
+      //         child: CustomStoryView(
+      //           userName: widget.statusUserName ?? "Natavan",
+      //           storyItems: widget.storyItems,
+      //           controller: controller,
+      //           imageUrl: widget.statusUserImgUrl ??
+      //               "https://i.pinimg.com/564x/8b/30/de/8b30dead52fb583f2561eee302f6a672.jpg",
+      //         ),
+      //       ),
+      //       // Align(
+      //       //   alignment: Alignment.bottomCenter,
+      //       //   child: Padding(
+      //       //     padding: EdgeInsets.only(
+      //       //       bottom: widget.checkUserStory == true
+      //       //           ? screenHeight(context, 0.12)
+      //       //           : screenHeight(context, 0.15),
+      //       //       left: 37,
+      //       //       right: 37,
+      //       //     ),
+      //       //     child: CustomTextView(
+      //       //       textPaste: widget.statusImageText ??
+      //       //           """Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis nec dolor tempus, sollicitudin enim et, maximus massa.""",
+      //       //       textSize: 16,
+      //       //       textAlign: TextAlign.start,
+      //       //       textColor: Colors.white,
+      //       //       fontWeight: FontWeight.w500,
+      //       //     ),
+      //       //   ),
+      //       // ),
+      //       widget.checkUserStory == false
+      //           ? const SizedBox()
+      //           : Align(
+      //               alignment: Alignment.topRight,
+      //               child: Padding(
+      //                 padding: const EdgeInsets.only(top: 30, right: 10),
+      //                 child: IconButton(
+      //                   onPressed: () {
+      //                     setState(() {
+      //                       controller.infoPause();
+      //                     });
+      //                     showCupertinoDialog(
+      //                       context: context,
+      //                       builder: (ctx) {
+      //                         return Center(
+      //                           child: alertDialog(context),
+      //                         );
+      //                       },
+      //                     );
+      //                   },
+      //                   icon: const Icon(
+      //                     Icons.delete_outline,
+      //                     color: Colors.white,
+      //                     size: 22,
+      //                   ),
+      //                 ),
+      //               ),
+      //             ),
+      //       widget.checkUserStory == false
+      //           ? Align(
+      //               alignment: Alignment.bottomCenter,
+      //               child: Padding(
+      //                 padding: const EdgeInsets.only(bottom: 12),
+      //                 child: MessageSendButton(
+      //                   sendMessage: () {},
+      //                   hideImageIcon: true,
+      //                 ),
+      //               ),
+      //             )
+      //           : const SizedBox(),
+      //     ],
+      //   ),
+      // ),
     );
   }
 
@@ -169,7 +221,8 @@ class _StatusViewScreenState extends State<StatusViewScreen> {
                 GestureDetector(
                   onTap: () {
                     setState(() {
-                      controller.infoPlay();
+                      // controller.infoPlay();
+                      controller.play();
                       Navigator.pop(context);
                     });
                   },
@@ -187,7 +240,8 @@ class _StatusViewScreenState extends State<StatusViewScreen> {
                 GestureDetector(
                   onTap: () {
                     setState(() {
-                      controller.infoPlay();
+                      // controller.infoPlay();
+                      controller.play();
                       Navigator.pop(context);
                     });
                   },

@@ -7,7 +7,10 @@ class CustomTextView extends StatelessWidget {
   final FontWeight? fontWeight;
   final Color? textColor;
   final TextAlign? textAlign;
+  final int? maxLines;
   final TextDecoration? textDecoration;
+  final TextOverflow? overflow;
+
   const CustomTextView({
     Key? key,
     required this.textPaste,
@@ -15,6 +18,8 @@ class CustomTextView extends StatelessWidget {
     this.fontWeight,
     this.textColor,
     this.textAlign,
+    this.maxLines,
+    this.overflow,
     this.textDecoration,
   }) : super(key: key);
 
@@ -23,6 +28,8 @@ class CustomTextView extends StatelessWidget {
     return Text(
       textPaste!,
       textAlign: textAlign ?? TextAlign.start,
+      maxLines: maxLines,
+      overflow: overflow,
       style: GoogleFonts.montserrat(
         textStyle: TextStyle(
           fontSize: textSize,

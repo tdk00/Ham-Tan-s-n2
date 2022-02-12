@@ -21,10 +21,19 @@ class AuthRegisterScreen extends StatefulWidget {
 class _AuthRegisterScreenState extends State<AuthRegisterScreen>
     with ManualNavigatorMixin {
   String? _chosenValue;
-  @override
-  Widget build(BuildContext context) {
+
     TextEditingController adController = TextEditingController();
     TextEditingController soyadController = TextEditingController();
+
+   @override
+    void dispose() {
+      adController.dispose();
+      soyadController.dispose();
+      super.dispose();
+    }
+    
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(

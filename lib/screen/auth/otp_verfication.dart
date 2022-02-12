@@ -28,6 +28,13 @@ class _OtpVerficationScreenState extends State<OtpVerficationScreen>
     with ManualNavigatorMixin {
   final defaultDuration = const Duration(minutes: 2, seconds: 0);
   TextEditingController pinController =  TextEditingController();
+
+  @override
+  void dispose() {
+    pinController.dispose();
+    super.dispose();
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(

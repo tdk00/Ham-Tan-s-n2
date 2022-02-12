@@ -1,17 +1,18 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
-import 'dart:math';
 import 'package:everyone_know_app/api/auth/user.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:story_view/story_view.dart';
 import 'package:story_viewer/models/story_item.dart';
 
 
 class Statuses {
 
-  static getAll ( locationId ) async {
+  static Future<List<UserInfo> >getAll ( locationId ) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var token = prefs.getString('token') ?? '';
     var userId = prefs.getString('user_id') ?? '';
@@ -27,6 +28,8 @@ class Statuses {
     int statusCode = response.statusCode;
     String responseBody = response.body;
     List<UserInfo> users = [];
+
+    print(statusCode);
 
     for (var u in jsonDecode(responseBody)) {
 
@@ -52,7 +55,7 @@ class Statuses {
 
   }
 
-  static getUserStatuses ( userId ) async {
+  static Future<List<StoryItem>> getUserStatuses ( userId ) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var token = prefs.getString('token') ?? '';
     final uri =
@@ -66,9 +69,33 @@ class Statuses {
 
     int statusCode = response.statusCode;
     String responseBody = response.body;
-    List<StoryItemModel> statuses = [];
+    List<StoryItem> statuses = [];
 
-    for (var u in jsonDecode(responseBody)) {
+    for (final u in jsonDecode(responseBody)) {
+
+      final image = u['image'];
+      final text = u['text'];
+
+      // log('${imageValid(image)}');
+      
+      if(imageValid(image) && textValid(text) || imageValid(image)) {
+        statuses.add(StoryItem.inlineProviderImage(NetworkImage(image),caption: Text(text)), );
+      }
+
+      if(textValid(text) && !imageValid(image)) {
+        statuses.add(StoryItem.text(title: text, backgroundColor: Colors.black));
+      }
+
+      // if(image != null && image != '') {
+      //   statuses.add(
+      //        StoryItemModel(
+      //         imageProvider: NetworkImage(
+      //           u['image'].toString()
+      //         ),
+      //       )
+      //   );
+      // }
+
         //
         // StatusInfo status = StatusInfo(
         //     u['id'].toString(),
@@ -77,18 +104,20 @@ class Statuses {
         //     u['user'].toString()
         // );
 
-        statuses.add(
-             StoryItemModel(
-              imageProvider: NetworkImage(
-                u['image'].toString()
-              ),
-            )
-        );
+       
     }
     return statuses;
   }
 
 
+}
+
+bool imageValid(String? image) {
+ return image != null && image != '' ||  image != null;
+}
+
+bool textValid(String? text) {
+ return text != null && text != '';
 }
 
 class UserInfo {

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:everyone_know_app/api/main/statuses.dart';
 import 'package:everyone_know_app/color/app_color.dart';
 import 'package:everyone_know_app/domain/state/navigation_cubit/navigation_cubit_cubit.dart';
@@ -44,55 +46,61 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
                   InkWell(
                     onTap: () {
                       showDialog(
+                        barrierDismissible: true,
                         context: context,
                         builder: (context) {
-                          return Container(
-                            color: Colors.transparent,
-                            child: Stack(
-                              children: [
-                                Align(
-                                  alignment: Alignment.topLeft,
-                                  child: Container(
-                                    width: screenWidth(context, 1),
-                                    height: 135,
-                                    margin: EdgeInsets.only(
-                                      left: 13,
-                                      right: screenWidth(context, 0.15),
-                                      top: screenHeight(context, 0.12),
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Container(
+                              color: Colors.transparent,
+                              child: Stack(
+                                children: [
+                                  Align(
+                                    alignment: Alignment.topLeft,
+                                    child: Container(
+                                      width: screenWidth(context, 1),
+                                      height: 135,
+                                      margin: EdgeInsets.only(
+                                        left: 13,
+                                        right: screenWidth(context, 0.15),
+                                        top: screenHeight(context, 0.12),
+                                      ),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(5),
+                                        color: const Color.fromRGBO(
+                                            238, 236, 249, 1),
+                                      ),
+                                      child: ListView.builder(
+                                        itemCount: fakeLocations.length,
+                                        physics: const BouncingScrollPhysics(),
+                                        itemBuilder: (ctx, index) {
+                                          return GestureDetector(
+                                            onTap: () async{
+                                              SharedPreferences prefs = await SharedPreferences.getInstance();
+                                              prefs.setInt("statusLocation", index + 1);
+                                              setState(() {
+                                                _future = Statuses.getAll(index + 1);
+                                                Navigator.pop(context);
+                                                locationName =
+                                                fakeLocations[index];
+                                                lastIndex = index;
+                                              });
+                                            },
+                                            child: regionListItem(
+                                              context,
+                                              fakeLocations[index],
+                                              index,
+                                              lastIndex,
+                                            ),
+                                          );
+                                        },
+                                      ),
                                     ),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5),
-                                      color: const Color.fromRGBO(
-                                          238, 236, 249, 1),
-                                    ),
-                                    child: ListView.builder(
-                                      itemCount: fakeLocations.length,
-                                      physics: const BouncingScrollPhysics(),
-                                      itemBuilder: (ctx, index) {
-                                        return GestureDetector(
-                                          onTap: () async{
-                                            SharedPreferences prefs = await SharedPreferences.getInstance();
-                                            prefs.setInt("statusLocation", index + 1);
-                                            setState(() {
-                                              _future = Statuses.getAll(index + 1);
-                                              Navigator.pop(context);
-                                              locationName =
-                                              fakeLocations[index];
-                                              lastIndex = index;
-                                            });
-                                          },
-                                          child: regionListItem(
-                                            context,
-                                            fakeLocations[index],
-                                            index,
-                                            lastIndex,
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                )
-                              ],
+                                  )
+                                ],
+                              ),
                             ),
                           );
                         },
@@ -170,13 +178,13 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
                   right: 15,
                   top: 20,
                 ),
-                child: FutureBuilder(
+                child: FutureBuilder<List<UserInfo>>(
                   future: _future,
-                  builder: (BuildContext context, AsyncSnapshot snapshot) {
-                    if (snapshot.hasData && snapshot.data.length > 0) {
+                  builder: (BuildContext context, AsyncSnapshot<List<UserInfo>> snapshot) {
+                    if (snapshot.hasData && snapshot.data!.isNotEmpty) {
                       return GridView.builder(
                         physics: const BouncingScrollPhysics(),
-                        itemCount: snapshot.data.length,
+                        itemCount: snapshot.data!.length,
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 3,
                           crossAxisSpacing: 20,
@@ -185,16 +193,29 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
                               (MediaQuery.of(context).size.height / 1.2),
                         ),
                         itemBuilder: (BuildContext context, int index) {
+
                           return GestureDetector(
-                            onTap: () {
+                            onTap: () async {
+                              final user = snapshot.data!.elementAt(index);
+
+                              final result =  await Statuses.getUserStatuses(user.id);
+
+                              final userId = user.id;
+
+                              SharedPreferences _prefs =await  SharedPreferences.getInstance();
+
+                              log('$userId, ${_prefs.getString('user_id')}');
+
                               manualNavigatorTransition(
                                 context,
-                                const StatusViewScreen(
-                                  checkUserStory: true,
+                                 StatusViewScreen(
+                                  checkUserStory: userId == _prefs.getString('user_id'),
+                                  storyItems: result,
+                                  
                                 ),
                               );
                             },
-                            child: friendOfferGridItem(snapshot.data[index].image, snapshot.data[index].name, snapshot.data[index].business),
+                            child: friendOfferGridItem(snapshot.data![index].image, snapshot.data![index].name, snapshot.data![index].business),
                           );
                         },
                       );
@@ -276,11 +297,15 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
           const SizedBox(
             height: 8,
           ),
-          CustomTextView(
-            textPaste: name,
-            textSize: 16,
-            textColor: textColor,
-            fontWeight: FontWeight.w500,
+          Flexible(
+            child: CustomTextView(
+              textPaste: name,
+              textSize: 16,
+              textColor: textColor,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              fontWeight: FontWeight.w500,
+            ),
           ),
           const SizedBox(
             height: 8,

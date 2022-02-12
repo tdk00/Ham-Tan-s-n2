@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AddStatusScreen extends StatefulWidget {
   const AddStatusScreen({Key? key}) : super(key: key);
@@ -20,27 +21,79 @@ class AddStatusScreen extends StatefulWidget {
 }
 
 class _AddStatusScreenState extends State<AddStatusScreen> {
-  File? imageFile;
-  final ImagePicker imagePicker = ImagePicker();
-  TextEditingController textEditingController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<CreateStatusCubit>().chooseImage();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
         child: ResponsiveWidget(
-          child: BlocBuilder<CreateStatusCubit, CreateStatusState>(
+          child: BlocConsumer<CreateStatusCubit, CreateStatusState>(
+            listener: (context, state) {
+              if(state is CreateStatusImageNotSelected) {
+                Navigator.of(context).pop();
+              }
+               if (state is CreateStatusLoaded) {
+                Fluttertoast.showToast(
+                    msg: "Status ugurla yaradildi : " +
+                        state.createStatus.text.toString());
+
+                        Navigator.of(context).pop();
+              }
+            },
             builder: (context, state) {
               if (state is CreateStatusLoading) {
                 return const Center(
                   child: CircularProgressIndicator(),
                 );
               }
-              if (state is CreateStatusLoaded) {
-                Fluttertoast.showToast(
-                    msg: "Status ugurla yaradildi : " +
-                        state.createStatus.text.toString());
+              if(state is CreateStatusImageSelected) {
+                return Stack(
+               
+                children: [
+                  Image.file(
+                    state.image,
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height,
+                    fit: BoxFit.contain,
+                  ),
+                  const Align(
+                    alignment: Alignment.topCenter,
+                    child: CustomAppBarComponent(appBarText: "Əlavə et"),
+                  ),
+                   Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Padding(
+                    padding: const EdgeInsets.only(bottom: kToolbarHeight),
+                    child: CustomButton(
+                      buttonTextPaste: "Yekunlaşdır",
+                      callback: ()async  {
+                         SharedPreferences _prefs =await  SharedPreferences.getInstance();
+                        BlocProvider.of<CreateStatusCubit>(context)
+                            .createStatusCubit(
+                          _prefs.getString('user_id') ?? '1',
+                          
+                           state.image,
+                        );
+                        Fluttertoast.showToast(
+                          msg: "Status ugurla yaradildi",
+                          toastLength: Toast.LENGTH_LONG,
+                        );
+                       
+                      },
+                    ),
+                   ),
+                  ),
+                ],
+              );
               }
+
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -50,106 +103,22 @@ class _AddStatusScreenState extends State<AddStatusScreen> {
                   ),
                   Center(
                     child: GestureDetector(
-                      onTap: () async {
-                        XFile? image = await imagePicker.pickImage(
-                          source: ImageSource.gallery,
-                          imageQuality: 50,
-                        );
-                        setState(() {
-                          if (image != null) {
-                            imageFile = File(image.path);
-                          } else {
-                            debugPrint("Error : Not found");
-                          }
-                        });
+                      onTap: ()  {
+                        context.read<CreateStatusCubit>().chooseImage();
+                      
                       },
-                      child: SizedBox(
+                      child: const SizedBox(
                         width: 120,
                         height: 200,
-                        child: imageFile == null
-                            ? const Center(
+                        child: Center(
                                 child: Icon(
                                   Icons.camera_alt,
                                   size: 35,
                                   color: Colors.black,
                                 ),
-                              )
-                            : Image.file(imageFile!),
+                              ),
+                           
                       ),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                      left: 21,
-                      top: screenHeight(context, 0.07),
-                    ),
-                    child: const CustomTextView(
-                      textPaste: "Təsvir",
-                      textSize: 16,
-                      textColor: textColor,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  Container(
-                    width: double.infinity,
-                    height: screenHeight(context, 0.2),
-                    margin: const EdgeInsets.only(
-                      left: 21,
-                      right: 21,
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        width: 1,
-                        color: const Color.fromRGBO(218, 225, 243, 1),
-                      ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                        left: 11,
-                      ),
-                      child: TextFormField(
-                        keyboardType: TextInputType.multiline,
-                        maxLines: 10,
-                        controller: textEditingController,
-                        decoration: const InputDecoration(
-                          hintText: "Qeydi bura əlavə edin",
-                          border: InputBorder.none,
-                          hintStyle: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                            color: textColorGrey,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const Spacer(
-                    flex: 2,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 11),
-                    child: CustomButton(
-                      buttonTextPaste: "Yekunlaşdır",
-                      callback: () {
-                        BlocProvider.of<CreateStatusCubit>(context)
-                            .createStatusCubit(
-                          "1",
-                          textEditingController.text,
-                          image: imageFile,
-                        );
-                        Fluttertoast.showToast(
-                          msg: "Status ugurla yaradildi",
-                          toastLength: Toast.LENGTH_LONG,
-                        );
-                        setState(() {
-                          imageFile = null;
-                          textEditingController.text = "";
-                        });
-                      },
                     ),
                   ),
                 ],

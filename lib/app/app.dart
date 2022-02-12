@@ -6,12 +6,19 @@ import 'package:everyone_know_app/domain/state/navigation_cubit/navigation_cubit
 import 'package:everyone_know_app/domain/state/profile_img_upload_cubit/user_profile_upload_cubit.dart';
 import 'package:everyone_know_app/domain/state/user_profile_data_cubit/user_profil_data_cubit_cubit.dart';
 import 'package:everyone_know_app/screen/home/addStatus_screen.dart';
+import 'package:everyone_know_app/screen/home/navigation_screen.dart';
 import 'package:everyone_know_app/screen/profile/profile_screen.dart';
 import 'package:everyone_know_app/screen/splash/splash_scree.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MyApp extends StatelessWidget {
+
+  final bool userLogged;
+
+   MyApp(this.userLogged);
+ 
+
   var repo = UserProfileUploadRepository();
   var userAllRepo = UserAllDataRepository();
   var statusRepository = CreateUserRepository();
@@ -38,7 +45,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: const SplashScreen(),
+        home: userLogged ? const NavigationScreen()  :const SplashScreen(),
       ),
     );
   }

@@ -7,6 +7,7 @@ import 'package:everyone_know_app/utils/endpoints/api_endpoint.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserProfileUploadService {
   // Todo Profile Upload Img
@@ -22,47 +23,50 @@ class UserProfileUploadService {
 
     Map<String, String> headers = {};
 
+    final _prefs = await SharedPreferences.getInstance();
+    final token = _prefs.getString('token');
+
     headers = {
-      "Authorization": "Token 8658f8a99120274f79e6e0390276046d44303beb",
+      "Authorization": "Token $token",
       "Content-type": "multipart/form-data",
-      "X-CSRFToken":
-          "QQ80uhVlBRPjjNi9PGxdADoljTafbkc7t4ORKM3pQ1iJDXrXqkXcGDtzAZSoXnpt",
+      "X-CSRFToken": "QQ80uhVlBRPjjNi9PGxdADoljTafbkc7t4ORKM3pQ1iJDXrXqkXcGDtzAZSoXnpt",
       "Content-Type": "application/json",
       "Accept": "application/json",
     };
 
     request.headers.addAll(headers);
 
-    var multipartFile = http.MultipartFile('image', stream, length,
-        filename: basename(imageFile.path));
+    var multipartFile = http.MultipartFile('image', stream, length, filename: basename(imageFile.path));
     request.files.add(multipartFile);
     var response = await request.send();
     debugPrint(response.statusCode.toString());
     response.stream.transform(utf8.decoder).listen((value) {
       debugPrint(value);
     });
+    return null;
   }
 
   // Todo Profile Data
   Future<UserAllDataModel?> userProfileData() async {
-    var response = await http.get(
+    final _prefs = await SharedPreferences.getInstance();
+    final token = _prefs.getString('token');
+    final response = await http.get(
       Uri.parse(userProfileAllData),
       headers: {
-        "Authorization": "Token 8658f8a99120274f79e6e0390276046d44303beb",
-        "X-CSRFToken":
-            "QQ80uhVlBRPjjNi9PGxdADoljTafbkc7t4ORKM3pQ1iJDXrXqkXcGDtzAZSoXnpt",
+        "Authorization": "Token $token",
+        "X-CSRFToken": "QQ80uhVlBRPjjNi9PGxdADoljTafbkc7t4ORKM3pQ1iJDXrXqkXcGDtzAZSoXnpt",
         "Content-Type": "application/json",
         "Accept": "application/json",
       },
     );
+
     if (response.statusCode == 200) {
-      debugPrint(
-          "UserAllDataModel Status Code : " + response.statusCode.toString());
+      debugPrint("UserAllDataModel Status Code : " + response.statusCode.toString());
       return UserAllDataModel.fromJson(jsonDecode(response.body));
     } else {
-      debugPrint("UserAllDataModel Status Error Code : " +
-          response.statusCode.toString());
+      debugPrint("UserAllDataModel Status Error Code : " + response.statusCode.toString());
     }
+    return null;
   }
 }
 

@@ -13,14 +13,10 @@ class CreateStatusService {
     String text, {
     File? imgUrl,
   }) async {
-    Map<String, dynamic> headers =  Map<String, dynamic>();
-    headers.putIfAbsent("Authorization",
-        () => 'Token 07f96707138a508f80418e0bd5dd31f80a56f204');
+    Map<String, dynamic> headers = <String, dynamic>{};
+    headers.putIfAbsent("Authorization", () => 'Token 07f96707138a508f80418e0bd5dd31f80a56f204');
     headers.putIfAbsent("Content-Type", () => "multipart/form-data");
-    headers.putIfAbsent(
-        "X-CSRFToken",
-        () =>
-            "QQ80uhVlBRPjjNi9PGxdADoljTafbkc7t4ORKM3pQ1iJDXrXqkXcGDtzAZSoXnpt");
+    headers.putIfAbsent("X-CSRFToken", () => "QQ80uhVlBRPjjNi9PGxdADoljTafbkc7t4ORKM3pQ1iJDXrXqkXcGDtzAZSoXnpt");
     headers.putIfAbsent("Content-Type", () => "application/json");
     headers.putIfAbsent("Accept", () => "application/json");
     Dio dio = Dio();
@@ -28,10 +24,11 @@ class CreateStatusService {
     var formData = FormData.fromMap({
       'text': text,
       'user': int.tryParse(id),
-      'image': await MultipartFile.fromFile(
-        imgUrl!.path,
-        filename: basename(imgUrl.path),
-      )
+      if (imgUrl != null)
+        'image': await MultipartFile.fromFile(
+          imgUrl.path,
+          filename: basename(imgUrl.path),
+        )
     });
     Response response = await dio.post(
       userStatusCreateUrl,
@@ -45,11 +42,10 @@ class CreateStatusService {
       //Logger().i("Create User Status : " + response.data);
       print(response.data);
       return UserCreateStatus.fromJson(response.data);
-
     } else {
-       Logger().i("Create User Status Error : " + response.statusCode.toString());
-      Fluttertoast.showToast(
-          msg: "Error Dio CReate User : " + response.statusCode.toString());
+      Logger().i("Create User Status Error : " + response.statusCode.toString());
+      Fluttertoast.showToast(msg: "Error Dio CReate User : " + response.statusCode.toString());
     }
+    return null;
   }
 }

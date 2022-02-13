@@ -15,7 +15,6 @@ import 'package:slide_countdown/slide_countdown.dart';
 
 import '../../api/auth/login.dart';
 import '../home/navigation_screen.dart';
-import 'otp_screen.dart';
 
 class OtpVerficationScreen extends StatefulWidget {
   const OtpVerficationScreen({Key? key}) : super(key: key);
@@ -24,17 +23,16 @@ class OtpVerficationScreen extends StatefulWidget {
   _OtpVerficationScreenState createState() => _OtpVerficationScreenState();
 }
 
-class _OtpVerficationScreenState extends State<OtpVerficationScreen>
-    with ManualNavigatorMixin {
+class _OtpVerficationScreenState extends State<OtpVerficationScreen> with ManualNavigatorMixin {
   final defaultDuration = const Duration(minutes: 2, seconds: 0);
-  TextEditingController pinController =  TextEditingController();
+  TextEditingController pinController = TextEditingController();
 
   @override
   void dispose() {
     pinController.dispose();
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -137,33 +135,28 @@ class _OtpVerficationScreenState extends State<OtpVerficationScreen>
                 child: CustomButton(
                   buttonTextPaste: "Göndər",
                   callback: () async {
-                    var result = await Login.sendOtp( pinController.text );
-                    if( result == "success")
-                    {
-                      var checkUserInfo = await User.getInfo( );
-                      if ( checkUserInfo == "completed" )
-                      {
+                    var result = await Login.sendOtp(pinController.text);
+                    if (result == "success") {
+                      final checkUserInfo = await User.getInfo();
+
+                      if (checkUserInfo == "completed") {
                         manualNavigatorTransition(
                           context,
                           const NavigationScreen(),
                         );
-                      }
-                      else
-                      {
+                      } else {
                         manualNavigatorTransition(
                           context,
                           const AuthRegisterScreen(),
                         );
                       }
+                    } else {
+                      //   manualNavigatorTransition(
+                      //     context,
+                      //     const OtpScreen(),
+                      //   );
+                      Fluttertoast.showToast(msg: 'OTP kod səhvdir');
                     }
-                    else
-                    {
-                      manualNavigatorTransition(
-                        context,
-                        const OtpScreen(),
-                      );
-                    }
-
                   },
                 ),
               ),

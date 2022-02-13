@@ -1,13 +1,8 @@
-import 'dart:developer';
-
-import 'package:everyone_know_app/component/message_send_button.dart';
-import 'package:everyone_know_app/utils/size/size.dart';
 import 'package:everyone_know_app/view/story/custom_story_view.dart';
 import 'package:everyone_know_app/view/text/text_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:story_view/story_view.dart';
-import 'package:story_viewer/story_viewer.dart';
 
 class StatusViewScreen extends StatefulWidget {
   final bool? checkUserStory;
@@ -32,17 +27,14 @@ class _StatusViewScreenState extends State<StatusViewScreen> {
   final StoryController controller = StoryController();
 
   @override
-  void initState() {
-    super.initState();
-    // controller.addListener(
-    //   onComplated: () {
-    //     Navigator.pop(context);
-    //   },
-    // );
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    print(widget.statusUserImgUrl);
     return Scaffold(
       backgroundColor: Colors.black,
       body: SafeArea(
@@ -56,42 +48,41 @@ class _StatusViewScreenState extends State<StatusViewScreen> {
                   userName: widget.statusUserName ?? "Natavan",
                   storyItems: widget.storyItems!,
                   controller: controller,
-                  imageUrl: widget.statusUserImgUrl ??
-                            "https://i.pinimg.com/564x/8b/30/de/8b30dead52fb583f2561eee302f6a672.jpg",
-                      ),
+                  imageUrl: widget.statusUserImgUrl ?? "https://i.pinimg.com/564x/8b/30/de/8b30dead52fb583f2561eee302f6a672.jpg",
+                ),
               ),
-                     widget.checkUserStory == false
-                ? const SizedBox()
-                : Align(
-                    alignment: Alignment.topRight,
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 30, right: 10),
-                      child: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            // controller.infoPause();
-                            controller.pause();
-                          });
-                          showCupertinoDialog(
-                            context: context,
-                            builder: (ctx) {
-                              return Center(
-                                child: alertDialog(context),
-                              );
-                            },
-                          );
-                        },
-                        icon: const Icon(
-                          Icons.delete_outline,
-                          color: Colors.white,
-                          size: 22,
+              _buildUserInfo(),
+              widget.checkUserStory == false
+                  ? const SizedBox()
+                  : Align(
+                      alignment: Alignment.topRight,
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 30, right: 10),
+                        child: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              controller.pause();
+                            });
+                            showCupertinoDialog(
+                              context: context,
+                              builder: (ctx) {
+                                return Center(
+                                  child: alertDialog(context),
+                                );
+                              },
+                            );
+                          },
+                          icon: const Icon(
+                            Icons.delete_outline,
+                            color: Colors.white,
+                            size: 22,
+                          ),
                         ),
                       ),
                     ),
-                  ),
             ],
           ),
-        ) ,
+        ),
       ),
       // body: SafeArea(
       //   child: Stack(
@@ -179,7 +170,68 @@ class _StatusViewScreenState extends State<StatusViewScreen> {
     );
   }
 
-  Container alertDialog(BuildContext context) {
+  Widget _buildUserInfo() {
+    return Align(
+      alignment: Alignment.topLeft,
+      child: CupertinoButton(
+        padding: EdgeInsets.zero,
+        minSize: 0,
+        onPressed: () {},
+        child: Container(
+          margin: const EdgeInsets.only(top: 30.0, left: 16.0),
+          child: Row(
+            children: [
+              Container(
+                width: 48,
+                height: 48,
+                clipBehavior: Clip.antiAlias,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Color.fromRGBO(180, 132, 240, 1),
+                ),
+                child: (widget.statusUserImgUrl != null && widget.statusUserImgUrl != '')
+                    ? Image.network(
+                        widget.statusUserImgUrl!,
+                        fit: BoxFit.cover,
+                      )
+                    : const Center(
+                        child: CustomTextView(
+                          textPaste: "M",
+                          textSize: 16,
+                          textColor: Colors.white,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+              ),
+              const SizedBox(width: 12.0),
+              Text(
+                widget.statusUserName ?? 'Natavan',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 18.0,
+                  shadows: <Shadow>[
+                    Shadow(
+                      offset: Offset(1.0, 1.0),
+                      blurRadius: 3.0,
+                      color: Color.fromARGB(255, 0, 0, 0),
+                    ),
+                    Shadow(
+                      offset: Offset(1.0, 1.0),
+                      blurRadius: 8.0,
+                      color: Color.fromARGB(124, 0, 0, 0),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget alertDialog(BuildContext context) {
     return Container(
       width: double.infinity,
       height: 165,

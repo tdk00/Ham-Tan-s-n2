@@ -13,6 +13,7 @@ import 'package:story_viewer/models/story_item.dart';
 class Statuses {
 
   static Future<List<UserInfo> >getAll ( locationId ) async {
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var token = prefs.getString('token') ?? '';
     var userId = prefs.getString('user_id') ?? '';
@@ -76,8 +77,7 @@ class Statuses {
       final image = u['image'];
       final text = u['text'];
 
-      // log('${imageValid(image)}');
-      
+
       if(imageValid(image) && textValid(text) || imageValid(image)) {
         statuses.add(StoryItem.inlineProviderImage(NetworkImage(image),caption: Text(text)), );
       }
@@ -86,27 +86,38 @@ class Statuses {
         statuses.add(StoryItem.text(title: text, backgroundColor: Colors.black));
       }
 
-      // if(image != null && image != '') {
-      //   statuses.add(
-      //        StoryItemModel(
-      //         imageProvider: NetworkImage(
-      //           u['image'].toString()
-      //         ),
-      //       )
-      //   );
-      // }
-
-        //
-        // StatusInfo status = StatusInfo(
-        //     u['id'].toString(),
-        //     u['image'].toString(),
-        //     u['text'].toString(),
-        //     u['user'].toString()
-        // );
-
        
     }
     return statuses;
+  }
+
+
+  static Future<bool> deleteStatus( statusId ) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString('token') ?? '';
+    final uri =
+    Uri.parse('http://178.62.249.150/api/status/' + statusId.toString() + "/");
+    final headers = {'Content-Type': 'application/json', 'Authorization' : "Token " + token.toString()};
+
+    Response response = await delete(
+        uri,
+        headers: headers
+    );
+
+    int statusCode = response.statusCode;
+    String responseBody = response.body;
+
+    if( statusCode == 204 )
+      {
+        print("removed");
+        return true;
+      }
+    else
+      {
+        print("not removed");
+        return false;
+      }
+
   }
 
 
@@ -119,6 +130,8 @@ bool imageValid(String? image) {
 bool textValid(String? text) {
  return text != null && text != '';
 }
+
+
 
 class UserInfo {
   final String id, name, surname, region, business, marriage, image, number_hide, about;

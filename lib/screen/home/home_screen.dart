@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:everyone_know_app/api/account/name_surname.dart';
 import 'package:everyone_know_app/api/main/statuses.dart';
 import 'package:everyone_know_app/color/app_color.dart';
 import 'package:everyone_know_app/domain/state/navigation_cubit/navigation_cubit_cubit.dart';
@@ -77,14 +78,18 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
                                         physics: const BouncingScrollPhysics(),
                                         itemBuilder: (ctx, index) {
                                           return GestureDetector(
-                                            onTap: () async{
-                                              SharedPreferences prefs = await SharedPreferences.getInstance();
-                                              prefs.setInt("statusLocation", index + 1);
+                                            onTap: () async {
+                                              SharedPreferences prefs =
+                                                  await SharedPreferences
+                                                      .getInstance();
+                                              prefs.setInt(
+                                                  "statusLocation", index + 1);
                                               setState(() {
-                                                _future = Statuses.getAll(index + 1);
+                                                _future =
+                                                    Statuses.getAll(index + 1);
                                                 Navigator.pop(context);
                                                 locationName =
-                                                fakeLocations[index];
+                                                    fakeLocations[index];
                                                 lastIndex = index;
                                               });
                                             },
@@ -141,21 +146,65 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
                       BlocProvider.of<NavigationCubitCubit>(context)
                           .getNavBarItem(NavbarItem.profile);
                     },
-                    child: Container(
-                      width: 50,
-                      height: 50,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Color.fromRGBO(180, 132, 240, 1),
-                      ),
-                      child: const Center(
-                        child: CustomTextView(
-                          textPaste: "M",
-                          textSize: 16,
-                          textColor: Colors.white,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
+                    child: FutureBuilder(
+                      future: NameSurname.getProfilePic(),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<String> snapshot) {
+                        if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                          if(snapshot.data.toString() == "error")
+                            {
+                              return Container(
+                                width: 50,
+                                height: 50,
+                                decoration: const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Color.fromRGBO(180, 132, 240, 1),
+                                ),
+                                child: const Center(
+                                  child: CustomTextView(
+                                    textPaste: "M",
+                                    textSize: 16,
+                                    textColor: Colors.white,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              );
+                            }
+                          else {
+                            return Container(
+                              width: 50,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: profileEditImageColor,
+                                image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: NetworkImage(
+                                    snapshot.data.toString(),
+                                  ),
+                                ),
+                              ),
+                            );
+                          }
+                        } else {
+                          return Container(
+                            width: 50,
+                            height: 50,
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Color.fromRGBO(180, 132, 240, 1),
+                            ),
+                            child: const Center(
+                              child: CustomTextView(
+                                textPaste: "M",
+                                textSize: 16,
+                                textColor: Colors.white,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          );
+                        }
+                      },
                     ),
                   ),
                 ],
@@ -163,7 +212,7 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
             ),
             Padding(
               padding:
-              EdgeInsets.only(left: 14, top: screenHeight(context, 0.07)),
+                  EdgeInsets.only(left: 14, top: screenHeight(context, 0.07)),
               child: const CustomTextView(
                 textPaste: "Təkliflər",
                 textSize: 20,
@@ -180,7 +229,8 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
                 ),
                 child: FutureBuilder<List<UserInfo>>(
                   future: _future,
-                  builder: (BuildContext context, AsyncSnapshot<List<UserInfo>> snapshot) {
+                  builder: (BuildContext context,
+                      AsyncSnapshot<List<UserInfo>> snapshot) {
                     if (snapshot.hasData && snapshot.data!.isNotEmpty) {
                       return GridView.builder(
                         physics: const BouncingScrollPhysics(),
@@ -193,35 +243,37 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
                               (MediaQuery.of(context).size.height / 1.2),
                         ),
                         itemBuilder: (BuildContext context, int index) {
-
                           return GestureDetector(
                             onTap: () async {
                               final user = snapshot.data!.elementAt(index);
 
-                              final result =  await Statuses.getUserStatuses(user.id);
+                              final result =
+                                  await Statuses.getUserStatuses(user.id);
 
                               final userId = user.id;
 
-                              SharedPreferences _prefs =await  SharedPreferences.getInstance();
+                              SharedPreferences _prefs =
+                                  await SharedPreferences.getInstance();
 
                               log('$userId, ${_prefs.getString('user_id')}');
 
                               manualNavigatorTransition(
                                 context,
-                                 StatusViewScreen(
-                                  checkUserStory: userId == _prefs.getString('user_id'),
+                                StatusViewScreen(
+                                  checkUserStory:
+                                      userId == _prefs.getString('user_id'),
                                   storyItems: result,
-                                  
                                 ),
                               );
                             },
-                            child: friendOfferGridItem(snapshot.data![index].image, snapshot.data![index].name, snapshot.data![index].business),
+                            child: friendOfferGridItem(
+                                snapshot.data![index].image,
+                                snapshot.data![index].name,
+                                snapshot.data![index].business),
                           );
                         },
                       );
-                    }
-                    else
-                    {
+                    } else {
                       return GridView.builder(
                         physics: const BouncingScrollPhysics(),
                         itemCount: 12,
@@ -242,13 +294,15 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
                                 ),
                               );
                             },
-                            child: friendOfferGridItem("https://www.inpixio.com/remove-background/images/main-before.jpg", 'Natavan', "0"),
+                            child: friendOfferGridItem(
+                                "https://www.inpixio.com/remove-background/images/main-before.jpg",
+                                'Natavan',
+                                "0"),
                           );
                         },
                       );
                     }
                   },
-
                 ),
               ),
             ),
@@ -282,7 +336,7 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
                 width: 82,
                 height: 82,
                 margin: const EdgeInsets.all(3),
-                decoration:  BoxDecoration(
+                decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   image: DecorationImage(
                     image: NetworkImage(
@@ -312,8 +366,11 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
           ),
           CustomTextView(
             textPaste: sampleBiznesModels.elementAt(
-                (( int.tryParse(business) ?? 0 ) + 1) < sampleBiznesModels.length &&  (( int.tryParse(business) ?? 0 ) + 1) > - 1 ?
-                (( int.tryParse(business) ?? 0 ) + 1) : 0),
+                ((int.tryParse(business) ?? 0) + 1) <
+                            sampleBiznesModels.length &&
+                        ((int.tryParse(business) ?? 0) + 1) > -1
+                    ? ((int.tryParse(business) ?? 0) + 1)
+                    : 0),
             textSize: 13,
             textAlign: TextAlign.center,
             textColor: textColor,

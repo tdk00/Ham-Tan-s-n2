@@ -36,6 +36,30 @@ class NameSurname {
         .catchError(onError);
   }
 
+  static Future<String> getProfilePic () async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var userId = prefs.getString('user_id') ?? '';
+    var token = prefs.getString('token') ?? '';
+    final uri =
+    Uri.parse('http://178.62.249.150/api/account/user/'+ userId +'/');
+    final headers = {'Content-Type': 'application/json', 'Authorization' : "Token " + token.toString()};
+
+    Response response = await get(
+        uri,
+        headers: headers
+    );
+
+    int statusCode = response.statusCode;
+    String responseBody = response.body;
+
+    if(statusCode == 200 && jsonDecode(responseBody)['image'] != null )
+      {
+          return jsonDecode(responseBody)['image'];
+      }
+
+    return "error";
+  }
+
   static Future<String> onValue (Response response) async {
     var result ;
 

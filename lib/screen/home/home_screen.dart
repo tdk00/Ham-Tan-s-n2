@@ -149,36 +149,16 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
                               height: 50,
                               decoration: const BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: Color.fromRGBO(180, 132, 240, 1),
-                              ),
-                              child: const Center(
-                                child: CustomTextView(
-                                  textPaste: "M",
-                                  textSize: 16,
-                                  textColor: Colors.white,
-                                  fontWeight: FontWeight.w500,
+                                color: profileEditImageColor,
+                                image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: AssetImage(
+                                    "assets/icon.png",
+                                  ),
                                 ),
                               ),
                             );
                           } else {
-                          if(snapshot.data.toString() == "error")
-                            {
-                              return  Container(
-                                width: 50,
-                                height: 50,
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: profileEditImageColor,
-                                  image: DecorationImage(
-                                    fit: BoxFit.cover,
-                                    image: AssetImage(
-                                      "assets/icon.png",
-                                    ),
-                                  ),
-                                ),
-                              );
-                            }
-                          else {
                             return Container(
                               width: 50,
                               height: 50,
@@ -204,7 +184,7 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
                               image: DecorationImage(
                                 fit: BoxFit.cover,
                                 image: AssetImage(
-                                  "icon.png",
+                                  "assets/icon.png",
                                 ),
                               ),
                             ),
@@ -278,7 +258,8 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
                           crossAxisCount: 3,
                           crossAxisSpacing: 20,
                           mainAxisSpacing: 20,
-                          childAspectRatio: MediaQuery.of(context).size.width / (MediaQuery.of(context).size.height / 1.2),
+                          childAspectRatio: MediaQuery.of(context).size.width /
+                              (MediaQuery.of(context).size.height / 1.2),
                         ),
                         itemBuilder: (ctx, index) {
                           return GestureDetector(
@@ -290,7 +271,10 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
                                 ),
                               );
                             },
-                            child: friendOfferGridItem("https://www.inpixio.com/remove-background/images/main-before.jpg", 'Natavan', "0"),
+                            child: friendOfferGridItem(
+                                "https://www.inpixio.com/remove-background/images/main-before.jpg",
+                                'Natavan',
+                                "0"),
                           );
                         },
                       );

@@ -10,7 +10,7 @@ class Statuses {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var token = prefs.getString('token') ?? '';
     var userId = prefs.getString('user_id') ?? '';
-    final uri = Uri.parse('http://178.62.249.150/api/account/users/' + locationId.toString() + "/");
+    final uri = Uri.parse('http://hamitanisin.digital/api/account/users/' + locationId.toString() + "/");
     final headers = {'Content-Type': 'application/json', 'Authorization': "Token " + token.toString()};
 
     Response response = await get(uri, headers: headers);
@@ -20,7 +20,17 @@ class Statuses {
     List<UserInfo> users = [];
 
     for (var u in jsonDecode(responseBody)) {
-      UserInfo user = UserInfo(u['id'].toString(), u['name'].toString(), u['surname'].toString(), u['region'].toString(), u['business'].toString(), u['marriage'].toString(), u['image'].toString(), u['number_hide'].toString(), u['about'].toString());
+      UserInfo user = UserInfo(
+        u['id'].toString(),
+        u['name'].toString(),
+        u['surname'].toString(),
+        u['region'].toString(),
+        u['business'].toString(),
+        u['marriage'].toString(),
+        u['image'].toString(),
+        u['number_hide'].toString(),
+        u['about'].toString(),
+      );
 
       users.add(user);
     }
@@ -31,7 +41,7 @@ class Statuses {
   static Future<List<StoryItem>> getUserStatuses(userId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var token = prefs.getString('token') ?? '';
-    final uri = Uri.parse('http://178.62.249.150/api/status/list/' + userId.toString() + "/");
+    final uri = Uri.parse('http://hamitanisin.digital/api/status/list/' + userId.toString() + "/");
     final headers = {'Content-Type': 'application/json', 'Authorization': "Token " + token.toString()};
 
     Response response = await get(uri, headers: headers);
@@ -80,7 +90,7 @@ class Statuses {
   static Future<bool> deleteStatus(statusId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var token = prefs.getString('token') ?? '';
-    final uri = Uri.parse('http://178.62.249.150/api/status/' + statusId.toString() + "/");
+    final uri = Uri.parse('http://hamitanisin.digital/api/status/' + statusId.toString() + "/");
     final headers = {'Content-Type': 'application/json', 'Authorization': "Token " + token.toString()};
 
     Response response = await delete(uri, headers: headers);

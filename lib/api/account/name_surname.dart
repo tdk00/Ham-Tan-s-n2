@@ -9,14 +9,10 @@ class NameSurname {
     var userId = prefs.getString('user_id') ?? '';
     var token = prefs.getString('token') ?? '';
     business = business < 1 ? 1 : business;
-    final uri = Uri.parse('http://178.62.249.150/api/account/user/update/' + userId + '/');
+    final uri = Uri.parse('http://hamitanisin.digital/api/account/user/update/' + userId + '/');
     final headers = {'Content-Type': 'application/json', 'Authorization': "Token " + token.toString()};
 
-    Map<String, dynamic> body = {
-      "business": business,
-      "name": name,
-      "surname": surname
-    };
+    Map<String, dynamic> body = {"business": business, "name": name, "surname": surname};
     String jsonBody = json.encode(body);
     final encoding = Encoding.getByName('utf-8');
 
@@ -24,7 +20,6 @@ class NameSurname {
 
     int statusCode = response.statusCode;
     String responseBody = response.body;
-
 
     if (statusCode == 200 && jsonDecode(responseBody)['image'] != null) {
       return jsonDecode(responseBody)['image'];
@@ -44,7 +39,7 @@ class NameSurname {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var userId = prefs.getString('user_id') ?? '';
     var token = prefs.getString('token') ?? '';
-    final uri = Uri.parse('http://178.62.249.150/api/account/user/' + userId + '/');
+    final uri = Uri.parse('http://hamitanisin.digital/api/account/user/' + userId + '/');
     final headers = {'Content-Type': 'application/json', 'Authorization': "Token " + token.toString()};
 
     Response response = await get(uri, headers: headers);

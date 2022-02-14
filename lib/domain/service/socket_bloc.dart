@@ -12,15 +12,22 @@ class SocketBloc {
 
   SocketBloc._instance();
 
-  final String _baseUrl = 'ws://10.0.2.2:8000/ws';
+  final String _baseUrl = 'wss://hamitanisin.digital/ws';
 
-  Future<void> connect(int id) async {
+  // wss://hamitanisin.digital/ws/1/?token=5360bd68d8b31cfe716111189e336e4b0fb38c3b
+
+  Future<void> connect(String id) async {
     final prefs = await SharedPreferences.getInstance();
 
     final token = prefs.getString('token');
+
+    log('${prefs.getString('user_id')}');
+
     final url = '$_baseUrl/$id/?token=$token';
 
-    final channel = WebSocketChannel.connect(Uri.parse('wss://ws.ifelse.io/'));
+    print(url);
+
+    final channel = WebSocketChannel.connect(Uri.parse(url));
 
     channel.stream.listen(
       (data) {
@@ -29,7 +36,5 @@ class SocketBloc {
       onDone: () => print('Socket closed'),
       onError: (error) => log(error.toString()),
     );
-
-    channel.sink.add('salam');
   }
 }

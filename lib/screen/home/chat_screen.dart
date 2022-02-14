@@ -1,80 +1,180 @@
 import 'package:everyone_know_app/color/app_color.dart';
 import 'package:everyone_know_app/component/custom_appbar.dart';
-import 'package:everyone_know_app/component/message_send_button.dart';
-import 'package:everyone_know_app/utils/size/size.dart';
-import 'package:everyone_know_app/view/chat/my_send_msg_view.dart';
-import 'package:everyone_know_app/view/chat/sender_msg_itemView.dart';
-import 'package:everyone_know_app/view/text/text_view.dart';
-import 'package:everyone_know_app/widget/responsive.dart';
+import 'package:everyone_know_app/domain/state/chat_cubit/chat_cubit.dart';
+import 'package:everyone_know_app/view/chat/message_bubble.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class ChatScreen extends StatefulWidget {
-  const ChatScreen({Key? key}) : super(key: key);
+  final int userId;
+  final String? firstname;
+  final String? lastname;
+  final String? image;
+
+  const ChatScreen({
+    Key? key,
+    required this.userId,
+    this.firstname,
+    this.lastname,
+    this.image,
+  }) : super(key: key);
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  late final ChatCubit _cubit;
+
+  final TextEditingController _messageEditingController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _cubit = ChatCubit();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Column(
-          children: [
-            const CustomAppBarComponent(appBarText: "Anaxanım"),
-            SizedBox(
-              height: screenHeight(context, 0.04),
+    return BlocProvider(
+      create: (context) => _cubit..init('${widget.userId}'),
+      child: Scaffold(
+          backgroundColor: Colors.white,
+          appBar: PreferredSize(
+            child: SafeArea(
+              child: CustomAppBarComponent(appBarText: (widget.firstname ?? '') + (widget.lastname ?? '')),
             ),
-            Expanded(
+            preferredSize: const Size.fromHeight(62.0),
+          ),
+          body: BlocConsumer<ChatCubit, ChatState>(
+            listener: (context, state) {
+              if (state is ChatAlert) {
+                Fluttertoast.showToast(msg: state.message);
+              }
+            },
+            builder: (context, state) {
+              if (state is ChatFetched) {
+                return _buildBody(state);
+              }
+
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            },
+          )),
+    );
+  }
+
+  Widget _buildBody(ChatFetched state) {
+    return Column(
+      children: [
+        Expanded(
+          child: ListView.builder(
+            reverse: true,
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.only(top: 12.0),
+            itemCount: state.messages.length,
+            itemBuilder: (context, index) {
+              final message = state.messages.elementAt(index);
+
+              return MessageBubble(
+                isMe: message.username != widget.userId,
+                message: message,
+                image: widget.image,
+                fullName: (widget.firstname ?? '') + (widget.lastname ?? ''),
+              );
+
+              //   if (message.username == widget.userId) {
+              //     return SenderMsgItem(
+              //       msgTextValue: message.message,
+              //       imageUrl: message.image,
+              //       statusTextViewer: true,
+              //     );
+              //   } else {
+              //     return MySendMsgView(
+              //       msgTextValue: message.message,
+              //       imageUrl: message.image,
+              //       statusTextViewer: true,
+              //     );
+              //   }
+            },
+          ),
+        ),
+        _buildSendMessage(),
+      ],
+    );
+  }
+
+  Widget _buildSendMessage() {
+    return SafeArea(
+      top: false,
+      child: Container(
+        margin: const EdgeInsets.only(left: 26.0, right: 26.0, bottom: 26.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(66),
+          color: Colors.white,
+          border: Border.all(
+            width: 1.2,
+            color: const Color.fromRGBO(41, 41, 44, 0.12),
+          ),
+        ),
+        child: Row(
+          children: [
+            _buildTextField(),
+            const SizedBox(width: 12.0),
+            CupertinoButton(
+              minSize: 0,
+              padding: EdgeInsets.zero,
+              onPressed: () {
+                _cubit.sendMessage(
+                  _messageEditingController.text,
+                );
+
+                _messageEditingController.clear();
+              },
               child: Container(
-                width: double.infinity,
-                height: double.infinity,
-                margin: const EdgeInsets.only(bottom: 8),
-                child: ResponsiveWidget(
-                  child: Column(
-                    children: const [
-                      SenderMsgItem(
-                        msgTextValue: "Onda bu gun gedin baxariq",
-                        statusTextViewer: true,
-                      ),
-                      MySendMsgView(
-                        imageUrl:
-                            "https://i.pinimg.com/originals/90/18/3d/90183d7768dd3509c834b878f322aa24.jpg",
-                        statusTextViewer: true,
-                        msgTextValue: "Salam necesen? Gedirik bu gun?",
-                      ),
-                      SenderMsgItem(
-                        msgTextValue: "Onda bu gun gedin baxariq",
-                        imageUrl:
-                            "https://i.pinimg.com/originals/90/18/3d/90183d7768dd3509c834b878f322aa24.jpg",
-                      ),
-                      MySendMsgView(
-                        imageUrl:
-                            "https://i.pinimg.com/originals/90/18/3d/90183d7768dd3509c834b878f322aa24.jpg",
-                        msgTextValue: "Salam necesen? Gedirik bu gun?",
-                        statusTextViewer: true,
-                      ),
-                      SenderMsgItem(
-                        msgTextValue: "Onda bu gun gedin baxariq",
-                        statusTextViewer: true,
-                      ),
-                      MySendMsgView(
-                        imageUrl:
-                            "https://i.pinimg.com/originals/90/18/3d/90183d7768dd3509c834b878f322aa24.jpg",
-                        msgTextValue: "Salam necesen? Gedirik bu gun?",
-                      ),
-                    ],
+                width: 48,
+                height: 42,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(66),
+                  color: sendMessageButtonColor,
+                ),
+                child: Center(
+                  child: Transform.rotate(
+                    angle: 20.4,
+                    child: const Icon(
+                      Icons.arrow_back,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
             ),
-            MessageSendButton(
-              imageSelect: () {},
-              sendMessage: () {},
-            ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTextField() {
+    return Flexible(
+      child: TextField(
+        controller: _messageEditingController,
+        maxLines: 5,
+        minLines: 1,
+        textCapitalization: TextCapitalization.sentences,
+        style: TextStyle(color: Theme.of(context).iconTheme.color, fontSize: 14.0),
+        decoration: const InputDecoration(
+          contentPadding: EdgeInsets.only(left: 20),
+          border: InputBorder.none,
+          hintText: "İsmarıcınızı daxil edin...",
+          hintStyle: TextStyle(
+            fontSize: 14,
+            color: textColorGrey,
+            fontWeight: FontWeight.w500,
+          ),
         ),
       ),
     );

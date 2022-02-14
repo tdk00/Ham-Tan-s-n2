@@ -1,6 +1,7 @@
 import 'package:everyone_know_app/domain/repository/create_user.repo.dart';
 import 'package:everyone_know_app/domain/repository/usecr_all_data.repo.dart';
 import 'package:everyone_know_app/domain/repository/user_profile_upload.repo.dart';
+import 'package:everyone_know_app/domain/state/message_list/message_list_cubit.dart';
 import 'package:everyone_know_app/domain/state/navigation_cubit/navigation_cubit_cubit.dart';
 import 'package:everyone_know_app/domain/state/profile_img_upload_cubit/user_profile_upload_cubit.dart';
 import 'package:everyone_know_app/domain/state/user_profile_data_cubit/user_profil_data_cubit_cubit.dart';
@@ -30,6 +31,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<UserProfilDataCubit>(
           create: (context) => UserProfilDataCubit(userAllRepo),
+        ),
+        BlocProvider<MessageListCubit>(
+          create: (context) => MessageListCubit(),
         ),
       ],
       child: MaterialApp(

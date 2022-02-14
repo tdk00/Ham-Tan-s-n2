@@ -1,3 +1,5 @@
+import 'package:everyone_know_app/api/main/statuses.dart';
+import 'package:everyone_know_app/screen/home/chat_screen.dart';
 import 'package:everyone_know_app/view/story/custom_story_view.dart';
 import 'package:everyone_know_app/view/text/text_view.dart';
 import 'package:flutter/cupertino.dart';
@@ -10,6 +12,8 @@ class StatusViewScreen extends StatefulWidget {
   final String? statusUserName;
   final String? statusUserImgUrl;
   final String? statusImageText;
+  final UserInfo? userInfo;
+
   const StatusViewScreen({
     Key? key,
     this.checkUserStory = false,
@@ -17,6 +21,7 @@ class StatusViewScreen extends StatefulWidget {
     this.statusUserName,
     this.statusUserImgUrl,
     this.statusImageText,
+    this.userInfo,
   }) : super(key: key);
 
   @override
@@ -34,7 +39,6 @@ class _StatusViewScreenState extends State<StatusViewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.statusUserImgUrl);
     return Scaffold(
       backgroundColor: Colors.black,
       body: SafeArea(
@@ -176,7 +180,20 @@ class _StatusViewScreenState extends State<StatusViewScreen> {
       child: CupertinoButton(
         padding: EdgeInsets.zero,
         minSize: 0,
-        onPressed: () {},
+        onPressed: () {
+          final user = widget.userInfo!;
+
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => ChatScreen(
+                userId: int.tryParse(user.id)!,
+                firstname: user.name,
+                lastname: user.surname,
+                image: user.image,
+              ),
+            ),
+          );
+        },
         child: Container(
           margin: const EdgeInsets.only(top: 30.0, left: 16.0),
           child: Row(

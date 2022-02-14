@@ -17,11 +17,11 @@ class SenderMsgItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
-      height: imageUrl == null ? 90 : 250,
+      width: MediaQuery.of(context).size.width,
       margin: const EdgeInsets.only(
         left: 22,
         right: 26,
+        bottom: 24.0,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -95,20 +95,17 @@ class SenderMsgItem extends StatelessWidget {
                             ClipRRect(
                               borderRadius: BorderRadius.circular(15),
                               child: Image.network(
-                                imageUrl ??
-                                    "https://www.gettyimages.com/gi-resources/images/500px/983794168.jpg",
+                                imageUrl ?? "https://www.gettyimages.com/gi-resources/images/500px/983794168.jpg",
                                 fit: BoxFit.cover,
                               ),
                             ),
                             statusTextViewer == false
                                 ? const Padding(
-                                    padding:
-                                        EdgeInsets.only(bottom: 9, left: 8),
+                                    padding: EdgeInsets.only(bottom: 9, left: 8),
                                     child: Align(
                                       alignment: Alignment.bottomCenter,
                                       child: CustomTextView(
-                                        textPaste:
-                                            """Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas consequat varius molestie. In in egestas diam. Aliquam non neque a elit malesuada blandit""",
+                                        textPaste: """Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas consequat varius molestie. In in egestas diam. Aliquam non neque a elit malesuada blandit""",
                                         textSize: 6,
                                         textColor: Colors.white,
                                         fontWeight: FontWeight.w400,
@@ -122,16 +119,13 @@ class SenderMsgItem extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(
-            height: 16,
-          ),
+          const SizedBox(height: 16),
           msgTextValue == null
               ? const SizedBox()
               : Padding(
                   padding: const EdgeInsets.only(left: 45),
                   child: CustomTextView(
-                    textPaste: msgTextValue ??
-                        "Məsmə salam, 10 günə toya paltarı çatdıra biləcəksən?",
+                    textPaste: msgTextValue ?? "Məsmə salam, 10 günə toya paltarı çatdıra biləcəksən?",
                     textSize: 14,
                     textColor: textColorGrey,
                     fontWeight: FontWeight.w500,

@@ -245,6 +245,7 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
                                   storyItems: result,
                                   statusUserName: snapshot.data![index].name,
                                   statusUserImgUrl: snapshot.data![index].image,
+                                  userInfo: user,
                                 ),
                               );
                             },
@@ -260,15 +261,14 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
                           crossAxisCount: 3,
                           crossAxisSpacing: 20,
                           mainAxisSpacing: 20,
-                          childAspectRatio: MediaQuery.of(context).size.width /
-                              (MediaQuery.of(context).size.height / 1.8),
+                          childAspectRatio: MediaQuery.of(context).size.width / (MediaQuery.of(context).size.height / 1.8),
                         ),
                         itemBuilder: (ctx, index) {
                           return GestureDetector(
                             onTap: () {
                               manualNavigatorTransition(
                                 context,
-                                 StatusViewScreen(
+                                StatusViewScreen(
                                   checkUserStory: true,
                                   statusUserName: snapshot.data![index].name,
                                   statusUserImgUrl: snapshot.data![index].image,
@@ -343,12 +343,7 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
             height: 8,
           ),
           CustomTextView(
-            textPaste: sampleBiznesModels.elementAt(
-                ((int.tryParse(business) ?? 0) + 1) <
-                            sampleBiznesModels.length &&
-                        ((int.tryParse(business) ?? 0) + 1) > -1
-                    ? ((int.tryParse(business) ?? 0) + 1)
-                    : 0),
+            textPaste: sampleBiznesModels.elementAt(((int.tryParse(business) ?? 0) + 1) < sampleBiznesModels.length && ((int.tryParse(business) ?? 0) + 1) > -1 ? ((int.tryParse(business) ?? 0) + 1) : 0),
             textSize: 13,
             textAlign: TextAlign.center,
             textColor: textColor,

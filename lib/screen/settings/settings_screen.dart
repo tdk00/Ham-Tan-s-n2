@@ -8,6 +8,7 @@ import 'package:everyone_know_app/view/text/text_view.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../api/account/profile.dart';
 import '../../app/app.dart';
 import '../splash/splash_scree.dart';
 
@@ -36,10 +37,52 @@ class _SettingScreenState extends State<SettingScreen>
                 right: screenWidth(context, 0.03),
               ),
               child: ListTile(
-                onTap: () {
+                onTap: () async {
+                List<ProfileInfo> aa = await Profile.getProfileInfo();
+
+                String name = "";
+                String surname = "";
+                String marriage = "";
+                String business = "";
+                String about = "";
+
+                if (aa.isNotEmpty)
+                {
+                  name = aa[0].name;
+                  surname = aa[0].surname;
+                  marriage = aa[0].marriage;
+                  business = aa[0].business;
+                  about = aa[0].about;
+                }
                   manualNavigatorTransition(
                     context,
-                    const PersonalInformationScreen(),
+                      PersonalInformationScreen(
+                        ad: name,
+                        soyad: surname,
+                        marriage: marriage,
+                        business: business,
+                        about: about,
+
+                      ),
+                    // FutureBuilder(
+                    //     future: Profile.getProfileInfo(),
+                    //     builder:
+                    //         (BuildContext context, AsyncSnapshot snapshot) {
+                    //       if (snapshot.hasData && snapshot.data.length > 0) {
+                    //         print("zzzzz");
+                    //         return PersonalInformationScreen(
+                    //           ad: snapshot.data[0].name,
+                    //           soyad: snapshot.data[0].surname,
+                    //           marriage: snapshot.data[0].marriage,
+                    //           business: snapshot.data[0].business,
+                    //           about: snapshot.data[0].about,
+                    //
+                    //         );
+                    //       } else {
+                    //         print("aaaaaccccc");
+                    //         return PersonalInformationScreen();
+                    //       }
+                    //     }),
                   );
                 },
                 title: const CustomTextView(
@@ -95,10 +138,13 @@ class _SettingScreenState extends State<SettingScreen>
               ),
               child: ListTile(
                 onTap: () async {
-                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                  SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
                   await prefs.setString('token', '');
-                  Navigator.pushAndRemoveUntil(context,
-                      MaterialPageRoute(builder: (_) => const SplashScreen()), (route) => false);
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (_) => const SplashScreen()),
+                      (route) => false);
                 },
                 title: const CustomTextView(
                   textPaste: "Sistemdən çıxış",

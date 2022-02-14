@@ -8,7 +8,19 @@ import 'package:everyone_know_app/widget/responsive.dart';
 import 'package:flutter/material.dart';
 
 class PersonalInformationScreen extends StatefulWidget {
-  const PersonalInformationScreen({Key? key}) : super(key: key);
+  final String? ad;
+  final String? soyad;
+  final String? marriage;
+  final String? business;
+  final String? about;
+  const PersonalInformationScreen({
+    Key? key,
+    this.ad,
+    this.soyad,
+    this.marriage,
+    this.business,
+    this.about
+  }) : super(key: key);
 
   @override
   _PersonalInformationScreenState createState() =>
@@ -17,7 +29,17 @@ class PersonalInformationScreen extends StatefulWidget {
 
 class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
   String? _chosenValue;
+  TextEditingController adController = TextEditingController();
+  TextEditingController soyadController = TextEditingController();
   @override
+  void initState() {
+    super.initState();
+    String ad = widget.ad??"";
+    String soyad = widget.soyad??"";
+    adController.text = ad;
+    soyadController.text = soyad;
+    print(ad);
+  }
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
@@ -32,7 +54,8 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                 padding: EdgeInsets.only(
                   top: screenHeight(context, 0.04),
                 ),
-                child: const RegisterFormView(
+                child: RegisterFormView(
+                  controller: adController,
                   formName: "Ad",
                   hintFontSize: 15,
                   formHintText: "Məsməxanım",
@@ -43,7 +66,8 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                 padding: EdgeInsets.only(
                   top: screenHeight(context, 0.03),
                 ),
-                child: const RegisterFormView(
+                child: RegisterFormView(
+                  controller: soyadController,
                   formName: "Soyad",
                   hintFontSize: 15,
                   formHintText: "Xoşduyeva",

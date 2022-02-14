@@ -243,6 +243,8 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
                                 StatusViewScreen(
                                   checkUserStory: userId == _prefs.getString('user_id'),
                                   storyItems: result,
+                                  statusUserName: snapshot.data![index].name,
+                                  statusUserImgUrl: snapshot.data![index].image,
                                 ),
                               );
                             },
@@ -253,28 +255,27 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
                     } else {
                       return GridView.builder(
                         physics: const BouncingScrollPhysics(),
-                        itemCount: 12,
+                        itemCount: 2,
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 3,
                           crossAxisSpacing: 20,
                           mainAxisSpacing: 20,
                           childAspectRatio: MediaQuery.of(context).size.width /
-                              (MediaQuery.of(context).size.height / 1.2),
+                              (MediaQuery.of(context).size.height / 1.8),
                         ),
                         itemBuilder: (ctx, index) {
                           return GestureDetector(
                             onTap: () {
                               manualNavigatorTransition(
                                 context,
-                                const StatusViewScreen(
+                                 StatusViewScreen(
                                   checkUserStory: true,
+                                  statusUserName: snapshot.data![index].name,
+                                  statusUserImgUrl: snapshot.data![index].image,
                                 ),
                               );
                             },
-                            child: friendOfferGridItem(
-                                "https://www.inpixio.com/remove-background/images/main-before.jpg",
-                                'Natavan',
-                                "0"),
+                            child: const CircularProgressIndicator(),
                           );
                         },
                       );

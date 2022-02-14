@@ -9,7 +9,7 @@ class Profile {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var userId = prefs.getString('user_id') ?? '';
     var token = prefs.getString('token') ?? '';
-    final uri = Uri.parse('http://178.62.249.150/api/account/user/' + userId + '/');
+    final uri = Uri.parse('http://178.62.249.150/api/account/user/' + 32.toString() + '/');
     final headers = {'Content-Type': 'application/json', 'Authorization': "Token " + token.toString()};
 
     Response response = await get(uri, headers: headers);

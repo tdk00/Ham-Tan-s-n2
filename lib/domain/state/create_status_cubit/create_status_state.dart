@@ -34,7 +34,7 @@ class CreateStatusLoaded extends CreateStatusState {
 }
 
 class CreateStatusError extends CreateStatusState {
-  final String? error;
+  final String error;
 
   const CreateStatusError(this.error);
 }

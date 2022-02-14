@@ -70,8 +70,7 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
                                       ),
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(5),
-                                        color: const Color.fromRGBO(
-                                            238, 236, 249, 1),
+                                        color: const Color.fromRGBO(238, 236, 249, 1),
                                       ),
                                       child: ListView.builder(
                                         itemCount: fakeLocations.length,
@@ -79,17 +78,12 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
                                         itemBuilder: (ctx, index) {
                                           return GestureDetector(
                                             onTap: () async {
-                                              SharedPreferences prefs =
-                                                  await SharedPreferences
-                                                      .getInstance();
-                                              prefs.setInt(
-                                                  "statusLocation", index + 1);
+                                              SharedPreferences prefs = await SharedPreferences.getInstance();
+                                              prefs.setInt("statusLocation", index + 1);
                                               setState(() {
-                                                _future =
-                                                    Statuses.getAll(index + 1);
+                                                _future = Statuses.getAll(index + 1);
                                                 Navigator.pop(context);
-                                                locationName =
-                                                    fakeLocations[index];
+                                                locationName = fakeLocations[index];
                                                 lastIndex = index;
                                               });
                                             },
@@ -143,14 +137,30 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
                   ),
                   GestureDetector(
                     onTap: () {
-                      BlocProvider.of<NavigationCubitCubit>(context)
-                          .getNavBarItem(NavbarItem.profile);
+                      BlocProvider.of<NavigationCubitCubit>(context).getNavBarItem(NavbarItem.profile);
                     },
                     child: FutureBuilder(
                       future: NameSurname.getProfilePic(),
-                      builder: (BuildContext context,
-                          AsyncSnapshot<String> snapshot) {
+                      builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
                         if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                          if (snapshot.data.toString() == "error") {
+                            return Container(
+                              width: 50,
+                              height: 50,
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Color.fromRGBO(180, 132, 240, 1),
+                              ),
+                              child: const Center(
+                                child: CustomTextView(
+                                  textPaste: "M",
+                                  textSize: 16,
+                                  textColor: Colors.white,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            );
+                          } else {
                           if(snapshot.data.toString() == "error")
                             {
                               return  Container(
@@ -207,8 +217,7 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
               ),
             ),
             Padding(
-              padding:
-                  EdgeInsets.only(left: 14, top: screenHeight(context, 0.07)),
+              padding: EdgeInsets.only(left: 14, top: screenHeight(context, 0.07)),
               child: const CustomTextView(
                 textPaste: "Təkliflər",
                 textSize: 20,
@@ -225,8 +234,7 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
                 ),
                 child: FutureBuilder<List<UserInfo>>(
                   future: _future,
-                  builder: (BuildContext context,
-                      AsyncSnapshot<List<UserInfo>> snapshot) {
+                  builder: (BuildContext context, AsyncSnapshot<List<UserInfo>> snapshot) {
                     if (snapshot.hasData && snapshot.data!.isNotEmpty) {
                       return GridView.builder(
                         physics: const BouncingScrollPhysics(),
@@ -235,37 +243,30 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
                           crossAxisCount: 3,
                           crossAxisSpacing: 20,
                           mainAxisSpacing: 20,
-                          childAspectRatio: MediaQuery.of(context).size.width /
-                              (MediaQuery.of(context).size.height / 1.2),
+                          childAspectRatio: MediaQuery.of(context).size.width / (MediaQuery.of(context).size.height / 1.2),
                         ),
                         itemBuilder: (BuildContext context, int index) {
                           return GestureDetector(
                             onTap: () async {
                               final user = snapshot.data!.elementAt(index);
 
-                              final result =
-                                  await Statuses.getUserStatuses(user.id);
+                              final result = await Statuses.getUserStatuses(user.id);
 
                               final userId = user.id;
 
-                              SharedPreferences _prefs =
-                                  await SharedPreferences.getInstance();
+                              final _prefs = await SharedPreferences.getInstance();
 
                               log('$userId, ${_prefs.getString('user_id')}');
 
                               manualNavigatorTransition(
                                 context,
                                 StatusViewScreen(
-                                  checkUserStory:
-                                      userId == _prefs.getString('user_id'),
+                                  checkUserStory: userId == _prefs.getString('user_id'),
                                   storyItems: result,
                                 ),
                               );
                             },
-                            child: friendOfferGridItem(
-                                snapshot.data![index].image,
-                                snapshot.data![index].name,
-                                snapshot.data![index].business),
+                            child: friendOfferGridItem(snapshot.data![index].image, snapshot.data![index].name, snapshot.data![index].business),
                           );
                         },
                       );
@@ -277,8 +278,7 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
                           crossAxisCount: 3,
                           crossAxisSpacing: 20,
                           mainAxisSpacing: 20,
-                          childAspectRatio: MediaQuery.of(context).size.width /
-                              (MediaQuery.of(context).size.height / 1.2),
+                          childAspectRatio: MediaQuery.of(context).size.width / (MediaQuery.of(context).size.height / 1.2),
                         ),
                         itemBuilder: (ctx, index) {
                           return GestureDetector(
@@ -290,10 +290,7 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
                                 ),
                               );
                             },
-                            child: friendOfferGridItem(
-                                "https://www.inpixio.com/remove-background/images/main-before.jpg",
-                                'Natavan',
-                                "0"),
+                            child: friendOfferGridItem("https://www.inpixio.com/remove-background/images/main-before.jpg", 'Natavan', "0"),
                           );
                         },
                       );

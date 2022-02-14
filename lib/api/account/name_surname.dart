@@ -8,16 +8,29 @@ class NameSurname {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var userId = prefs.getString('user_id') ?? '';
     var token = prefs.getString('token') ?? '';
+    business = business < 1 ? 1 : business;
     final uri = Uri.parse('http://178.62.249.150/api/account/user/update/' + userId + '/');
     final headers = {'Content-Type': 'application/json', 'Authorization': "Token " + token.toString()};
 
     Map<String, dynamic> body = {
       "business": business,
       "name": name,
-      "surname": surname,
+      "surname": surname
     };
     String jsonBody = json.encode(body);
     final encoding = Encoding.getByName('utf-8');
+
+    Response response = await put(uri, headers: headers, body: jsonBody, encoding: encoding);
+
+    int statusCode = response.statusCode;
+    String responseBody = response.body;
+
+
+    if (statusCode == 200 && jsonDecode(responseBody)['image'] != null) {
+      return jsonDecode(responseBody)['image'];
+    }
+
+    return "error";
 
     return await put(
       uri,

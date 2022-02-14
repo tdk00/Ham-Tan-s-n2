@@ -51,7 +51,7 @@ class _ProfileEditImageState extends State<ProfileEditImage> {
           );
         }
         if (state is UserProfilDataCubitLoaded) {
-          imgUrl = state.dataModel.image!;
+          imgUrl = state.dataModel.image??"";
           return Container(
             width: 80,
             height: 80,
@@ -96,7 +96,7 @@ class _ProfileEditImageState extends State<ProfileEditImage> {
                             image: DecorationImage(
                               fit: BoxFit.cover,
                               image: NetworkImage(
-                                imgUrl!,
+                                imgUrl??"",
                               ),
                             ),
                           ),

@@ -25,16 +25,10 @@ class Otp {
 
     prefs.setString("phone", phone2);
 
-    // final result = await http.post(uri, body: body);
-
-    // log(result.body);
-
     return await http
         .post(
           uri,
-          //   headers: headers,
           body: body,
-          //   encoding: encoding,
         )
         .then(onValue)
         .catchError(onError);

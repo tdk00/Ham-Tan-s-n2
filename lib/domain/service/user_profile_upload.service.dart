@@ -15,16 +15,19 @@ class UserProfileUploadService {
     // ignore: deprecated_member_use
     var stream = http.ByteStream(DelegatingStream.typed(imageFile!.openRead()));
 
+    final _prefs = await SharedPreferences.getInstance();
+    final token = _prefs.getString('token');
+    final userId =  _prefs.getString('user_id');
+
     var length = await imageFile.length();
 
-    var uri = Uri.parse(userProfileImageUploadUrl);
+    var uri = Uri.parse(userProfileImageUploadUrl + userId.toString() + "/");
 
     var request = http.MultipartRequest("PUT", uri);
 
     Map<String, String> headers = {};
 
-    final _prefs = await SharedPreferences.getInstance();
-    final token = _prefs.getString('token');
+
 
     headers = {
       "Authorization": "Token $token",
@@ -50,8 +53,9 @@ class UserProfileUploadService {
   Future<UserAllDataModel?> userProfileData() async {
     final _prefs = await SharedPreferences.getInstance();
     final token = _prefs.getString('token');
+    final userId =  _prefs.getString('user_id');
     final response = await http.get(
-      Uri.parse(userProfileAllData),
+      Uri.parse(userProfileAllData + userId.toString() + "/"),
       headers: {
         "Authorization": "Token $token",
         "X-CSRFToken": "QQ80uhVlBRPjjNi9PGxdADoljTafbkc7t4ORKM3pQ1iJDXrXqkXcGDtzAZSoXnpt",

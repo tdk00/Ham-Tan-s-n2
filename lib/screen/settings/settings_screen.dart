@@ -80,12 +80,6 @@ class _SettingScreenState extends State<SettingScreen>
                   textColor: textColor,
                   fontWeight: FontWeight.w500,
                 ),
-                subtitle: const CustomTextView(
-                  textPaste: "Şifrə təyin etmək",
-                  textSize: 14,
-                  textColor: textColorGrey,
-                  fontWeight: FontWeight.w400,
-                ),
                 trailing: const Icon(
                   Icons.arrow_forward_ios,
                   size: 15,

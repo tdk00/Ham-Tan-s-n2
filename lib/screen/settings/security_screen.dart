@@ -26,43 +26,6 @@ class _SecurityScreenState extends State<SecurityScreen> {
             const CustomAppBarComponent(
               appBarText: "Təhlükəsizlik",
             ),
-            Padding(
-              padding: EdgeInsets.only(
-                top: screenHeight(context, 0.04),
-                left: 22,
-                right: 30,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const CustomTextView(
-                    textPaste: "Nömrəmi gizlət",
-                    textSize: 16,
-                    textColor: textColor,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  Switch(
-                    value: numberVisible,
-                    activeColor: securitySwitchIconColor,
-                    onChanged: (value) {
-                      setState(() {
-                        numberVisible = value;
-                      });
-                    },
-                  ),
-                ],
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.only(left: 23),
-              child: CustomTextView(
-                textPaste:
-                    "Qeydiyyat zamanı istifadə etdiyiniz nömrənizin digər\nistifadəçilər tərəfindən görünməsini burdan tənzimləyə\nbilərsiniz.",
-                textSize: 11,
-                textColor: textColorGrey,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
             const Padding(
               padding: EdgeInsets.only(top: 22),
               child: RegisterFormView(

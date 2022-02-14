@@ -153,19 +153,17 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
                         if (snapshot.hasData && snapshot.data!.isNotEmpty) {
                           if(snapshot.data.toString() == "error")
                             {
-                              return Container(
+                              return  Container(
                                 width: 50,
                                 height: 50,
                                 decoration: const BoxDecoration(
                                   shape: BoxShape.circle,
-                                  color: Color.fromRGBO(180, 132, 240, 1),
-                                ),
-                                child: const Center(
-                                  child: CustomTextView(
-                                    textPaste: "M",
-                                    textSize: 16,
-                                    textColor: Colors.white,
-                                    fontWeight: FontWeight.w500,
+                                  color: profileEditImageColor,
+                                  image: DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: AssetImage(
+                                      "assets/icon.png",
+                                    ),
                                   ),
                                 ),
                               );
@@ -192,14 +190,12 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
                             height: 50,
                             decoration: const BoxDecoration(
                               shape: BoxShape.circle,
-                              color: Color.fromRGBO(180, 132, 240, 1),
-                            ),
-                            child: const Center(
-                              child: CustomTextView(
-                                textPaste: "M",
-                                textSize: 16,
-                                textColor: Colors.white,
-                                fontWeight: FontWeight.w500,
+                              color: profileEditImageColor,
+                              image: DecorationImage(
+                                fit: BoxFit.cover,
+                                image: AssetImage(
+                                  "icon.png",
+                                ),
                               ),
                             ),
                           );

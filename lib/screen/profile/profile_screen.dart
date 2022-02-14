@@ -112,30 +112,6 @@ class _ProfileScreenState extends State<ProfileScreen>
                 fontWeight: FontWeight.w400,
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.only(
-                left: 33,
-                top: 14,
-              ),
-              child: CustomTextView(
-                textPaste: 'Telefon nömrə',
-                textSize: 16,
-                textColor: textColor,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.only(
-                left: 33,
-                top: 14,
-              ),
-              child: CustomTextView(
-                textPaste: '+994 55 000 00 00',
-                textSize: 14,
-                textColor: textColorGrey,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
             Padding(
               padding: EdgeInsets.only(
                 left: 33,

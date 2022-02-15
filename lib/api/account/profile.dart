@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -16,6 +17,8 @@ class Profile {
     int statusCode = response.statusCode;
     String responseBody = response.body;
 
+    log(responseBody);
+
     List<ProfileInfo> profileInfo = [];
 
     if (statusCode == 200) {
@@ -29,6 +32,7 @@ class Profile {
           res['business'].toString(),
           res['marriage'].toString(),
           res['image'].toString(),
+          res['imagex'].toString(),
           res['number_hide'].toString(),
           res['about'].toString(),
         ),
@@ -38,7 +42,7 @@ class Profile {
     return profileInfo;
   }
 
-  static saveProfileInfo (String name, String surname, String marriage, String business, String about) async {
+  static saveProfileInfo(String name, String surname, String marriage, String business, String about) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var userId = prefs.getString('user_id') ?? '';
     var token = prefs.getString('token') ?? '';
@@ -46,36 +50,25 @@ class Profile {
     final headers = {'Content-Type': 'application/json', 'Authorization': "Token " + token.toString()};
 
     print(userId + "usssss");
-    Map<String, dynamic> body = {
-      "name": name,
-      "surname": surname,
-      "about" : about,
-      "marriage" : marriage,
-      "business" : 1
-    };
+    Map<String, dynamic> body = {"name": name, "surname": surname, "about": about, "marriage": marriage, "business": 1};
     String jsonBody = json.encode(body);
     final encoding = Encoding.getByName('utf-8');
 
     Response response = await patch(uri, headers: headers, body: jsonBody, encoding: encoding);
-
 
     int statusCode = response.statusCode;
     String responseBody = response.body;
     print(responseBody);
 
     if (statusCode == 200) {
-
       return "ok";
     }
 
     return "error";
-
   }
-
-
 }
 
 class ProfileInfo {
-  final String id, name, surname, region, business, marriage, image, number_hide, about;
-  ProfileInfo(this.id, this.name, this.surname, this.region, this.business, this.marriage, this.image, this.number_hide, this.about);
+  final String id, name, surname, region, business, marriage, image, imageX, number_hide, about;
+  ProfileInfo(this.id, this.name, this.surname, this.region, this.business, this.marriage, this.image, this.imageX, this.number_hide, this.about);
 }

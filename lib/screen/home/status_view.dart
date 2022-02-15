@@ -4,6 +4,7 @@ import 'package:everyone_know_app/view/story/custom_story_view.dart';
 import 'package:everyone_know_app/view/text/text_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:story_view/story_view.dart';
 
 class StatusViewScreen extends StatefulWidget {
@@ -13,6 +14,7 @@ class StatusViewScreen extends StatefulWidget {
   final String? statusUserImgUrl;
   final String? statusImageText;
   final UserInfo? userInfo;
+  final String? regionId;
 
   const StatusViewScreen({
     Key? key,
@@ -22,6 +24,7 @@ class StatusViewScreen extends StatefulWidget {
     this.statusUserImgUrl,
     this.statusImageText,
     this.userInfo,
+    this.regionId,
   }) : super(key: key);
 
   @override
@@ -49,41 +52,44 @@ class _StatusViewScreenState extends State<StatusViewScreen> {
             children: [
               Positioned.fill(
                 child: CustomStoryView(
+                  isMe: widget.checkUserStory ?? false,
+                  userInfo: widget.userInfo,
                   userName: widget.statusUserName ?? "İstifadəçi adı",
                   storyItems: widget.storyItems!,
                   controller: controller,
+                  regionId: widget.regionId,
                   imageUrl: widget.statusUserImgUrl ?? "https://i.pinimg.com/564x/8b/30/de/8b30dead52fb583f2561eee302f6a672.jpg",
                 ),
               ),
-              _buildUserInfo(),
-              widget.checkUserStory == false
-                  ? const SizedBox()
-                  : Align(
-                      alignment: Alignment.topRight,
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 30, right: 10),
-                        child: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              controller.pause();
-                            });
-                            showCupertinoDialog(
-                              context: context,
-                              builder: (ctx) {
-                                return Center(
-                                  child: alertDialog(context),
-                                );
-                              },
-                            );
-                          },
-                          icon: const Icon(
-                            Icons.delete_outline,
-                            color: Colors.white,
-                            size: 22,
-                          ),
-                        ),
-                      ),
-                    ),
+              //   _buildUserInfo(),
+              //   widget.checkUserStory == false
+              //       ? const SizedBox()
+              //       : Align(
+              //           alignment: Alignment.topRight,
+              //           child: Padding(
+              //             padding: const EdgeInsets.only(top: 30, right: 10),
+              //             child: IconButton(
+              //               onPressed: () {
+              //                 setState(() {
+              //                   controller.pause();
+              //                 });
+              //                 showCupertinoDialog(
+              //                   context: context,
+              //                   builder: (ctx) {
+              //                     return Center(
+              //                       child: alertDialog(context),
+              //                     );
+              //                   },
+              //                 );
+              //               },
+              //               icon: const Icon(
+              //                 Icons.delete_outline,
+              //                 color: Colors.white,
+              //                 size: 22,
+              //               ),
+              //             ),
+              //           ),
+              //         ),
             ],
           ),
         ),
@@ -180,22 +186,26 @@ class _StatusViewScreenState extends State<StatusViewScreen> {
       child: CupertinoButton(
         padding: EdgeInsets.zero,
         minSize: 0,
-        onPressed: () {
+        onPressed: () async {
           final user = widget.userInfo!;
+          final prefs = await SharedPreferences.getInstance();
+          final userId = prefs.getString('user_id');
 
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => ChatScreen(
-                userId: int.tryParse(user.id)!,
-                firstname: user.name,
-                lastname: user.surname,
-                image: user.image,
+          if (user.id != userId) {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => ChatScreen(
+                  userId: int.tryParse(user.id)!,
+                  firstname: user.name,
+                  lastname: user.surname,
+                  image: user.image,
+                ),
               ),
-            ),
-          );
+            );
+          }
         },
-        child: Container(
-          margin: const EdgeInsets.only(top: 30.0, left: 16.0),
+        child: Padding(
+          padding: const EdgeInsets.only(top: 30.0, left: 16.0),
           child: Row(
             children: [
               Container(

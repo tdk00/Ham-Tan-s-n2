@@ -28,36 +28,29 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
   int lastIndex = -1;
   String locationName = "Ağcabədi";
+  String? regionId = '';
   var _future;
-  void getRegionId() async
-  {
+  void getRegionId() async {
     List<ProfileInfo> inf = await Profile.getProfileInfo();
-    if( inf.isNotEmpty )
-    {
+    if (inf.isNotEmpty) {
       setState(() {
         lastIndex = int.tryParse(inf[0].region) ?? -1;
         locationName = fakeLocations.elementAt(int.tryParse(inf[0].region) ?? 1);
-        _future  = Statuses.getAll(int.tryParse(inf[0].region) ?? 1);
+        _future = Statuses.getAll(int.tryParse(inf[0].region) ?? 1);
+        regionId = inf[0].region;
       });
-
-
+    } else {
+      locationName = fakeLocations.elementAt(1);
+      _future = Statuses.getAll(1);
+      print('sssssssss22222222222222');
     }
-    else
-      {
-        locationName = fakeLocations.elementAt(1);
-        _future  = Statuses.getAll(1);
-        print('sssssssss22222222222222');
-      }
   }
-
-
 
   @override
   Widget build(BuildContext context) {
-    if(lastIndex == -1)
-      {
-        getRegionId();
-      }
+    if (lastIndex == -1) {
+      getRegionId();
+    }
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -243,60 +236,54 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
                 child: FutureBuilder<List<UserInfo>>(
                   future: _future,
                   builder: (BuildContext context, AsyncSnapshot<List<UserInfo>> snapshot) {
-                    if (snapshot.hasData ) {
-                      if ( snapshot.data!.isNotEmpty ) {
+                    if (snapshot.hasData) {
+                      if (snapshot.data!.isNotEmpty) {
+                        final userInfo = <UserInfo>[];
+
+                        userInfo.addAll(snapshot.data!);
+
                         return GridView.builder(
                           physics: const BouncingScrollPhysics(),
-                          itemCount: snapshot.data!.length,
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
+                          itemCount: userInfo.length,
+                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 3,
                             crossAxisSpacing: 20,
                             mainAxisSpacing: 20,
-                            childAspectRatio:
-                                MediaQuery.of(context).size.width /
-                                    (MediaQuery.of(context).size.height / 1.2),
+                            childAspectRatio: MediaQuery.of(context).size.width / (MediaQuery.of(context).size.height / 1.2),
                           ),
                           itemBuilder: (BuildContext context, int index) {
                             return GestureDetector(
                               onTap: () async {
-                                final user = snapshot.data!.elementAt(index);
+                                final user = userInfo.elementAt(index);
 
-                                final result =
-                                    await Statuses.getUserStatuses(user.id);
+                                final result = await Statuses.getUserStatuses(user.id);
 
                                 final userId = user.id;
 
-                                final _prefs =
-                                    await SharedPreferences.getInstance();
+                                final _prefs = await SharedPreferences.getInstance();
 
                                 log('$userId, ${_prefs.getString('user_id')}');
 
-                                manualNavigatorTransition(
-                                  context,
-                                  StatusViewScreen(
-                                    checkUserStory:
-                                        userId == _prefs.getString('user_id'),
-                                    storyItems: result,
-                                    statusUserName: snapshot.data![index].name,
-                                    statusUserImgUrl:
-                                        snapshot.data![index].image,
-                                    userInfo: user,
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (_) => StatusViewScreen(
+                                      checkUserStory: userId == _prefs.getString('user_id'),
+                                      storyItems: result,
+                                      statusUserName: userInfo[index].name,
+                                      statusUserImgUrl: userInfo[index].image,
+                                      userInfo: user,
+                                      regionId: regionId,
+                                    ),
                                   ),
                                 );
                               },
-                              child: friendOfferGridItem(
-                                  snapshot.data![index].image,
-                                  snapshot.data![index].name,
-                                  snapshot.data![index].business),
+                              child: friendOfferGridItem(snapshot.data![index].image, snapshot.data![index].name, snapshot.data![index].business),
                             );
                           },
                         );
+                      } else {
+                        return Container();
                       }
-                      else
-                        {
-                          return Container();
-                        }
                     } else {
                       return GridView.builder(
                         physics: const BouncingScrollPhysics(),
@@ -312,9 +299,7 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
                             onTap: () {
                               manualNavigatorTransition(
                                 context,
-                                const StatusViewScreen(
-                                  checkUserStory: true
-                                ),
+                                const StatusViewScreen(checkUserStory: true),
                               );
                             },
                             child: const CircularProgressIndicator(),

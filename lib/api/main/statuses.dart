@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -50,14 +51,18 @@ class Statuses {
     String responseBody = response.body;
     List<StoryItem> statuses = [];
 
+    log(responseBody);
+
     for (final u in jsonDecode(responseBody)) {
-      final image = u['image'];
+      final image = u['imagex'];
+      final id = u['id'];
       final text = u['text'];
 
       if (imageValid(image) && textValid(text) || imageValid(image)) {
         statuses.add(
           StoryItem.inlineProviderImage(
             NetworkImage(image),
+            key: ValueKey(id),
             caption: Text(
               text,
               textAlign: TextAlign.center,
@@ -74,6 +79,7 @@ class Statuses {
       if (textValid(text) && !imageValid(image)) {
         statuses.add(
           StoryItem.text(
+            key: ValueKey(id),
             title: text,
             backgroundColor: Colors.black,
             textStyle: const TextStyle(
@@ -97,6 +103,8 @@ class Statuses {
 
     int statusCode = response.statusCode;
     String responseBody = response.body;
+
+    log(responseBody);
 
     if (statusCode == 204) {
       print("removed");

@@ -52,6 +52,8 @@ dependencies:
   web_socket_channel: ^2.1.0
   rxdart: ^0.27.3
   dartz: ^0.10.1
+  pull_to_refresh: ^2.0.0
+  flutter_image_compress: ^1.1.0
 
 dev_dependencies:
   flutter_test:

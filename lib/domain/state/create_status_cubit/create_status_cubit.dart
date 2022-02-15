@@ -4,10 +4,12 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:everyone_know_app/domain/model/status.dart';
 import 'package:everyone_know_app/domain/repository/create_user.repo.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:logger/logger.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:path_provider/path_provider.dart';
 
 part 'create_status_state.dart';
 
@@ -78,9 +80,25 @@ class CreateStatusCubit extends Cubit<CreateStatusState> {
 
       if (pickedImage == null) return;
 
+      //   final compressedImage = await _compressImage(File(pickedImage.path), 70);
+
       updatePickedImage(File(pickedImage.path));
     } catch (e) {
       emit(CreateStatusError(e.toString()));
     }
+  }
+
+  Future<File?> _compressImage(File file, int quality) async {
+    final directory = await getTemporaryDirectory();
+    final path = directory.absolute.path;
+    final targetPath = path + file.path.split('/').last;
+
+    final result = await FlutterImageCompress.compressAndGetFile(
+      file.absolute.path,
+      targetPath,
+      quality: quality,
+    );
+
+    return result;
   }
 }

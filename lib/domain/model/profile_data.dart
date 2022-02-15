@@ -1,11 +1,8 @@
-
 import 'dart:convert';
 
-UserAllDataModel userAllDataModelFromJson(String str) =>
-    UserAllDataModel.fromJson(json.decode(str));
+UserAllDataModel userAllDataModelFromJson(String str) => UserAllDataModel.fromJson(json.decode(str));
 
-String userAllDataModelToJson(UserAllDataModel data) =>
-    json.encode(data.toJson());
+String userAllDataModelToJson(UserAllDataModel data) => json.encode(data.toJson());
 
 class UserAllDataModel {
   UserAllDataModel({
@@ -16,6 +13,7 @@ class UserAllDataModel {
     this.business,
     this.marriage,
     this.image,
+    this.imageX,
     this.numberHide,
     this.about,
   });
@@ -27,11 +25,11 @@ class UserAllDataModel {
   int? business;
   String? marriage;
   String? image;
+  String? imageX;
   bool? numberHide;
   String? about;
 
-  factory UserAllDataModel.fromJson(Map<String, dynamic> json) =>
-      UserAllDataModel(
+  factory UserAllDataModel.fromJson(Map<String, dynamic> json) => UserAllDataModel(
         id: json["id"],
         name: json["name"],
         surname: json["surname"],
@@ -39,6 +37,7 @@ class UserAllDataModel {
         business: json["business"],
         marriage: json["marriage"],
         image: json["image"],
+        imageX: json["imagex"],
         numberHide: json["number_hide"],
         about: json["about"],
       );
@@ -51,6 +50,7 @@ class UserAllDataModel {
         "business": business,
         "marriage": marriage,
         "image": image,
+        "imagex": imageX,
         "number_hide": numberHide,
         "about": about,
       };

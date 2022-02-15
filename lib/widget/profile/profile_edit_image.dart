@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:everyone_know_app/color/app_color.dart';
-import 'package:everyone_know_app/domain/model/profle_upload.dart';
 import 'package:everyone_know_app/domain/service/user_profile_upload.service.dart';
 import 'package:everyone_know_app/domain/state/profile_img_upload_cubit/user_profile_upload_cubit.dart';
 import 'package:everyone_know_app/domain/state/user_profile_data_cubit/user_profil_data_cubit_cubit.dart';
@@ -12,7 +11,7 @@ import 'package:image_picker/image_picker.dart';
 import 'fake_profile_photo.dart';
 
 class ProfileEditImage extends StatefulWidget {
-  ProfileEditImage({Key? key}) : super(key: key);
+  const ProfileEditImage({Key? key}) : super(key: key);
 
   @override
   State<ProfileEditImage> createState() => _ProfileEditImageState();
@@ -51,7 +50,7 @@ class _ProfileEditImageState extends State<ProfileEditImage> {
           );
         }
         if (state is UserProfilDataCubitLoaded) {
-          imgUrl = state.dataModel.image??"";
+          imgUrl = state.dataModel.imageX ?? "";
           return Container(
             width: 80,
             height: 80,
@@ -59,7 +58,7 @@ class _ProfileEditImageState extends State<ProfileEditImage> {
               shape: BoxShape.circle,
               color: profileEditImageColor,
             ),
-            child: state.dataModel.image == null
+            child: state.dataModel.imageX == null
                 ? FakeProfilePhoto()
                 : BlocBuilder<UserProfileUploadCubit, UserProfileUploadState>(
                     builder: (context, state) {
@@ -76,16 +75,13 @@ class _ProfileEditImageState extends State<ProfileEditImage> {
                           );
                           if (image != null) {
                             profileImage = File(image.path);
-                            BlocProvider.of<UserProfileUploadCubit>(context)
-                                .userProfileUploadCubit(
+                            BlocProvider.of<UserProfileUploadCubit>(context).userProfileUploadCubit(
                               userProfileImgUrl: profileImage,
                             );
                           } else {
                             debugPrint("Not Selected Image");
                           }
-                          context
-                              .read<UserProfilDataCubit>()
-                              .userProfilAllData();
+                          context.read<UserProfilDataCubit>().userProfilAllData();
                         },
                         child: Container(
                           width: 80,
@@ -96,7 +92,7 @@ class _ProfileEditImageState extends State<ProfileEditImage> {
                             image: DecorationImage(
                               fit: BoxFit.cover,
                               image: NetworkImage(
-                                imgUrl??"",
+                                imgUrl ?? "",
                               ),
                             ),
                           ),

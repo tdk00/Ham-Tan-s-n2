@@ -21,8 +21,7 @@ class FakeProfilePhoto extends StatelessWidget {
         );
         if (image != null) {
           profileImage = File(image.path);
-          BlocProvider.of<UserProfileUploadCubit>(context)
-              .userProfileUploadCubit(
+          BlocProvider.of<UserProfileUploadCubit>(context).userProfileUploadCubit(
             userProfileImgUrl: profileImage,
           );
         } else {
@@ -68,14 +67,18 @@ class FakeProfilePhoto extends StatelessWidget {
                   )
                 : Stack(
                     children: [
-                      const Align(
+                      Align(
                         alignment: Alignment.center,
-                        child: CustomTextView(
-                          textPaste: "M",
-                          textSize: 30,
-                          textColor: Colors.white,
-                          fontWeight: FontWeight.w500,
+                        child: Image.asset(
+                          'assets/icon.png',
+                          fit: BoxFit.cover,
                         ),
+                        // child: CustomTextView(
+                        //   textPaste: "M",
+                        //   textSize: 30,
+                        //   textColor: Colors.white,
+                        //   fontWeight: FontWeight.w500,
+                        // ),
                       ),
                       Align(
                         alignment: Alignment.bottomCenter,

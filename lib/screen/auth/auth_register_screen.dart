@@ -249,9 +249,14 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> with ManualNavi
                         Fluttertoast.showToast(msg: "Bütün xanaları doldurun", toastLength: Toast.LENGTH_SHORT, gravity: ToastGravity.CENTER, timeInSecForIosWeb: 1, backgroundColor: Colors.red, textColor: Colors.white, fontSize: 16.0);
                       } else {
                         var saveUserInfo = await NameSurname.save(adController.text, soyadController.text, int.parse(sampleBiznesModels.indexOf(_chosenValue ?? 'a').toString()));
-                        manualNavigatorTransition(
-                          context,
-                          const NavigationScreen(),
+                        // manualNavigatorTransition(
+                        //   context,
+                        //   const NavigationScreen(),
+                        // );
+
+                        Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(builder: (context) => const NavigationScreen()),
+                          (route) => false,
                         );
                       }
                     },

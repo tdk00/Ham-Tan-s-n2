@@ -1,10 +1,10 @@
 import 'package:everyone_know_app/api/main/statuses.dart';
+import 'package:everyone_know_app/color/app_color.dart';
 import 'package:everyone_know_app/screen/home/chat_screen.dart';
 import 'package:everyone_know_app/view/story/bloc/story_bloc.dart';
 import 'package:everyone_know_app/view/text/text_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:story_view/story_view.dart';
 
 class CustomStoryView extends StatefulWidget {
@@ -33,76 +33,109 @@ class CustomStoryView extends StatefulWidget {
 
 class _CustomStoryViewState extends State<CustomStoryView> {
   final StoryBloc _storyBloc = StoryBloc();
+  final TextEditingController _messageTextEditingController = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    _storyBloc.updateController(widget.controller);
+  }
 
   @override
   void dispose() {
     _storyBloc.close();
+    _messageTextEditingController.dispose();
+    _focusNode.dispose();
     super.dispose();
   }
 
-//   String? storyId = "";
-
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.black,
-      child: Stack(
-        children: [
-          StoryView(
-            controller: widget.controller,
-            storyItems: widget.storyItems,
-            onStoryShow: (storyItem) {
-              String id = storyItem.view.key.toString();
+    if (WidgetsBinding.instance!.window.viewInsets.bottom > 0.0) {
+      _storyBloc.updateIsKeyboardOpen(true);
+    } else {
+      _storyBloc.updateIsKeyboardOpen(false);
+    }
 
-              id = id.replaceAll('[<', '');
-              id = id.replaceAll('>]', '');
+    return StreamBuilder<StoryController>(
+        initialData: widget.controller,
+        stream: _storyBloc.controller$,
+        builder: (context, snapshot) {
+          final storyController = snapshot.data!;
 
-              _storyBloc.updateStoryId(id);
-            },
-            onComplete: () {
-              Navigator.of(context).pop();
-            },
-            onVerticalSwipeComplete: (Direction? direction) {
-              if (direction == Direction.down) {
-                Navigator.of(context).pop();
-              }
-            },
-          ),
-          _buildUserInfo(),
-          if (widget.isMe)
-            Align(
-              alignment: Alignment.topRight,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 30, right: 10),
-                child: IconButton(
-                  onPressed: () {
-                    setState(() {
-                      widget.controller.pause();
-                    });
+          return Container(
+            color: Colors.black,
+            child: Stack(
+              children: [
+                StoryView(
+                  controller: widget.controller,
+                  storyItems: widget.storyItems,
+                  onStoryShow: (storyItem) {
+                    String id = storyItem.view.key.toString();
 
-                    showCupertinoDialog(
-                      context: context,
-                      builder: (ctx) {
-                        return Center(
-                          child: alertDialog(context),
-                        );
-                      },
-                    );
+                    id = id.replaceAll('[<', '');
+                    id = id.replaceAll('>]', '');
+
+                    _storyBloc.updateStoryId(id);
                   },
-                  icon: const Icon(
-                    Icons.delete_outline,
-                    color: Colors.white,
-                    size: 22,
-                  ),
+                  onComplete: () {
+                    Navigator.of(context).pop();
+                  },
+                  onVerticalSwipeComplete: (Direction? direction) {
+                    if (direction == Direction.down) {
+                      Navigator.of(context).pop();
+                    }
+                    if (direction == Direction.up) {
+                      _focusNode.requestFocus();
+                    }
+                  },
                 ),
-              ),
+                _buildUserInfo(),
+                if (widget.isMe)
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 30, right: 10),
+                      child: IconButton(
+                        onPressed: () {
+                          //   setState(() {
+                          //     widget.controller.pause();
+                          //   });
+                          storyController.pause();
+
+                          showCupertinoDialog(
+                            context: context,
+                            builder: (ctx) {
+                              return Center(
+                                child: alertDialog(context, storyController),
+                              );
+                            },
+                          );
+                        },
+                        icon: const Icon(
+                          Icons.delete_outline,
+                          color: Colors.white,
+                          size: 22,
+                        ),
+                      ),
+                    ),
+                  ),
+                if (!widget.isMe)
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: _buildMessageField(storyController),
+                    ),
+                  ),
+              ],
             ),
-        ],
-      ),
-    );
+          );
+        });
   }
 
-  Widget alertDialog(BuildContext context) {
+  Widget alertDialog(BuildContext context, StoryController controller) {
     return Container(
       width: double.infinity,
       height: 165,
@@ -163,12 +196,14 @@ class _CustomStoryViewState extends State<CustomStoryView> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    setState(() {
-                      // controller.infoPlay();
+                    // setState(() {
+                    //   // controller.infoPlay();
 
-                      widget.controller.play();
-                      Navigator.pop(context);
-                    });
+                    //   widget.controller.play();
+                    //   Navigator.pop(context);
+                    // });
+                    controller.play();
+                    Navigator.of(context).pop();
                   },
                   child: const CustomTextView(
                     textPaste: "Ləğv et",
@@ -189,76 +224,171 @@ class _CustomStoryViewState extends State<CustomStoryView> {
   Widget _buildUserInfo() {
     return Align(
       alignment: Alignment.topLeft,
-      child: CupertinoButton(
-        padding: EdgeInsets.zero,
-        minSize: 0,
-        onPressed: () async {
-          final user = widget.userInfo!;
-          final prefs = await SharedPreferences.getInstance();
-          final userId = prefs.getString('user_id');
+      //   child: CupertinoButton(
+      //     padding: EdgeInsets.zero,
+      //     minSize: 0,
+      //     onPressed: () async {
+      //       final user = widget.userInfo!;
+      //       final prefs = await SharedPreferences.getInstance();
+      //       final userId = prefs.getString('user_id');
 
-          if (user.id != userId) {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => ChatScreen(
-                  userId: int.tryParse(user.id)!,
-                  firstname: user.name,
-                  lastname: user.surname,
-                  image: user.image,
+      //       if (user.id != userId) {
+      //         Navigator.of(context).push(
+      //           MaterialPageRoute(
+      //             builder: (context) => ChatScreen(
+      //               userId: int.tryParse(user.id)!,
+      //               firstname: user.name,
+      //               lastname: user.surname,
+      //               image: user.image,
+      //             ),
+      //           ),
+      //         );
+      //       }
+      //     },
+      child: Padding(
+        padding: const EdgeInsets.only(top: 30.0, left: 16.0),
+        child: Row(
+          children: [
+            Container(
+              width: 48,
+              height: 48,
+              clipBehavior: Clip.antiAlias,
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                color: Color.fromRGBO(180, 132, 240, 1),
+              ),
+              child: (widget.imageUrl != null && widget.imageUrl != '')
+                  ? Image.network(
+                      widget.imageUrl!,
+                      fit: BoxFit.cover,
+                      errorBuilder: (ctx, obj, stack) {
+                        return Image.asset(
+                          'assets/icon.png',
+                          fit: BoxFit.cover,
+                        );
+                      },
+                    )
+                  : Image.asset(
+                      'assets/icon.png',
+                      fit: BoxFit.cover,
+                    ),
+            ),
+            const SizedBox(width: 12.0),
+            Text(
+              widget.userName ?? 'İstifadəçi adı',
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w500,
+                fontSize: 18.0,
+                shadows: <Shadow>[
+                  Shadow(
+                    offset: Offset(1.0, 1.0),
+                    blurRadius: 3.0,
+                    color: Color.fromARGB(255, 0, 0, 0),
+                  ),
+                  Shadow(
+                    offset: Offset(1.0, 1.0),
+                    blurRadius: 8.0,
+                    color: Color.fromARGB(124, 0, 0, 0),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+      //   ),
+    );
+  }
+
+  Widget _buildMessageField(StoryController storyController) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Container(
+        width: double.infinity,
+        height: 58,
+        margin: const EdgeInsets.only(left: 26, right: 26),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(66),
+          color: Colors.white,
+          border: Border.all(
+            width: 1.2,
+            color: const Color.fromRGBO(41, 41, 44, 0.12),
+          ),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 20),
+                child: TextField(
+                  focusNode: _focusNode,
+                  controller: _messageTextEditingController,
+                  keyboardType: TextInputType.text,
+                  decoration: const InputDecoration(
+                    border: InputBorder.none,
+                    hintText: "İsmarıcınızı daxil edin...",
+                    hintStyle: TextStyle(
+                      fontSize: 14,
+                      color: textColorGrey,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
                 ),
               ),
-            );
-          }
-        },
-        child: Padding(
-          padding: const EdgeInsets.only(top: 30.0, left: 16.0),
-          child: Row(
-            children: [
-              Container(
-                width: 48,
-                height: 48,
-                clipBehavior: Clip.antiAlias,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Color.fromRGBO(180, 132, 240, 1),
-                ),
-                child: (widget.imageUrl != null && widget.imageUrl != '')
-                    ? Image.network(
-                        widget.imageUrl!,
-                        fit: BoxFit.cover,
-                      )
-                    : const Center(
-                        child: CustomTextView(
-                          textPaste: "M",
-                          textSize: 16,
-                          textColor: Colors.white,
-                          fontWeight: FontWeight.w500,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: Row(
+                children: [
+                  const SizedBox(width: 12),
+                  CupertinoButton(
+                    minSize: 0,
+                    padding: EdgeInsets.zero,
+                    onPressed: () async {
+                      final user = widget.userInfo!;
+
+                      if (_messageTextEditingController.text.trim() != '' && _messageTextEditingController.text.isNotEmpty) {
+                        Navigator.of(context)
+                            .push(
+                          MaterialPageRoute(
+                            builder: (context) => ChatScreen(
+                              userId: int.tryParse(user.id)!,
+                              firstname: user.name,
+                              lastname: user.surname,
+                              image: user.image,
+                              isStory: true,
+                              storyMessage: _messageTextEditingController.text,
+                            ),
+                          ),
+                        )
+                            .then((value) {
+                          _messageTextEditingController.clear();
+                        });
+                      }
+                    },
+                    child: Container(
+                      width: 48,
+                      height: 42,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(66),
+                        color: sendMessageButtonColor,
+                      ),
+                      child: Center(
+                        child: Transform.rotate(
+                          angle: 20.4,
+                          child: const Icon(
+                            Icons.arrow_back,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
-              ),
-              const SizedBox(width: 12.0),
-              Text(
-                widget.userName ?? 'İstifadəçi adı',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 18.0,
-                  shadows: <Shadow>[
-                    Shadow(
-                      offset: Offset(1.0, 1.0),
-                      blurRadius: 3.0,
-                      color: Color.fromARGB(255, 0, 0, 0),
                     ),
-                    Shadow(
-                      offset: Offset(1.0, 1.0),
-                      blurRadius: 8.0,
-                      color: Color.fromARGB(124, 0, 0, 0),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

@@ -79,7 +79,7 @@ class _MessageScreenState extends State<MessageScreen> with ManualNavigatorMixin
                             userId: message.id!,
                             firstname: message.name,
                             lastname: message.surname,
-                            image: message.image,
+                            image: message.imageX,
                           ),
                         );
                       },
@@ -90,7 +90,7 @@ class _MessageScreenState extends State<MessageScreen> with ManualNavigatorMixin
                       //     msgNoVisibleColor: index == 0 ? textColorGrey : textColor,
                       //   ),
                       child: ListTile(
-                        leading: message.image == null
+                        leading: message.imageX == null
                             ? Container(
                                 width: 50,
                                 height: 50,
@@ -114,8 +114,14 @@ class _MessageScreenState extends State<MessageScreen> with ManualNavigatorMixin
                                   color: profileEditImageColor,
                                 ),
                                 child: Image.network(
-                                  message.image!,
+                                  message.imageX!,
                                   fit: BoxFit.cover,
+                                  errorBuilder: (ctx, obj, stck) {
+                                    return Image.asset(
+                                      'assets/icon.png',
+                                      fit: BoxFit.cover,
+                                    );
+                                  },
                                 ),
                               ),
                         title: Row(

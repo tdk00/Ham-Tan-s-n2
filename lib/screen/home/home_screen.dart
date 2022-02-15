@@ -13,6 +13,7 @@ import 'package:everyone_know_app/view/auth/choose_region_view.dart';
 import 'package:everyone_know_app/view/text/text_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../api/account/profile.dart';
@@ -26,11 +27,12 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
+  final RefreshController _refreshController = RefreshController(initialRefresh: false);
   int lastIndex = -1;
   String locationName = "Ağcabədi";
   String? regionId = '';
   var _future;
-  void getRegionId() async {
+  Future<void> getRegionId() async {
     List<ProfileInfo> inf = await Profile.getProfileInfo();
     if (inf.isNotEmpty) {
       setState(() {
@@ -44,6 +46,12 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
       _future = Statuses.getAll(1);
       print('sssssssss22222222222222');
     }
+  }
+
+  @override
+  void dispose() {
+    _refreshController.dispose();
+    super.dispose();
   }
 
   @override
@@ -233,81 +241,103 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
                   right: 15,
                   top: 20,
                 ),
-                child: FutureBuilder<List<UserInfo>>(
-                  future: _future,
-                  builder: (BuildContext context, AsyncSnapshot<List<UserInfo>> snapshot) {
-                    if (snapshot.hasData) {
-                      if (snapshot.data!.isNotEmpty) {
-                        final userInfo = <UserInfo>[];
+                child: SmartRefresher(
+                  controller: _refreshController,
+                  onRefresh: () async {
+                    await getRegionId();
+                    _refreshController.refreshCompleted();
+                  },
+                  child: FutureBuilder<List<UserInfo>>(
+                    future: _future,
+                    builder: (BuildContext context, AsyncSnapshot<List<UserInfo>> snapshot) {
+                      if (snapshot.hasData) {
+                        if (snapshot.data!.isNotEmpty) {
+                          final userInfo = <UserInfo>[];
 
-                        userInfo.addAll(snapshot.data!);
+                          userInfo.addAll(snapshot.data!);
 
-                        return GridView.builder(
-                          physics: const BouncingScrollPhysics(),
-                          itemCount: userInfo.length,
-                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 3,
-                            crossAxisSpacing: 20,
-                            mainAxisSpacing: 20,
-                            childAspectRatio: MediaQuery.of(context).size.width / (MediaQuery.of(context).size.height / 1.2),
-                          ),
-                          itemBuilder: (BuildContext context, int index) {
-                            return GestureDetector(
-                              onTap: () async {
-                                final user = userInfo.elementAt(index);
-
-                                final result = await Statuses.getUserStatuses(user.id);
-
-                                final userId = user.id;
-
-                                final _prefs = await SharedPreferences.getInstance();
-
-                                log('$userId, ${_prefs.getString('user_id')}');
-
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (_) => StatusViewScreen(
-                                      checkUserStory: userId == _prefs.getString('user_id'),
-                                      storyItems: result,
-                                      statusUserName: userInfo[index].name,
-                                      statusUserImgUrl: userInfo[index].image,
-                                      userInfo: user,
-                                      regionId: regionId,
-                                    ),
-                                  ),
-                                );
-                              },
-                              child: friendOfferGridItem(snapshot.data![index].image, snapshot.data![index].name, snapshot.data![index].business),
+                          if (userInfo.isEmpty) {
+                            return const Center(
+                              child: CustomTextView(
+                                textPaste: 'Hal-hazırda bu region üzrə mövcud təklif yoxdur.',
+                                textSize: 18,
+                                textColor: textColor,
+                                fontWeight: FontWeight.w500,
+                                textAlign: TextAlign.center,
+                              ),
                             );
-                          },
-                        );
-                      } else {
-                        return Container();
-                      }
-                    } else {
-                      return GridView.builder(
-                        physics: const BouncingScrollPhysics(),
-                        itemCount: 3,
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3,
-                          crossAxisSpacing: 20,
-                          mainAxisSpacing: 20,
-                          childAspectRatio: MediaQuery.of(context).size.width / (MediaQuery.of(context).size.height / 1.8),
-                        ),
-                        itemBuilder: (ctx, index) {
-                          return GestureDetector(
-                            onTap: () {
-                              manualNavigatorTransition(
-                                context,
-                                const StatusViewScreen(checkUserStory: true),
+                          }
+
+                          return GridView.builder(
+                            physics: const BouncingScrollPhysics(),
+                            itemCount: userInfo.length,
+                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 3,
+                              crossAxisSpacing: 20,
+                              mainAxisSpacing: 20,
+                              childAspectRatio: MediaQuery.of(context).size.width / (MediaQuery.of(context).size.height / 1.2),
+                            ),
+                            itemBuilder: (BuildContext context, int index) {
+                              return GestureDetector(
+                                onTap: () async {
+                                  final user = userInfo.elementAt(index);
+
+                                  final result = await Statuses.getUserStatuses(user.id);
+
+                                  final userId = user.id;
+
+                                  final _prefs = await SharedPreferences.getInstance();
+
+                                  log('$userId, ${_prefs.getString('user_id')}');
+
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (_) => StatusViewScreen(
+                                        checkUserStory: userId == _prefs.getString('user_id'),
+                                        storyItems: result,
+                                        statusUserName: userInfo[index].name,
+                                        statusUserImgUrl: userInfo[index].imageX,
+                                        userInfo: user,
+                                        regionId: regionId,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: friendOfferGridItem(snapshot.data![index].imageX, snapshot.data![index].name, snapshot.data![index].business),
                               );
                             },
-                            child: const CircularProgressIndicator(),
                           );
-                        },
-                      );
-                    }
-                  },
+                        } else {
+                          return Container();
+                        }
+                      } else {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                        // return GridView.builder(
+                        //   physics: const BouncingScrollPhysics(),
+                        //   itemCount: 3,
+                        //   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        //     crossAxisCount: 3,
+                        //     crossAxisSpacing: 20,
+                        //     mainAxisSpacing: 20,
+                        //     childAspectRatio: MediaQuery.of(context).size.width / (MediaQuery.of(context).size.height / 1.8),
+                        //   ),
+                        //   itemBuilder: (ctx, index) {
+                        //     return GestureDetector(
+                        //       onTap: () {
+                        //         manualNavigatorTransition(
+                        //           context,
+                        //           const StatusViewScreen(checkUserStory: true),
+                        //         );
+                        //       },
+                        //       child: const CircularProgressIndicator(),
+                        //     );
+                        //   },
+                        // );
+                      }
+                    },
+                  ),
                 ),
               ),
             ),
@@ -337,18 +367,37 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
               ),
             ),
             child: Center(
+              //   child: Container(
+              //     width: 82,
+              //     height: 82,
+              //     margin: const EdgeInsets.all(3),
+              //     decoration: BoxDecoration(
+              //       shape: BoxShape.circle,
+              //       image: DecorationImage(
+              //         image: NetworkImage(
+              //           imageLink,
+              //         ),
+              //         fit: BoxFit.cover,
+              //       ),
+              //     ),
+              //   ),
               child: Container(
-                width: 82,
-                height: 82,
-                margin: const EdgeInsets.all(3),
-                decoration: BoxDecoration(
+                width: 82.0,
+                height: 82.0,
+                clipBehavior: Clip.antiAlias,
+                margin: const EdgeInsets.all(3.0),
+                decoration: const BoxDecoration(
                   shape: BoxShape.circle,
-                  image: DecorationImage(
-                    image: NetworkImage(
-                      imageLink,
-                    ),
-                    fit: BoxFit.cover,
-                  ),
+                ),
+                child: Image.network(
+                  imageLink,
+                  fit: BoxFit.cover,
+                  errorBuilder: (ctx, obj, stck) {
+                    return Image.asset(
+                      'assets/icon.png',
+                      fit: BoxFit.cover,
+                    );
+                  },
                 ),
               ),
             ),

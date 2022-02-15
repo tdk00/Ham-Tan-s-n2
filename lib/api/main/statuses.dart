@@ -29,6 +29,7 @@ class Statuses {
         u['business'].toString(),
         u['marriage'].toString(),
         u['image'].toString(),
+        u['imagex'].toString(),
         u['number_hide'].toString(),
         u['about'].toString(),
       );
@@ -125,8 +126,8 @@ bool textValid(String? text) {
 }
 
 class UserInfo {
-  final String id, name, surname, region, business, marriage, image, number_hide, about;
-  UserInfo(this.id, this.name, this.surname, this.region, this.business, this.marriage, this.image, this.number_hide, this.about);
+  final String id, name, surname, region, business, marriage, image, imageX, number_hide, about;
+  UserInfo(this.id, this.name, this.surname, this.region, this.business, this.marriage, this.image, this.imageX, this.number_hide, this.about);
 }
 
 class StatusInfo {

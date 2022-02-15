@@ -12,6 +12,8 @@ class ChatScreen extends StatefulWidget {
   final String? firstname;
   final String? lastname;
   final String? image;
+  final bool isStory;
+  final String? storyMessage;
 
   const ChatScreen({
     Key? key,
@@ -19,6 +21,8 @@ class ChatScreen extends StatefulWidget {
     this.firstname,
     this.lastname,
     this.image,
+    this.isStory = false,
+    this.storyMessage,
   }) : super(key: key);
 
   @override
@@ -39,12 +43,20 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => _cubit..init('${widget.userId}'),
+      create: (context) {
+        if (widget.isStory) {
+          return _cubit
+            ..init('${widget.userId}').then((value) {
+              _cubit.sendMessage(widget.storyMessage!);
+            });
+        }
+        return _cubit..init('${widget.userId}');
+      },
       child: Scaffold(
           backgroundColor: Colors.white,
           appBar: PreferredSize(
             child: SafeArea(
-              child: CustomAppBarComponent(appBarText: (widget.firstname ?? '') + (widget.lastname ?? '')),
+              child: CustomAppBarComponent(appBarText: (widget.firstname ?? '') + ' ' + (widget.lastname ?? '')),
             ),
             preferredSize: const Size.fromHeight(62.0),
           ),
@@ -83,7 +95,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 isMe: message.username != widget.userId,
                 message: message,
                 image: widget.image,
-                fullName: (widget.firstname ?? '') + (widget.lastname ?? ''),
+                fullName: (widget.firstname ?? '') + ' ' + (widget.lastname ?? ''),
               );
 
               //   if (message.username == widget.userId) {

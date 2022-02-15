@@ -16,18 +16,10 @@ class PersonalInformationScreen extends StatefulWidget {
   final String? marriage;
   final String? business;
   final String? about;
-  const PersonalInformationScreen({
-    Key? key,
-    this.ad,
-    this.soyad,
-    this.marriage,
-    this.business,
-    this.about
-  }) : super(key: key);
+  const PersonalInformationScreen({Key? key, this.ad, this.soyad, this.marriage, this.business, this.about}) : super(key: key);
 
   @override
-  _PersonalInformationScreenState createState() =>
-      _PersonalInformationScreenState();
+  _PersonalInformationScreenState createState() => _PersonalInformationScreenState();
 }
 
 class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
@@ -38,27 +30,27 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
   TextEditingController aboutController = TextEditingController();
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
-    String ad = widget.ad??"";
-    String soyad = widget.soyad??"";
+    String ad = widget.ad ?? "";
+    String soyad = widget.soyad ?? "";
     adController.text = ad;
     soyadController.text = soyad;
-    aboutController.text = widget.about??"";
+    aboutController.text = (widget.about == null || widget.about == 'null') ? "" : widget.about!;
     tezeFunksiya();
   }
 
   void tezeFunksiya() async {
     List<ProfileInfo> mstatus = await Profile.getProfileInfo();
-    if( mstatus.isNotEmpty )
-    {
+    if (mstatus.isNotEmpty) {
       setState(() {
-        _chosenValue = mstatus[0].marriage == "E" ? "Evli" : ( mstatus[0].marriage == "S" ? "Subay" : null);
+        _chosenValue = mstatus[0].marriage == "E" ? "Evli" : (mstatus[0].marriage == "S" ? "Subay" : null);
         _chosenValueBusiness = "Dərzi";
       });
-
     }
   }
+
+  @override
   Widget build(BuildContext context) {
     print(_chosenValue);
     return Scaffold(
@@ -79,7 +71,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                   formName: "Ad",
                   hintFontSize: 15,
                   formHintText: "Adınızı yazın",
-                    formFieldBackColor: customTextFormFieldBackColor,
+                  formFieldBackColor: customTextFormFieldBackColor,
                 ),
               ),
               Padding(
@@ -101,7 +93,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                 child: RegisterFormView(
                   formName: "Ailə vəziyyəti",
                   hintFontSize: 15,
-                    formFieldBackColor: customTextFormFieldBackColor,
+                  formFieldBackColor: customTextFormFieldBackColor,
                   childWidget: SizedBox(
                     width: double.infinity,
                     height: 45,
@@ -109,8 +101,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                       value: _chosenValue,
                       underline: const SizedBox(),
                       style: const TextStyle(color: Colors.black),
-                      items: maritalStatus
-                          .map<DropdownMenuItem<String>>((String value) {
+                      items: maritalStatus.map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
                           child: Text(value),
@@ -148,8 +139,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                       value: _chosenValueBusiness,
                       underline: const SizedBox(),
                       style: const TextStyle(color: Colors.black),
-                      items: sampleBiznesModels
-                          .map<DropdownMenuItem<String>>((String value) {
+                      items: sampleBiznesModels.map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
                           child: Text(value),
@@ -180,28 +170,28 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                   controller: aboutController,
                   formName: "Haqqınızda",
                   hintFontSize: 15,
-                    formFieldBackColor: customTextFormFieldBackColor,
+                  formFieldBackColor: customTextFormFieldBackColor,
                   formHintText: "Qısa məlumat",
                 ),
               ),
               const Spacer(
                 flex: 2,
               ),
-               Padding(
-                padding: EdgeInsets.only(bottom: 16),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 16),
                 child: CustomButton(
                   buttonTextPaste: "Yadda saxla",
                   callback: () async {
-                      var result = await Profile.saveProfileInfo(
-                          adController.text,
-                          soyadController.text,
-                          _chosenValue == "Evli" ? "E" : (_chosenValue == "Subay" ? "S" : null).toString(),
-                          _chosenValueBusiness.toString(),
-                          aboutController.text);
-                      if( result == "ok" )
-                        {
-                          Fluttertoast.showToast(msg: "Qeydə alındı");
-                        }
+                    var result = await Profile.saveProfileInfo(
+                      adController.text,
+                      soyadController.text,
+                      _chosenValue == "Evli" ? "E" : (_chosenValue == "Subay" ? "S" : null).toString(),
+                      _chosenValueBusiness.toString(),
+                      aboutController.text,
+                    );
+                    if (result == "ok") {
+                      Fluttertoast.showToast(msg: "Qeydə alındı");
+                    }
                   },
                 ),
               ),

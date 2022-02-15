@@ -1,13 +1,5 @@
 class MessageListModel {
-  MessageListModel({
-    this.id,
-    this.name,
-    this.surname,
-    this.message,
-    this.isRead,
-    this.timestamp,
-    this.image,
-  });
+  MessageListModel({this.id, this.name, this.surname, this.message, this.isRead, this.timestamp, this.image, this.imageX});
 
   final int? id;
   final String? name;
@@ -16,6 +8,7 @@ class MessageListModel {
   final bool? isRead;
   final DateTime? timestamp;
   final String? image;
+  final String? imageX;
 
   MessageListModel copyWith({
     int? id,
@@ -44,6 +37,7 @@ class MessageListModel {
         isRead: json["is_read"],
         timestamp: json["timestamp"] == null ? null : DateTime.parse(json["timestamp"]),
         image: json["image"],
+        imageX: json["imagex"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -54,5 +48,6 @@ class MessageListModel {
         "is_read": isRead,
         "timestamp": timestamp == null ? null : timestamp!.toIso8601String(),
         "image": image,
+        "imagex": imageX,
       };
 }

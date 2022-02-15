@@ -88,7 +88,7 @@ class _ProfileScreenState extends State<ProfileScreen> with ManualNavigatorMixin
                               ),
                             ),
                           ),
-                          Align(
+                          const Align(
                             alignment: Alignment.topCenter,
                             child: ProfileEditImage(),
                           ),

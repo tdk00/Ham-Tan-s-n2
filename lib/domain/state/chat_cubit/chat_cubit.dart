@@ -84,6 +84,7 @@ class ChatCubit extends Cubit<ChatState> {
           username: remoteMessage.username,
           image: imageMessage,
         );
+        log(remoteMessage.message.toString());
 
         final updatedMessages = [message, ...messages];
 

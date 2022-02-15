@@ -49,7 +49,7 @@ class _StatusViewScreenState extends State<StatusViewScreen> {
             children: [
               Positioned.fill(
                 child: CustomStoryView(
-                  userName: widget.statusUserName ?? "Natavan",
+                  userName: widget.statusUserName ?? "İstifadəçi adı",
                   storyItems: widget.storyItems!,
                   controller: controller,
                   imageUrl: widget.statusUserImgUrl ?? "https://i.pinimg.com/564x/8b/30/de/8b30dead52fb583f2561eee302f6a672.jpg",
@@ -222,7 +222,7 @@ class _StatusViewScreenState extends State<StatusViewScreen> {
               ),
               const SizedBox(width: 12.0),
               Text(
-                widget.statusUserName ?? 'Natavan',
+                widget.statusUserName ?? 'İstifadəçi adı',
                 style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.w500,

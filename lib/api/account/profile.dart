@@ -8,7 +8,7 @@ class Profile {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var userId = prefs.getString('user_id') ?? '';
     var token = prefs.getString('token') ?? '';
-    final uri = Uri.parse('http://hamitanisin.digital/api/account/user/' + 32.toString() + '/');
+    final uri = Uri.parse('https://hamitanisin.digital/api/account/user/' + userId + '/');
     final headers = {'Content-Type': 'application/json', 'Authorization': "Token " + token.toString()};
 
     Response response = await get(uri, headers: headers);
@@ -37,6 +37,42 @@ class Profile {
 
     return profileInfo;
   }
+
+  static saveProfileInfo (String name, String surname, String marriage, String business, String about) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var userId = prefs.getString('user_id') ?? '';
+    var token = prefs.getString('token') ?? '';
+    final uri = Uri.parse('https://hamitanisin.digital/api/account/user/update/' + userId + '/');
+    final headers = {'Content-Type': 'application/json', 'Authorization': "Token " + token.toString()};
+
+    print(userId + "usssss");
+    Map<String, dynamic> body = {
+      "name": name,
+      "surname": surname,
+      "about" : about,
+      "marriage" : marriage,
+      "business" : 1
+    };
+    String jsonBody = json.encode(body);
+    final encoding = Encoding.getByName('utf-8');
+
+    Response response = await patch(uri, headers: headers, body: jsonBody, encoding: encoding);
+
+
+    int statusCode = response.statusCode;
+    String responseBody = response.body;
+    print(responseBody);
+
+    if (statusCode == 200) {
+
+      return "ok";
+    }
+
+    return "error";
+
+  }
+
+
 }
 
 class ProfileInfo {

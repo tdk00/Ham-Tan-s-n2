@@ -104,32 +104,32 @@ class _SettingScreenState extends State<SettingScreen>
                 ),
               ),
             ),
-            Padding(
-              padding: EdgeInsets.only(
-                top: screenHeight(context, 0.03),
-                left: screenWidth(context, 0.04),
-                right: screenWidth(context, 0.03),
-              ),
-              child: ListTile(
-                onTap: () {
-                  manualNavigatorTransition(
-                    context,
-                    const SecurityScreen(),
-                  );
-                },
-                title: const CustomTextView(
-                  textPaste: "Təhlükəsizlik",
-                  textSize: 16,
-                  textColor: textColor,
-                  fontWeight: FontWeight.w500,
-                ),
-                trailing: const Icon(
-                  Icons.arrow_forward_ios,
-                  size: 15,
-                  color: Color.fromRGBO(182, 186, 200, 1),
-                ),
-              ),
-            ),
+            // Padding(
+            //   padding: EdgeInsets.only(
+            //     top: screenHeight(context, 0.03),
+            //     left: screenWidth(context, 0.04),
+            //     right: screenWidth(context, 0.03),
+            //   ),
+            //   child: ListTile(
+            //     onTap: () {
+            //       manualNavigatorTransition(
+            //         context,
+            //         const SecurityScreen(),
+            //       );
+            //     },
+            //     title: const CustomTextView(
+            //       textPaste: "Təhlükəsizlik",
+            //       textSize: 16,
+            //       textColor: textColor,
+            //       fontWeight: FontWeight.w500,
+            //     ),
+            //     trailing: const Icon(
+            //       Icons.arrow_forward_ios,
+            //       size: 15,
+            //       color: Color.fromRGBO(182, 186, 200, 1),
+            //     ),
+            //   ),
+            // ),
             Padding(
               padding: EdgeInsets.only(
                 top: screenHeight(context, 0.03),

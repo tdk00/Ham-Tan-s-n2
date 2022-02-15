@@ -6,6 +6,9 @@ import 'package:everyone_know_app/utils/size/size.dart';
 import 'package:everyone_know_app/view/auth/register_form_view.dart';
 import 'package:everyone_know_app/widget/responsive.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+
+import '../../api/account/profile.dart';
 
 class PersonalInformationScreen extends StatefulWidget {
   final String? ad;
@@ -29,18 +32,35 @@ class PersonalInformationScreen extends StatefulWidget {
 
 class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
   String? _chosenValue;
+  String? _chosenValueBusiness;
   TextEditingController adController = TextEditingController();
   TextEditingController soyadController = TextEditingController();
+  TextEditingController aboutController = TextEditingController();
+
   @override
-  void initState() {
+  void initState(){
     super.initState();
     String ad = widget.ad??"";
     String soyad = widget.soyad??"";
     adController.text = ad;
     soyadController.text = soyad;
-    print(ad);
+    aboutController.text = widget.about??"";
+    tezeFunksiya();
+  }
+
+  void tezeFunksiya() async {
+    List<ProfileInfo> mstatus = await Profile.getProfileInfo();
+    if( mstatus.isNotEmpty )
+    {
+      setState(() {
+        _chosenValue = mstatus[0].marriage == "E" ? "Evli" : ( mstatus[0].marriage == "S" ? "Subay" : null);
+        _chosenValueBusiness = "Dərzi";
+      });
+
+    }
   }
   Widget build(BuildContext context) {
+    print(_chosenValue);
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -58,7 +78,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                   controller: adController,
                   formName: "Ad",
                   hintFontSize: 15,
-                  formHintText: "Məsməxanım",
+                  formHintText: "Adınızı yazın",
                     formFieldBackColor: customTextFormFieldBackColor,
                 ),
               ),
@@ -70,7 +90,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                   controller: soyadController,
                   formName: "Soyad",
                   hintFontSize: 15,
-                  formHintText: "Xoşduyeva",
+                  formHintText: "Soyadınızı yazın",
                   formFieldBackColor: customTextFormFieldBackColor,
                 ),
               ),
@@ -117,18 +137,47 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                 padding: EdgeInsets.only(
                   top: screenHeight(context, 0.03),
                 ),
-                child: const RegisterFormView(
+                child: RegisterFormView(
                   formName: "Biznesiniz",
                   hintFontSize: 15,
-                  formHintText: "Dərzi",
-                    formFieldBackColor: customTextFormFieldBackColor,
+                  formFieldBackColor: customTextFormFieldBackColor,
+                  childWidget: SizedBox(
+                    width: double.infinity,
+                    height: 45,
+                    child: DropdownButton<String>(
+                      value: _chosenValueBusiness,
+                      underline: const SizedBox(),
+                      style: const TextStyle(color: Colors.black),
+                      items: sampleBiznesModels
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                      hint: const Text(
+                        "Zəhmət olmasa seçin",
+                        style: TextStyle(
+                          color: textColorGrey,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      onChanged: (value) {
+                        setState(() {
+                          _chosenValueBusiness = value;
+                        });
+                      },
+                    ),
+                  ),
                 ),
               ),
               Padding(
                 padding: EdgeInsets.only(
                   top: screenHeight(context, 0.03),
                 ),
-                child: const RegisterFormView(
+                child: RegisterFormView(
+                  controller: aboutController,
                   formName: "Haqqınızda",
                   hintFontSize: 15,
                     formFieldBackColor: customTextFormFieldBackColor,
@@ -138,10 +187,22 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
               const Spacer(
                 flex: 2,
               ),
-              const Padding(
+               Padding(
                 padding: EdgeInsets.only(bottom: 16),
                 child: CustomButton(
                   buttonTextPaste: "Yadda saxla",
+                  callback: () async {
+                      var result = await Profile.saveProfileInfo(
+                          adController.text,
+                          soyadController.text,
+                          _chosenValue == "Evli" ? "E" : (_chosenValue == "Subay" ? "S" : null).toString(),
+                          _chosenValueBusiness.toString(),
+                          aboutController.text);
+                      if( result == "ok" )
+                        {
+                          Fluttertoast.showToast(msg: "Qeydə alındı");
+                        }
+                  },
                 ),
               ),
             ],

@@ -8,7 +8,7 @@ class User {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var token = prefs.getString('token') ?? '';
     var userId = prefs.getString('user_id') ?? '';
-    final uri = Uri.parse('http://hamitanisin.digital/api/account/user/' + userId + "/");
+    final uri = Uri.parse('https://hamitanisin.digital/api/account/user/' + userId + "/");
     final headers = {'Content-Type': 'application/json', 'Authorization': "Token " + token.toString()};
 
     return await get(

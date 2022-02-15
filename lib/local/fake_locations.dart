@@ -1,4 +1,5 @@
 List<String> fakeLocations = [
-  "Tərtər",
-  "Gəncə"
+  "Ağcabədi",
+  "Füzuli-Horadiz",
+  "Tərtər"
 ];

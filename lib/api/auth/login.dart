@@ -10,7 +10,7 @@ class Login {
   static Future<String> sendOtp(String otp) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var phone = prefs.getString('phone') ?? '';
-    final uri = Uri.parse('http://hamitanisin.digital/api/account/login/');
+    final uri = Uri.parse('https://hamitanisin.digital/api/account/login/');
     final headers = {'Content-Type': 'application/json'};
     Map<String, dynamic> body = {"username": phone, "password": otp};
     String jsonBody = json.encode(body);

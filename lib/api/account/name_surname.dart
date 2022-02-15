@@ -9,7 +9,7 @@ class NameSurname {
     var userId = prefs.getString('user_id') ?? '';
     var token = prefs.getString('token') ?? '';
     business = business < 1 ? 1 : business;
-    final uri = Uri.parse('http://hamitanisin.digital/api/account/user/update/' + userId + '/');
+    final uri = Uri.parse('https://hamitanisin.digital/api/account/user/update/' + userId + '/');
     final headers = {'Content-Type': 'application/json', 'Authorization': "Token " + token.toString()};
 
     Map<String, dynamic> body = {"business": business, "name": name, "surname": surname};
@@ -39,7 +39,7 @@ class NameSurname {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var userId = prefs.getString('user_id') ?? '';
     var token = prefs.getString('token') ?? '';
-    final uri = Uri.parse('http://hamitanisin.digital/api/account/user/' + userId + '/');
+    final uri = Uri.parse('https://hamitanisin.digital/api/account/user/' + userId + '/');
     final headers = {'Content-Type': 'application/json', 'Authorization': "Token " + token.toString()};
 
     Response response = await get(uri, headers: headers);

@@ -14,7 +14,7 @@ class Otp {
 
     var regionId = prefs.getString('region_id') ?? '0';
 
-    final uri = Uri.parse('http://hamitanisin.digital/api/account/register/');
+    final uri = Uri.parse('https://hamitanisin.digital/api/account/register/');
     final headers = {'Content-Type': 'application/json'};
 
     Map<String, dynamic> body = {"username": phone2, "region": regionId};

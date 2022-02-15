@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../api/account/profile.dart';
 import '../../constants/constants.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -26,10 +27,37 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
   int lastIndex = -1;
-  String locationName = "Tərtər";
-  var _future = Statuses.getAll(1);
+  String locationName = "Ağcabədi";
+  var _future;
+  void getRegionId() async
+  {
+    List<ProfileInfo> inf = await Profile.getProfileInfo();
+    if( inf.isNotEmpty )
+    {
+      setState(() {
+        lastIndex = int.tryParse(inf[0].region) ?? -1;
+        locationName = fakeLocations.elementAt(int.tryParse(inf[0].region) ?? 1);
+        _future  = Statuses.getAll(int.tryParse(inf[0].region) ?? 1);
+      });
+
+
+    }
+    else
+      {
+        locationName = fakeLocations.elementAt(1);
+        _future  = Statuses.getAll(1);
+        print('sssssssss22222222222222');
+      }
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
+    if(lastIndex == -1)
+      {
+        getRegionId();
+      }
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -215,48 +243,64 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
                 child: FutureBuilder<List<UserInfo>>(
                   future: _future,
                   builder: (BuildContext context, AsyncSnapshot<List<UserInfo>> snapshot) {
-                    if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-                      return GridView.builder(
-                        physics: const BouncingScrollPhysics(),
-                        itemCount: snapshot.data!.length,
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3,
-                          crossAxisSpacing: 20,
-                          mainAxisSpacing: 20,
-                          childAspectRatio: MediaQuery.of(context).size.width / (MediaQuery.of(context).size.height / 1.2),
-                        ),
-                        itemBuilder: (BuildContext context, int index) {
-                          return GestureDetector(
-                            onTap: () async {
-                              final user = snapshot.data!.elementAt(index);
+                    if (snapshot.hasData ) {
+                      if ( snapshot.data!.isNotEmpty ) {
+                        return GridView.builder(
+                          physics: const BouncingScrollPhysics(),
+                          itemCount: snapshot.data!.length,
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3,
+                            crossAxisSpacing: 20,
+                            mainAxisSpacing: 20,
+                            childAspectRatio:
+                                MediaQuery.of(context).size.width /
+                                    (MediaQuery.of(context).size.height / 1.2),
+                          ),
+                          itemBuilder: (BuildContext context, int index) {
+                            return GestureDetector(
+                              onTap: () async {
+                                final user = snapshot.data!.elementAt(index);
 
-                              final result = await Statuses.getUserStatuses(user.id);
+                                final result =
+                                    await Statuses.getUserStatuses(user.id);
 
-                              final userId = user.id;
+                                final userId = user.id;
 
-                              final _prefs = await SharedPreferences.getInstance();
+                                final _prefs =
+                                    await SharedPreferences.getInstance();
 
-                              log('$userId, ${_prefs.getString('user_id')}');
+                                log('$userId, ${_prefs.getString('user_id')}');
 
-                              manualNavigatorTransition(
-                                context,
-                                StatusViewScreen(
-                                  checkUserStory: userId == _prefs.getString('user_id'),
-                                  storyItems: result,
-                                  statusUserName: snapshot.data![index].name,
-                                  statusUserImgUrl: snapshot.data![index].image,
-                                  userInfo: user,
-                                ),
-                              );
-                            },
-                            child: friendOfferGridItem(snapshot.data![index].image, snapshot.data![index].name, snapshot.data![index].business),
-                          );
-                        },
-                      );
+                                manualNavigatorTransition(
+                                  context,
+                                  StatusViewScreen(
+                                    checkUserStory:
+                                        userId == _prefs.getString('user_id'),
+                                    storyItems: result,
+                                    statusUserName: snapshot.data![index].name,
+                                    statusUserImgUrl:
+                                        snapshot.data![index].image,
+                                    userInfo: user,
+                                  ),
+                                );
+                              },
+                              child: friendOfferGridItem(
+                                  snapshot.data![index].image,
+                                  snapshot.data![index].name,
+                                  snapshot.data![index].business),
+                            );
+                          },
+                        );
+                      }
+                      else
+                        {
+                          return Container();
+                        }
                     } else {
                       return GridView.builder(
                         physics: const BouncingScrollPhysics(),
-                        itemCount: 2,
+                        itemCount: 3,
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 3,
                           crossAxisSpacing: 20,
@@ -268,10 +312,8 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
                             onTap: () {
                               manualNavigatorTransition(
                                 context,
-                                StatusViewScreen(
-                                  checkUserStory: true,
-                                  statusUserName: snapshot.data![index].name,
-                                  statusUserImgUrl: snapshot.data![index].image,
+                                const StatusViewScreen(
+                                  checkUserStory: true
                                 ),
                               );
                             },

@@ -47,8 +47,8 @@ class NameSurname {
     int statusCode = response.statusCode;
     String responseBody = response.body;
 
-    if (statusCode == 200 && jsonDecode(responseBody)['imageX'] != null) {
-      return jsonDecode(responseBody)['imageX'];
+    if (statusCode == 200 && jsonDecode(responseBody)['imagex'] != null) {
+      return jsonDecode(responseBody)['imagex'];
     }
 
     return "error";

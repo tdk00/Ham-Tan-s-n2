@@ -50,7 +50,12 @@ class Profile {
     final headers = {'Content-Type': 'application/json', 'Authorization': "Token " + token.toString()};
 
     print(userId + "usssss");
-    Map<String, dynamic> body = {"name": name, "surname": surname, "about": about, "marriage": marriage, "business": 1};
+    Map<String, dynamic> body = {"name": name, "surname": surname, "about": about, "business": 1};
+    print(marriage.toString() + "abbbbbbb");
+    if( marriage.toString() == "E" || marriage.toString() == "S")
+      {
+          body['marriage'] = marriage.toString();
+      }
     String jsonBody = json.encode(body);
     final encoding = Encoding.getByName('utf-8');
 

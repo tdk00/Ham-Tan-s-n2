@@ -1,11 +1,12 @@
-import 'package:everyone_know_app/color/app_color.dart';
-import 'package:everyone_know_app/component/custom_appbar.dart';
-import 'package:everyone_know_app/domain/state/chat_cubit/chat_cubit.dart';
 import 'package:everyone_know_app/view/chat/message_bubble.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+
+import 'package:everyone_know_app/color/app_color.dart';
+import 'package:everyone_know_app/component/custom_appbar.dart';
+import 'package:everyone_know_app/domain/state/chat_cubit/chat_cubit.dart';
 
 class ChatScreen extends StatefulWidget {
   final int userId;
@@ -14,6 +15,8 @@ class ChatScreen extends StatefulWidget {
   final String? image;
   final bool isStory;
   final String? storyMessage;
+  final String? storyImage;
+  final String? storyId;
 
   const ChatScreen({
     Key? key,
@@ -21,8 +24,10 @@ class ChatScreen extends StatefulWidget {
     this.firstname,
     this.lastname,
     this.image,
-    this.isStory = false,
+    required this.isStory,
     this.storyMessage,
+    this.storyImage,
+    this.storyId,
   }) : super(key: key);
 
   @override
@@ -46,10 +51,17 @@ class _ChatScreenState extends State<ChatScreen> {
       create: (context) {
         if (widget.isStory) {
           return _cubit
-            ..init('${widget.userId}').then((value) {
-              _cubit.sendMessage(widget.storyMessage!);
-            });
+            ..init('${widget.userId}').then(
+              (value) {
+                _cubit.sendMessage(
+                  widget.storyMessage!,
+                  statusId: widget.storyId,
+                  statusImage: widget.storyImage,
+                );
+              },
+            );
         }
+
         return _cubit..init('${widget.userId}');
       },
       child: Scaffold(
@@ -96,21 +108,8 @@ class _ChatScreenState extends State<ChatScreen> {
                 message: message,
                 image: widget.image,
                 fullName: (widget.firstname ?? '') + ' ' + (widget.lastname ?? ''),
+                isStory: widget.isStory,
               );
-
-              //   if (message.username == widget.userId) {
-              //     return SenderMsgItem(
-              //       msgTextValue: message.message,
-              //       imageUrl: message.image,
-              //       statusTextViewer: true,
-              //     );
-              //   } else {
-              //     return MySendMsgView(
-              //       msgTextValue: message.message,
-              //       imageUrl: message.image,
-              //       statusTextViewer: true,
-              //     );
-              //   }
             },
           ),
         ),
@@ -174,15 +173,24 @@ class _ChatScreenState extends State<ChatScreen> {
     return Flexible(
       child: TextField(
         controller: _messageEditingController,
-        maxLines: 5,
-        minLines: 1,
         textCapitalization: TextCapitalization.sentences,
         style: TextStyle(color: Theme.of(context).iconTheme.color, fontSize: 14.0),
-        decoration: const InputDecoration(
-          contentPadding: EdgeInsets.only(left: 20),
+        decoration: InputDecoration(
+          prefix: const SizedBox(width: 24.0),
           border: InputBorder.none,
+          suffixIcon: CupertinoButton(
+            minSize: 0,
+            padding: EdgeInsets.zero,
+            onPressed: () {
+              _cubit.sendImage();
+            },
+            child: const Icon(
+              Icons.image,
+              color: Colors.black54,
+            ),
+          ),
           hintText: "İsmarıcınızı daxil edin...",
-          hintStyle: TextStyle(
+          hintStyle: const TextStyle(
             fontSize: 14,
             color: textColorGrey,
             fontWeight: FontWeight.w500,

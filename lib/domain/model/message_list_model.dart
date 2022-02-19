@@ -1,5 +1,15 @@
 class MessageListModel {
-  MessageListModel({this.id, this.name, this.surname, this.message, this.isRead, this.timestamp, this.image, this.imageX});
+  MessageListModel({
+    this.id,
+    this.name,
+    this.surname,
+    this.message,
+    this.isRead,
+    this.timestamp,
+    this.image,
+    this.isImage,
+    this.imageX,
+  });
 
   final int? id;
   final String? name;
@@ -8,6 +18,7 @@ class MessageListModel {
   final bool? isRead;
   final DateTime? timestamp;
   final String? image;
+  final bool? isImage;
   final String? imageX;
 
   MessageListModel copyWith({
@@ -18,6 +29,7 @@ class MessageListModel {
     bool? isRead,
     DateTime? timestamp,
     String? image,
+    bool? isImage,
   }) =>
       MessageListModel(
         id: id ?? this.id,
@@ -27,6 +39,7 @@ class MessageListModel {
         isRead: isRead ?? this.isRead,
         timestamp: timestamp ?? this.timestamp,
         image: image ?? this.image,
+        isImage: isImage ?? this.isImage,
       );
 
   factory MessageListModel.fromJson(Map<String, dynamic> json) => MessageListModel(
@@ -37,7 +50,8 @@ class MessageListModel {
         isRead: json["is_read"],
         timestamp: json["timestamp"] == null ? null : DateTime.parse(json["timestamp"]),
         image: json["image"],
-        imageX: json["imagex"],
+        isImage: json["message_image"],
+        imageX: json["user_imagex"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -48,6 +62,7 @@ class MessageListModel {
         "is_read": isRead,
         "timestamp": timestamp == null ? null : timestamp!.toIso8601String(),
         "image": image,
-        "imagex": imageX,
+        "message_image": isImage,
+        "user_imagex": imageX,
       };
 }

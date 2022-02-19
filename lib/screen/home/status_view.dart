@@ -199,6 +199,7 @@ class _StatusViewScreenState extends State<StatusViewScreen> {
                   firstname: user.name,
                   lastname: user.surname,
                   image: user.image,
+                  isStory: true,
                 ),
               ),
             );

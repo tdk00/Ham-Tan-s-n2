@@ -15,6 +15,7 @@ class ChatMessagesModel {
     this.sender,
     this.message,
     this.image,
+    this.statusImage,
     this.threadName,
     this.timestamp,
     this.isRead,
@@ -25,6 +26,7 @@ class ChatMessagesModel {
   final String? sender;
   final String? message;
   final String? image;
+  final String? statusImage;
   final String? threadName;
   final DateTime? timestamp;
   final bool? isRead;
@@ -35,40 +37,45 @@ class ChatMessagesModel {
     String? sender,
     String? message,
     String? image,
+    String? statusImage,
     String? threadName,
     DateTime? timestamp,
     bool? isRead,
-  }) =>
-      ChatMessagesModel(
-        id: id ?? this.id,
-        receiver: receiver ?? this.receiver,
-        sender: sender ?? this.sender,
-        message: message ?? this.message,
-        image: image ?? this.image,
-        threadName: threadName ?? this.threadName,
-        timestamp: timestamp ?? this.timestamp,
-        isRead: isRead ?? this.isRead,
-      );
+  }) {
+    return ChatMessagesModel(
+      id: id ?? this.id,
+      receiver: receiver ?? this.receiver,
+      sender: sender ?? this.sender,
+      message: message ?? this.message,
+      image: image ?? this.image,
+      statusImage: statusImage ?? this.statusImage,
+      threadName: threadName ?? this.threadName,
+      timestamp: timestamp ?? this.timestamp,
+      isRead: isRead ?? this.isRead,
+    );
+  }
 
   factory ChatMessagesModel.fromJson(Map<String, dynamic> json) => ChatMessagesModel(
-        id: json["id"] ?? null,
-        receiver: json["receiver"] ?? null,
-        sender: json["sender"] ?? null,
-        message: json["message"] ?? null,
-        image: json["image"] ?? null,
-        threadName: json["thread_name"] ?? null,
+        id: json["id"],
+        receiver: json["receiver"],
+        sender: json["sender"],
+        message: json["message"],
+        image: json["image"],
+        statusImage: json["status_image"],
+        threadName: json["thread_name"],
         timestamp: json["timestamp"] == null ? null : DateTime.parse(json["timestamp"]),
-        isRead: json["is_read"] ?? null,
+        isRead: json["is_read"],
       );
 
   Map<String, dynamic> toJson() => {
-        "id": id ?? null,
-        "receiver": receiver ?? null,
-        "sender": sender ?? null,
-        "message": message ?? null,
-        "image": image ?? null,
-        "thread_name": threadName ?? null,
+        "id": id,
+        "receiver": receiver,
+        "sender": sender,
+        "message": message,
+        "image": image,
+        "status_image": statusImage,
+        "thread_name": threadName,
         "timestamp": timestamp == null ? null : timestamp!.toIso8601String(),
-        "is_read": isRead ?? null,
+        "is_read": isRead,
       };
 }

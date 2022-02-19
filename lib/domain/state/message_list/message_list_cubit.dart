@@ -13,13 +13,22 @@ part 'message_list_state.dart';
 class MessageListCubit extends Cubit<MessageListState> {
   MessageListCubit() : super(MessageListInitial());
 
+  int userId = 0;
+
   Future<void> fetch() async {
     try {
       emit(MessageListLoading());
 
       final result = await _fetchMessages();
 
-      emit(MessageListFetched(messages: result));
+      final sortedList = result
+        ..sort(
+          (a, b) {
+            return b.timestamp!.compareTo(a.timestamp!);
+          },
+        );
+
+      emit(MessageListFetched(messages: sortedList));
     } catch (e) {
       emit(MessageListAlert(message: e.toString()));
     }
@@ -39,6 +48,8 @@ class MessageListCubit extends Cubit<MessageListState> {
           'Authorization': 'Token $token',
         },
       );
+
+      log(result.body);
 
       return List<MessageListModel>.from(json.decode(result.body).map((x) => MessageListModel.fromJson(x)));
     } catch (e) {

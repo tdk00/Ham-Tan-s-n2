@@ -10,6 +10,7 @@ import 'package:everyone_know_app/view/text/text_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
 
 import 'chat_screen.dart';
 
@@ -41,6 +42,7 @@ class _MessageScreenState extends State<MessageScreen> with ManualNavigatorMixin
           if (state is MessageListFetched) {
             return _buildBody(state.messages);
           }
+
           return const Center(
             child: CircularProgressIndicator(),
           );
@@ -60,104 +62,127 @@ class _MessageScreenState extends State<MessageScreen> with ManualNavigatorMixin
             },
           ),
           Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(
-                top: screenHeight(context, 0.05),
-              ),
-              child: ListView.builder(
-                itemCount: messages.length,
-                itemBuilder: (ctx, index) {
-                  final message = messages.elementAt(index);
+            child: RefreshIndicator(
+              onRefresh: () async {
+                context.read<MessageListCubit>().fetch();
+              },
+              child: Padding(
+                padding: EdgeInsets.only(
+                  top: screenHeight(context, 0.05),
+                ),
+                child: ListView.builder(
+                  itemCount: messages.length,
+                  itemBuilder: (ctx, index) {
+                    final message = messages.elementAt(index);
 
-                  return Padding(
-                    padding: const EdgeInsets.only(top: 14, left: 10, right: 10),
-                    child: GestureDetector(
-                      onTap: () {
-                        manualNavigatorTransition(
-                          context,
-                          ChatScreen(
-                            userId: message.id!,
-                            firstname: message.name,
-                            lastname: message.surname,
-                            image: message.imageX,
-                          ),
-                        );
-                      },
-                      //   child: MessageItem(
-                      //     imageOrNameText: index > 0 ? "al" : "1",
-                      //     msgNotif: index == 1 ? "Sabah dırnaq üçün yazılmaq istəyirəm, alınır?" : "Məsmə sabah gəlim paltarın ölcüsünü primerka edək",
-                      //     msgName: "Anaxanım${index + 1}",
-                      //     msgNoVisibleColor: index == 0 ? textColorGrey : textColor,
-                      //   ),
-                      child: ListTile(
-                        leading: message.imageX == null
-                            ? Container(
-                                width: 50,
-                                height: 50,
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: profileEditImageColor,
-                                  image: DecorationImage(
-                                    fit: BoxFit.cover,
-                                    image: AssetImage(
-                                      "assets/icon.png",
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 14, left: 10, right: 10),
+                      child: GestureDetector(
+                        onTap: () {
+                          manualNavigatorTransition(
+                            context,
+                            ChatScreen(
+                              userId: message.id!,
+                              firstname: message.name,
+                              lastname: message.surname,
+                              image: message.imageX,
+                              isStory: false,
+                            ),
+                          );
+                        },
+                        child: ListTile(
+                          leading: message.imageX == null
+                              ? Container(
+                                  width: 50,
+                                  height: 50,
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: profileEditImageColor,
+                                    image: DecorationImage(
+                                      fit: BoxFit.cover,
+                                      image: AssetImage(
+                                        "assets/icon.png",
+                                      ),
                                     ),
                                   ),
+                                )
+                              : Container(
+                                  width: 50,
+                                  height: 50,
+                                  clipBehavior: Clip.hardEdge,
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: profileEditImageColor,
+                                  ),
+                                  child: Image.network(
+                                    message.imageX!,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (ctx, obj, stck) {
+                                      return Image.asset(
+                                        'assets/icon.png',
+                                        fit: BoxFit.cover,
+                                      );
+                                    },
+                                  ),
                                 ),
-                              )
-                            : Container(
-                                width: 50,
-                                height: 50,
-                                clipBehavior: Clip.hardEdge,
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: profileEditImageColor,
-                                ),
-                                child: Image.network(
-                                  message.imageX!,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (ctx, obj, stck) {
-                                    return Image.asset(
-                                      'assets/icon.png',
-                                      fit: BoxFit.cover,
-                                    );
-                                  },
+                          title: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Flexible(
+                                child: CustomTextView(
+                                  textPaste: '${message.name ?? ''} ${message.surname ?? ''}',
+                                  textSize: 16,
+                                  textColor: textColor,
+                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
-                        title: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Flexible(
-                              child: CustomTextView(
-                                textPaste: '${message.name ?? ''} ${message.surname ?? ''}',
-                                textSize: 16,
-                                textColor: textColor,
-                                fontWeight: FontWeight.w500,
+                              CustomTextView(
+                                textPaste: date(message.timestamp),
+                                textSize: 11,
+                                textColor: textColorGrey,
+                                fontWeight: FontWeight.w400,
                               ),
-                            ),
-                            const CustomTextView(
-                              textPaste: "21/11/2021",
-                              textSize: 11,
-                              textColor: textColorGrey,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ],
-                        ),
-                        subtitle: CustomTextView(
-                          textPaste: message.message,
-                          textSize: 13,
-                          textColor: textColorGrey,
-                          fontWeight: FontWeight.w400,
+                            ],
+                          ),
+                          subtitle: (message.isImage ?? false)
+                              ? Row(
+                                  children: [
+                                    Icon(
+                                      Icons.photo,
+                                      size: 20.0,
+                                      color: (message.isRead ?? false) ? textColorGrey : Colors.black,
+                                    ),
+                                    const SizedBox(width: 6.0),
+                                    CustomTextView(
+                                      textPaste: 'Şəkil',
+                                      textSize: 15,
+                                      textColor: (message.isRead ?? false) ? textColorGrey : Colors.black,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ],
+                                )
+                              : CustomTextView(
+                                  textPaste: message.message,
+                                  textSize: 15,
+                                  textColor: (message.isRead ?? false) ? textColorGrey : Colors.black,
+                                  fontWeight: FontWeight.w400,
+                                ),
                         ),
                       ),
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
               ),
             ),
           ),
         ],
       ),
     );
+  }
+
+  String date(DateTime? timestamp) {
+    DateFormat format = DateFormat("dd.MM.yyyy");
+    final formattedTime = format.format(timestamp!);
+    return formattedTime;
   }
 }

@@ -59,80 +59,81 @@ class _CustomStoryViewState extends State<CustomStoryView> {
     }
 
     return StreamBuilder<StoryController>(
-        initialData: widget.controller,
-        stream: _storyBloc.controller$,
-        builder: (context, snapshot) {
-          final storyController = snapshot.data!;
+      initialData: widget.controller,
+      stream: _storyBloc.controller$,
+      builder: (context, snapshot) {
+        final storyController = snapshot.data!;
 
-          return Container(
-            color: Colors.black,
-            child: Stack(
-              children: [
-                StoryView(
-                  controller: widget.controller,
-                  storyItems: widget.storyItems,
-                  onStoryShow: (storyItem) {
-                    String id = storyItem.view.key.toString();
+        return Container(
+          color: Colors.black,
+          child: Stack(
+            children: [
+              StoryView(
+                controller: widget.controller,
+                storyItems: widget.storyItems,
+                onStoryShow: (storyItem) {
+                  String id = storyItem.view.key.toString();
 
-                    id = id.replaceAll('[<', '');
-                    id = id.replaceAll('>]', '');
+                  id = id.replaceAll('[<', '');
+                  id = id.replaceAll('>]', '');
 
-                    _storyBloc.updateStoryId(id);
-                  },
-                  onComplete: () {
+                  _storyBloc.updateStoryId(id);
+                },
+                onComplete: () {
+                  Navigator.of(context).pop();
+                },
+                onVerticalSwipeComplete: (Direction? direction) {
+                  if (direction == Direction.down) {
                     Navigator.of(context).pop();
-                  },
-                  onVerticalSwipeComplete: (Direction? direction) {
-                    if (direction == Direction.down) {
-                      Navigator.of(context).pop();
-                    }
-                    if (direction == Direction.up) {
-                      _focusNode.requestFocus();
-                    }
-                  },
-                ),
-                _buildUserInfo(),
-                if (widget.isMe)
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 30, right: 10),
-                      child: IconButton(
-                        onPressed: () {
-                          //   setState(() {
-                          //     widget.controller.pause();
-                          //   });
-                          storyController.pause();
+                  }
+                  if (direction == Direction.up) {
+                    _focusNode.requestFocus();
+                  }
+                },
+              ),
+              _buildUserInfo(),
+              if (widget.isMe)
+                Align(
+                  alignment: Alignment.topRight,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 30, right: 10),
+                    child: IconButton(
+                      onPressed: () {
+                        //   setState(() {
+                        //     widget.controller.pause();
+                        //   });
+                        storyController.pause();
 
-                          showCupertinoDialog(
-                            context: context,
-                            builder: (ctx) {
-                              return Center(
-                                child: alertDialog(context, storyController),
-                              );
-                            },
-                          );
-                        },
-                        icon: const Icon(
-                          Icons.delete_outline,
-                          color: Colors.white,
-                          size: 22,
-                        ),
+                        showCupertinoDialog(
+                          context: context,
+                          builder: (ctx) {
+                            return Center(
+                              child: alertDialog(context, storyController),
+                            );
+                          },
+                        );
+                      },
+                      icon: const Icon(
+                        Icons.delete_outline,
+                        color: Colors.white,
+                        size: 22,
                       ),
                     ),
                   ),
-                if (!widget.isMe)
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      child: _buildMessageField(storyController),
-                    ),
+                ),
+              if (!widget.isMe)
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: _buildMessageField(storyController),
                   ),
-              ],
-            ),
-          );
-        });
+                ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   Widget alertDialog(BuildContext context, StoryController controller) {
@@ -359,6 +360,7 @@ class _CustomStoryViewState extends State<CustomStoryView> {
                               image: user.image,
                               isStory: true,
                               storyMessage: _messageTextEditingController.text,
+                              storyId: _storyBloc.storyId,
                             ),
                           ),
                         )

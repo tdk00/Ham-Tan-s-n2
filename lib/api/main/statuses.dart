@@ -50,9 +50,10 @@ class Statuses {
 
     int statusCode = response.statusCode;
     String responseBody = response.body;
-    List<StoryItem> statuses = [];
 
     log(responseBody);
+
+    List<StoryItem> statuses = [];
 
     for (final u in jsonDecode(responseBody)) {
       final image = u['imagex'];
@@ -91,6 +92,7 @@ class Statuses {
         );
       }
     }
+
     return statuses;
   }
 

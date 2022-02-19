@@ -171,6 +171,8 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
                     child: FutureBuilder(
                       future: NameSurname.getProfilePic(),
                       builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+                        log(snapshot.data.toString());
+
                         if (snapshot.hasData && snapshot.data!.isNotEmpty) {
                           if (snapshot.data.toString() == "error") {
                             return Container(
@@ -256,18 +258,6 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
 
                           userInfo.addAll(snapshot.data!);
 
-                          if (userInfo.isEmpty) {
-                            return const Center(
-                              child: CustomTextView(
-                                textPaste: 'Hal-hazırda bu region üzrə mövcud təklif yoxdur.',
-                                textSize: 18,
-                                textColor: textColor,
-                                fontWeight: FontWeight.w500,
-                                textAlign: TextAlign.center,
-                              ),
-                            );
-                          }
-
                           return GridView.builder(
                             physics: const BouncingScrollPhysics(),
                             itemCount: userInfo.length,
@@ -308,33 +298,20 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
                             },
                           );
                         } else {
-                          return Container();
+                          return const Center(
+                            child: CustomTextView(
+                              textPaste: 'Hal-hazırda bu region üzrə mövcud təklif yoxdur.',
+                              textSize: 18,
+                              textColor: textColor,
+                              fontWeight: FontWeight.w500,
+                              textAlign: TextAlign.center,
+                            ),
+                          );
                         }
                       } else {
                         return const Center(
                           child: CircularProgressIndicator(),
                         );
-                        // return GridView.builder(
-                        //   physics: const BouncingScrollPhysics(),
-                        //   itemCount: 3,
-                        //   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        //     crossAxisCount: 3,
-                        //     crossAxisSpacing: 20,
-                        //     mainAxisSpacing: 20,
-                        //     childAspectRatio: MediaQuery.of(context).size.width / (MediaQuery.of(context).size.height / 1.8),
-                        //   ),
-                        //   itemBuilder: (ctx, index) {
-                        //     return GestureDetector(
-                        //       onTap: () {
-                        //         manualNavigatorTransition(
-                        //           context,
-                        //           const StatusViewScreen(checkUserStory: true),
-                        //         );
-                        //       },
-                        //       child: const CircularProgressIndicator(),
-                        //     );
-                        //   },
-                        // );
                       }
                     },
                   ),

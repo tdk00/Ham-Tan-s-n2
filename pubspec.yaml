@@ -54,6 +54,8 @@ dependencies:
   dartz: ^0.10.1
   pull_to_refresh: ^2.0.0
   flutter_image_compress: ^1.1.0
+  intl: ^0.17.0
+  chat_bubbles: ^1.2.0
 
 dev_dependencies:
   flutter_test:

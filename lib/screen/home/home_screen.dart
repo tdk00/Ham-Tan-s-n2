@@ -36,9 +36,9 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
     List<ProfileInfo> inf = await Profile.getProfileInfo();
     if (inf.isNotEmpty) {
       setState(() {
-        lastIndex = int.tryParse(inf[0].region) ?? -1;
-        locationName = fakeLocations.elementAt(int.tryParse(inf[0].region) ?? 1);
-        _future = Statuses.getAll(int.tryParse(inf[0].region) ?? 1);
+        lastIndex = (int.tryParse(inf[0].region) ?? 1) - 1;
+        locationName = fakeLocations.elementAt((int.tryParse(inf[0].region) ?? 1) - 1);
+        _future = Statuses.getAll( ( int.tryParse(inf[0].region) ?? 1) );
         regionId = inf[0].region;
       });
     } else {
@@ -175,6 +175,7 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
 
                         if (snapshot.hasData && snapshot.data!.isNotEmpty) {
                           if (snapshot.data.toString() == "error") {
+                            print('imgerror');
                             return Container(
                               width: 50,
                               height: 50,

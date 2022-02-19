@@ -84,6 +84,8 @@ class ChatCubit extends Cubit<ChatState> {
       (data) {
         final remoteMessage = ReceivedMessageModel.fromJson(jsonDecode(data));
 
+        log(data);
+
         final previousState = state as ChatFetched;
         final messages = previousState.messages;
 
@@ -99,6 +101,8 @@ class ChatCubit extends Cubit<ChatState> {
         );
 
         final updatedMessages = [message, ...messages];
+
+        // if (remoteMessage.image != '' && remoteMessage.image != null) await Future.delayed(const Duration(seconds: 1));
 
         emit(ChatLoading());
         emit(previousState.copyWith(messages: updatedMessages));
@@ -116,7 +120,7 @@ class ChatCubit extends Cubit<ChatState> {
     String? statusImage,
     String? statusId,
   }) async {
-    log('$statusImage, $statusId, ${(statusId == null && _storyImage == null)}');
+    log('stsImage: $statusImage,stsId: $statusId, ${(statusId == null && _storyImage == null)} text: $text, image: $image');
 
     if (statusId != null) {
       _storyImage = null;
@@ -241,6 +245,7 @@ class ChatCubit extends Cubit<ChatState> {
 
       if (result.data['imagex'] != null) {
         _pickedImage = null;
+        await Future.delayed(const Duration(seconds: 1));
         await sendMessage('', image: result.data['imagex']);
       } else {
         throw Exception('Xəta baş verdi');

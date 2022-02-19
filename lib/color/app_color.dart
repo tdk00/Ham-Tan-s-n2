@@ -24,3 +24,5 @@ const Color sendMessageButtonColor = Color.fromRGBO(72, 72, 253, 1);
 
 const Color customTextFormFieldBackColor = Color.fromRGBO(247, 244, 250, 1);
 
+const Color messageBubble = Color(0xFFEEEAF2);
+const Color messageTextColor = Color(0xFF7B7B7C);

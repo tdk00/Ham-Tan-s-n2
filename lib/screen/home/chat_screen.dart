@@ -103,12 +103,15 @@ class _ChatScreenState extends State<ChatScreen> {
             itemBuilder: (context, index) {
               final message = state.messages.elementAt(index);
 
-              return MessageBubble(
-                isMe: message.username != widget.userId,
-                message: message,
-                image: widget.image,
-                fullName: (widget.firstname ?? '') + ' ' + (widget.lastname ?? ''),
-                isStory: widget.isStory,
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
+                child: MessageBubble(
+                  isMe: message.username != widget.userId,
+                  message: message,
+                  image: widget.image,
+                  fullName: (widget.firstname ?? '') + ' ' + (widget.lastname ?? ''),
+                  isStory: widget.isStory,
+                ),
               );
             },
           ),
@@ -139,11 +142,24 @@ class _ChatScreenState extends State<ChatScreen> {
               minSize: 0,
               padding: EdgeInsets.zero,
               onPressed: () {
-                _cubit.sendMessage(
-                  _messageEditingController.text,
-                );
+                _cubit.sendImage();
+              },
+              child: Image.asset('assets/image_icon.png'),
+            ),
+            const SizedBox(width: 12.0),
+            CupertinoButton(
+              minSize: 0,
+              padding: const EdgeInsets.all(8.0),
+              onPressed: () {
+                if (_messageEditingController.text.trim() != '') {
+                  _cubit.sendMessage(
+                    _messageEditingController.text,
+                  );
 
-                _messageEditingController.clear();
+                  _messageEditingController.clear();
+                } else {
+                  Fluttertoast.showToast(msg: 'Mesaj boş ola bilməz');
+                }
               },
               child: Container(
                 width: 48,
@@ -175,22 +191,11 @@ class _ChatScreenState extends State<ChatScreen> {
         controller: _messageEditingController,
         textCapitalization: TextCapitalization.sentences,
         style: TextStyle(color: Theme.of(context).iconTheme.color, fontSize: 14.0),
-        decoration: InputDecoration(
-          prefix: const SizedBox(width: 24.0),
+        decoration: const InputDecoration(
+          prefix: SizedBox(width: 24.0),
           border: InputBorder.none,
-          suffixIcon: CupertinoButton(
-            minSize: 0,
-            padding: EdgeInsets.zero,
-            onPressed: () {
-              _cubit.sendImage();
-            },
-            child: const Icon(
-              Icons.image,
-              color: Colors.black54,
-            ),
-          ),
           hintText: "İsmarıcınızı daxil edin...",
-          hintStyle: const TextStyle(
+          hintStyle: TextStyle(
             fontSize: 14,
             color: textColorGrey,
             fontWeight: FontWeight.w500,

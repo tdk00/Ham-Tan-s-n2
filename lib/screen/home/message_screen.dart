@@ -31,7 +31,7 @@ class _MessageScreenState extends State<MessageScreen> with ManualNavigatorMixin
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromRGBO(247, 244, 250, 1),
+      backgroundColor: const Color(0xFFEEEAF2),
       body: BlocConsumer<MessageListCubit, MessageListState>(
         listener: (context, state) {
           if (state is MessageListAlert) {
@@ -77,96 +77,104 @@ class _MessageScreenState extends State<MessageScreen> with ManualNavigatorMixin
 
                     return Padding(
                       padding: const EdgeInsets.only(top: 14, left: 10, right: 10),
-                      child: GestureDetector(
-                        onTap: () {
-                          manualNavigatorTransition(
-                            context,
-                            ChatScreen(
-                              userId: message.id!,
-                              firstname: message.name,
-                              lastname: message.surname,
-                              image: message.imageX,
-                              isStory: false,
-                            ),
-                          );
-                        },
-                        child: ListTile(
-                          leading: message.imageX == null
-                              ? Container(
-                                  width: 50,
-                                  height: 50,
-                                  decoration: const BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: profileEditImageColor,
-                                    image: DecorationImage(
-                                      fit: BoxFit.cover,
-                                      image: AssetImage(
-                                        "assets/icon.png",
+                      child: Card(
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        child: GestureDetector(
+                          onTap: () {
+                            manualNavigatorTransition(
+                              context,
+                              ChatScreen(
+                                userId: message.id!,
+                                firstname: message.name,
+                                lastname: message.surname,
+                                image: message.imageX,
+                                isStory: false,
+                              ),
+                            );
+                          },
+                          child: ListTile(
+                            leading: message.imageX == null
+                                ? Container(
+                                    width: 50,
+                                    height: 50,
+                                    decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: profileEditImageColor,
+                                      image: DecorationImage(
+                                        fit: BoxFit.cover,
+                                        image: AssetImage(
+                                          "assets/icon.png",
+                                        ),
                                       ),
                                     ),
+                                  )
+                                : Container(
+                                    width: 50,
+                                    height: 50,
+                                    clipBehavior: Clip.hardEdge,
+                                    decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: profileEditImageColor,
+                                    ),
+                                    child: Image.network(
+                                      message.imageX!,
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (ctx, obj, stck) {
+                                        return Image.asset(
+                                          'assets/icon.png',
+                                          fit: BoxFit.cover,
+                                        );
+                                      },
+                                    ),
                                   ),
-                                )
-                              : Container(
-                                  width: 50,
-                                  height: 50,
-                                  clipBehavior: Clip.hardEdge,
-                                  decoration: const BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: profileEditImageColor,
-                                  ),
-                                  child: Image.network(
-                                    message.imageX!,
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (ctx, obj, stck) {
-                                      return Image.asset(
-                                        'assets/icon.png',
-                                        fit: BoxFit.cover,
-                                      );
-                                    },
+                            title: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Flexible(
+                                  child: CustomTextView(
+                                    textPaste: '${message.name ?? ''} ${message.surname ?? ''}',
+                                    textSize: 16,
+                                    textColor: textColor,
+                                    fontWeight: FontWeight.w500,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
-                          title: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Flexible(
-                                child: CustomTextView(
-                                  textPaste: '${message.name ?? ''} ${message.surname ?? ''}',
-                                  textSize: 16,
-                                  textColor: textColor,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              CustomTextView(
-                                textPaste: date(message.timestamp),
-                                textSize: 11,
-                                textColor: textColorGrey,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ],
-                          ),
-                          subtitle: (message.isImage ?? false)
-                              ? Row(
-                                  children: [
-                                    Icon(
-                                      Icons.photo,
-                                      size: 20.0,
-                                      color: (message.isRead ?? false) ? textColorGrey : Colors.black,
-                                    ),
-                                    const SizedBox(width: 6.0),
-                                    CustomTextView(
-                                      textPaste: 'Şəkil',
-                                      textSize: 15,
-                                      textColor: (message.isRead ?? false) ? textColorGrey : Colors.black,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                  ],
-                                )
-                              : CustomTextView(
-                                  textPaste: message.message,
-                                  textSize: 15,
-                                  textColor: (message.isRead ?? false) ? textColorGrey : Colors.black,
+                                CustomTextView(
+                                  textPaste: date(message.timestamp),
+                                  textSize: 11,
+                                  textColor: Colors.black,
                                   fontWeight: FontWeight.w400,
                                 ),
+                              ],
+                            ),
+                            subtitle: (message.isImage ?? false)
+                                ? Row(
+                                    children: [
+                                      Icon(
+                                        Icons.photo,
+                                        size: 20.0,
+                                        color: (message.isRead ?? false) ? textColorGrey : Colors.black,
+                                      ),
+                                      const SizedBox(width: 6.0),
+                                      CustomTextView(
+                                        textPaste: 'Şəkil',
+                                        textSize: 15,
+                                        textColor: (message.isRead ?? false) ? textColorGrey : Colors.black,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ],
+                                  )
+                                : CustomTextView(
+                                    textPaste: message.message,
+                                    textSize: 15,
+                                    textColor: (message.isRead ?? false) ? textColorGrey : Colors.black,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                          ),
                         ),
                       ),
                     );

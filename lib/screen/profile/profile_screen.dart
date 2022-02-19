@@ -20,7 +20,7 @@ class _ProfileScreenState extends State<ProfileScreen> with ManualNavigatorMixin
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: messageBubble,
       appBar: AppBar(
         elevation: 0.0,
         automaticallyImplyLeading: false,
@@ -40,7 +40,7 @@ class _ProfileScreenState extends State<ProfileScreen> with ManualNavigatorMixin
           ),
         ],
         centerTitle: true,
-        backgroundColor: Colors.white,
+        backgroundColor: messageBubble,
         title: const CustomTextView(
           textPaste: "Profile",
           fontWeight: FontWeight.w400,
@@ -95,64 +95,81 @@ class _ProfileScreenState extends State<ProfileScreen> with ManualNavigatorMixin
                         ],
                       ),
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: 33,
-                        top: screenHeight(context, 0.05),
-                      ),
-                      child: const CustomTextView(
-                        textPaste: 'Məlumat',
-                        textSize: 16,
-                        textColor: textColor,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        left: 33,
-                        right: 11,
-                        top: 14,
-                      ),
-                      child: CustomTextView(
-                        textPaste: snapshot.data[0].about != "null" ? snapshot.data[0].about : "",
-                        textSize: 14,
-                        textAlign: TextAlign.start,
-                        textColor: textColorGrey,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: 33,
-                        top: screenHeight(context, 0.03),
-                      ),
-                      child: const CustomTextView(
-                        textPaste: 'Biznes',
-                        textSize: 16,
-                        textColor: textColor,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        left: 33,
-                        top: 14,
-                      ),
-                      child: Container(
-                        width: 100,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(30),
-                          color: buttonColor,
+                    Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+                      width: MediaQuery.of(context).size.width,
+                      child: Card(
+                        elevation: 0,
+                        color: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
                         ),
-                        child: Center(
-                          child: CustomTextView(
-                            textPaste: sampleBiznesModels
-                                .elementAt(((int.tryParse(snapshot.data[0].business) ?? 0) + 1) < sampleBiznesModels.length && ((int.tryParse(snapshot.data[0].business) ?? 0) + 1) > -1 ? ((int.tryParse(snapshot.data[0].business) ?? 0) + 1) : 0),
-                            textSize: 14,
-                            textColor: Colors.white,
-                            fontWeight: FontWeight.w400,
-                          ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(
+                                left: 33,
+                                top: screenHeight(context, 0.05),
+                              ),
+                              child: const CustomTextView(
+                                textPaste: 'Məlumat',
+                                textSize: 16,
+                                textColor: textColor,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                left: 33,
+                                right: 11,
+                                top: 14,
+                              ),
+                              child: CustomTextView(
+                                textPaste: snapshot.data[0].about != "null" ? snapshot.data[0].about : "",
+                                textSize: 14,
+                                textAlign: TextAlign.start,
+                                textColor: textColorGrey,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                left: 33,
+                                top: screenHeight(context, 0.03),
+                              ),
+                              child: const CustomTextView(
+                                textPaste: 'Biznes',
+                                textSize: 16,
+                                textColor: textColor,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                left: 33,
+                                top: 14,
+                              ),
+                              child: Container(
+                                width: 100,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(30),
+                                  color: buttonColor,
+                                ),
+                                child: Center(
+                                  child: CustomTextView(
+                                    textPaste: sampleBiznesModels.elementAt(
+                                        ((int.tryParse(snapshot.data[0].business) ?? 0) + 1) < sampleBiznesModels.length && ((int.tryParse(snapshot.data[0].business) ?? 0) + 1) > -1 ? ((int.tryParse(snapshot.data[0].business) ?? 0) + 1) : 0),
+                                    textSize: 14,
+                                    textColor: Colors.white,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 24.0),
+                          ],
                         ),
                       ),
                     ),

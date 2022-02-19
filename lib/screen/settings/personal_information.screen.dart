@@ -4,6 +4,7 @@ import 'package:everyone_know_app/component/custom_button.dart';
 import 'package:everyone_know_app/constants/constants.dart';
 import 'package:everyone_know_app/utils/size/size.dart';
 import 'package:everyone_know_app/view/auth/register_form_view.dart';
+import 'package:everyone_know_app/view/text/text_view.dart';
 import 'package:everyone_know_app/widget/responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -16,7 +17,14 @@ class PersonalInformationScreen extends StatefulWidget {
   final String? marriage;
   final String? business;
   final String? about;
-  const PersonalInformationScreen({Key? key, this.ad, this.soyad, this.marriage, this.business, this.about}) : super(key: key);
+  const PersonalInformationScreen({
+    Key? key,
+    this.ad,
+    this.soyad,
+    this.marriage,
+    this.business,
+    this.about,
+  }) : super(key: key);
 
   @override
   _PersonalInformationScreenState createState() => _PersonalInformationScreenState();
@@ -53,11 +61,13 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
   @override
   Widget build(BuildContext context) {
     print(_chosenValue);
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
         child: ResponsiveWidget(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const CustomAppBarComponent(
                 appBarText: "Şəxsi məlumatlar",
@@ -71,7 +81,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                   formName: "Ad",
                   hintFontSize: 15,
                   formHintText: "Adınızı yazın",
-                  formFieldBackColor: customTextFormFieldBackColor,
+                  formFieldBackColor: messageBubble,
                 ),
               ),
               Padding(
@@ -83,7 +93,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                   formName: "Soyad",
                   hintFontSize: 15,
                   formHintText: "Soyadınızı yazın",
-                  formFieldBackColor: customTextFormFieldBackColor,
+                  formFieldBackColor: messageBubble,
                 ),
               ),
               Padding(
@@ -101,6 +111,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                       value: _chosenValue,
                       underline: const SizedBox(),
                       style: const TextStyle(color: Colors.black),
+                      isExpanded: true,
                       items: maritalStatus.map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
@@ -131,7 +142,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                 child: RegisterFormView(
                   formName: "Biznesiniz",
                   hintFontSize: 15,
-                  formFieldBackColor: customTextFormFieldBackColor,
+                  formFieldBackColor: messageBubble,
                   childWidget: SizedBox(
                     width: double.infinity,
                     height: 45,
@@ -139,6 +150,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                       value: _chosenValueBusiness,
                       underline: const SizedBox(),
                       style: const TextStyle(color: Colors.black),
+                      isExpanded: true,
                       items: sampleBiznesModels.map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
@@ -164,14 +176,39 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
               ),
               Padding(
                 padding: EdgeInsets.only(
+                  left: 22,
                   top: screenHeight(context, 0.03),
                 ),
-                child: RegisterFormView(
+                child: const CustomTextView(
+                  textPaste: "Haqqınızda",
+                  textSize: 14,
+                  textColor: textColor,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.symmetric(
+                  horizontal: 20.0,
+                  vertical: 12.0,
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                  color: messageBubble,
+                ),
+                child: TextFormField(
+                  keyboardType: TextInputType.multiline,
                   controller: aboutController,
-                  formName: "Haqqınızda",
-                  hintFontSize: 15,
-                  formFieldBackColor: customTextFormFieldBackColor,
-                  formHintText: "Qısa məlumat",
+                  maxLines: 8,
+                  decoration: const InputDecoration(
+                    hintText: "Qısa məlumat",
+                    border: InputBorder.none,
+                    prefix: SizedBox(width: 12.0),
+                    hintStyle: TextStyle(
+                      fontSize: 15,
+                      color: textColorGrey,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
                 ),
               ),
               const Spacer(

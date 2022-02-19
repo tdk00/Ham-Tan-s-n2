@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class CustomTextView extends StatelessWidget {
   final String? textPaste;
@@ -30,13 +29,12 @@ class CustomTextView extends StatelessWidget {
       textAlign: textAlign ?? TextAlign.start,
       maxLines: maxLines,
       overflow: overflow,
-      style: GoogleFonts.montserrat(
-        textStyle: TextStyle(
-          fontSize: textSize,
-          decoration: textDecoration,
-          fontWeight: fontWeight,
-          color: textColor,
-        ),
+      style: TextStyle(
+        fontFamily: 'Montserrat',
+        fontSize: textSize,
+        decoration: textDecoration,
+        fontWeight: fontWeight,
+        color: textColor,
       ),
     );
   }

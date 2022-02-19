@@ -38,7 +38,7 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
       setState(() {
         lastIndex = (int.tryParse(inf[0].region) ?? 1) - 1;
         locationName = fakeLocations.elementAt((int.tryParse(inf[0].region) ?? 1) - 1);
-        _future = Statuses.getAll( ( int.tryParse(inf[0].region) ?? 1) );
+        _future = Statuses.getAll((int.tryParse(inf[0].region) ?? 1));
         regionId = inf[0].region;
       });
     } else {
@@ -228,94 +228,112 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
                 ],
               ),
             ),
-            Padding(
-              padding: EdgeInsets.only(left: 14, top: screenHeight(context, 0.07)),
-              child: const CustomTextView(
-                textPaste: "Təkliflər",
-                textSize: 20,
-                textColor: textColor,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
+            const SizedBox(height: 24.0),
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(
-                  left: 15,
-                  right: 15,
-                  top: 20,
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: messageBubble,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(36.0),
+                    topRight: Radius.circular(36.0),
+                  ),
                 ),
-                child: SmartRefresher(
-                  controller: _refreshController,
-                  onRefresh: () async {
-                    await getRegionId();
-                    _refreshController.refreshCompleted();
-                  },
-                  child: FutureBuilder<List<UserInfo>>(
-                    future: _future,
-                    builder: (BuildContext context, AsyncSnapshot<List<UserInfo>> snapshot) {
-                      if (snapshot.hasData) {
-                        if (snapshot.data!.isNotEmpty) {
-                          final userInfo = <UserInfo>[];
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 40.0),
+                    const Padding(
+                      padding: EdgeInsets.only(left: 16.0),
+                      child: CustomTextView(
+                        textPaste: "Təkliflər",
+                        textSize: 20,
+                        textColor: textColor,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                          left: 16.0,
+                          right: 16.0,
+                          top: 20,
+                        ),
+                        child: SmartRefresher(
+                          controller: _refreshController,
+                          onRefresh: () async {
+                            await getRegionId();
+                            _refreshController.refreshCompleted();
+                          },
+                          child: FutureBuilder<List<UserInfo>>(
+                            future: _future,
+                            builder: (BuildContext context, AsyncSnapshot<List<UserInfo>> snapshot) {
+                              if (snapshot.hasData) {
+                                if (snapshot.data!.isNotEmpty) {
+                                  final userInfo = <UserInfo>[];
 
-                          userInfo.addAll(snapshot.data!);
+                                  userInfo.addAll(snapshot.data!);
 
-                          return GridView.builder(
-                            physics: const BouncingScrollPhysics(),
-                            itemCount: userInfo.length,
-                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 3,
-                              crossAxisSpacing: 20,
-                              mainAxisSpacing: 20,
-                              childAspectRatio: MediaQuery.of(context).size.width / (MediaQuery.of(context).size.height / 1.2),
-                            ),
-                            itemBuilder: (BuildContext context, int index) {
-                              return GestureDetector(
-                                onTap: () async {
-                                  final user = userInfo.elementAt(index);
+                                  return GridView.builder(
+                                    physics: const BouncingScrollPhysics(),
+                                    itemCount: userInfo.length,
+                                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 3,
+                                      crossAxisSpacing: 20,
+                                      mainAxisSpacing: 20,
+                                      childAspectRatio: MediaQuery.of(context).size.width / (MediaQuery.of(context).size.height / 1.2),
+                                    ),
+                                    itemBuilder: (BuildContext context, int index) {
+                                      return GestureDetector(
+                                        onTap: () async {
+                                          final user = userInfo.elementAt(index);
 
-                                  final result = await Statuses.getUserStatuses(user.id);
+                                          final result = await Statuses.getUserStatuses(user.id);
 
-                                  final userId = user.id;
+                                          final userId = user.id;
 
-                                  final _prefs = await SharedPreferences.getInstance();
+                                          final _prefs = await SharedPreferences.getInstance();
 
-                                  log('$userId, ${_prefs.getString('user_id')}');
+                                          log('$userId, ${_prefs.getString('user_id')}');
 
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (_) => StatusViewScreen(
-                                        checkUserStory: userId == _prefs.getString('user_id'),
-                                        storyItems: result,
-                                        statusUserName: userInfo[index].name,
-                                        statusUserImgUrl: userInfo[index].imageX,
-                                        userInfo: user,
-                                        regionId: regionId,
-                                      ),
+                                          Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder: (_) => StatusViewScreen(
+                                                checkUserStory: userId == _prefs.getString('user_id'),
+                                                storyItems: result,
+                                                statusUserName: userInfo[index].name,
+                                                statusUserImgUrl: userInfo[index].imageX,
+                                                userInfo: user,
+                                                regionId: regionId,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                        child: friendOfferGridItem(snapshot.data![index].imageX, snapshot.data![index].name, snapshot.data![index].business),
+                                      );
+                                    },
+                                  );
+                                } else {
+                                  return const Center(
+                                    child: CustomTextView(
+                                      textPaste: 'Hal-hazırda bu region üzrə mövcud təklif yoxdur.',
+                                      textSize: 18,
+                                      textColor: textColor,
+                                      fontWeight: FontWeight.w500,
+                                      textAlign: TextAlign.center,
                                     ),
                                   );
-                                },
-                                child: friendOfferGridItem(snapshot.data![index].imageX, snapshot.data![index].name, snapshot.data![index].business),
-                              );
+                                }
+                              } else {
+                                return const Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              }
                             },
-                          );
-                        } else {
-                          return const Center(
-                            child: CustomTextView(
-                              textPaste: 'Hal-hazırda bu region üzrə mövcud təklif yoxdur.',
-                              textSize: 18,
-                              textColor: textColor,
-                              fontWeight: FontWeight.w500,
-                              textAlign: TextAlign.center,
-                            ),
-                          );
-                        }
-                      } else {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }
-                    },
-                  ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),

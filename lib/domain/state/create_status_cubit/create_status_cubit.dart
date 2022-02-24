@@ -80,9 +80,11 @@ class CreateStatusCubit extends Cubit<CreateStatusState> {
 
       if (pickedImage == null) return;
 
-      //   final compressedImage = await _compressImage(File(pickedImage.path), 70);
+      final compressedImage = await _compressImage(File(pickedImage.path), 70);
 
-      updatePickedImage(File(pickedImage.path));
+      if (compressedImage == null) return;
+
+      updatePickedImage(compressedImage);
     } catch (e) {
       emit(CreateStatusError(e.toString()));
     }

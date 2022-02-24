@@ -10,6 +10,7 @@ import 'package:everyone_know_app/domain/model/received_message_model.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:http/http.dart' as http;
@@ -27,10 +28,26 @@ class ChatCubit extends Cubit<ChatState> {
   String token = '';
   String? _pickedImage = '';
   String? _storyImage = '';
+  int _key = 0;
+
+  final BehaviorSubject<Map<int, double?>> _uploadProgressController = BehaviorSubject<Map<int, double?>>.seeded({});
+
+  Stream<Map<int, double?>> get uploadProgress$ => _uploadProgressController.stream;
+
+  Map<int, double?> get uploadProgress => _uploadProgressController.value;
+
+  void updateUploadProgress(int key, double? value) {
+    final updatedUploadProgress = uploadProgress;
+
+    updatedUploadProgress[key] = value;
+
+    _uploadProgressController.add(updatedUploadProgress);
+  }
 
   @override
   Future<void> close() {
     _socketChannel?.sink.close();
+    _uploadProgressController.close();
     return super.close();
   }
 
@@ -101,8 +118,6 @@ class ChatCubit extends Cubit<ChatState> {
         );
 
         final updatedMessages = [message, ...messages];
-
-        // if (remoteMessage.image != '' && remoteMessage.image != null) await Future.delayed(const Duration(seconds: 1));
 
         emit(ChatLoading());
         emit(previousState.copyWith(messages: updatedMessages));
@@ -204,6 +219,8 @@ class ChatCubit extends Cubit<ChatState> {
   }
 
   Future<void> sendImage() async {
+    int currentKey = 0;
+
     try {
       await _chooseImage();
 
@@ -231,9 +248,18 @@ class ChatCubit extends Cubit<ChatState> {
           )
       });
 
+      ++_key;
+
+      currentKey = _key;
+
       final result = await dio.post(
         endpoint,
         data: formData,
+        onSendProgress: (int sent, int total) {
+          final progress = sent / total * 100;
+
+          updateUploadProgress(currentKey, progress);
+        },
         options: Options(
           headers: {
             'Authorization': 'Token $token',
@@ -241,17 +267,44 @@ class ChatCubit extends Cubit<ChatState> {
         ),
       );
 
-      log(result.data['imagex'].toString());
+      final imageUrl = result.data['imagex'];
 
-      if (result.data['imagex'] != null) {
+      log(imageUrl);
+
+      if (imageUrl != null) {
         _pickedImage = null;
-        await Future.delayed(const Duration(seconds: 1));
-        await sendMessage('', image: result.data['imagex']);
+
+        try {
+          await Future.delayed(const Duration(milliseconds: 1000));
+
+          final imgResult = await dio.get(
+            imageUrl,
+            options: Options(
+              validateStatus: (status) {
+                return true;
+              },
+            ),
+          );
+
+          if (imgResult.statusCode == 404) {
+            await Future.delayed(const Duration(milliseconds: 1500)).then(
+              (value) async => await sendMessage('', image: imageUrl),
+            );
+          } else {
+            await sendMessage('', image: imageUrl);
+          }
+        } catch (e) {
+          log(e.toString() + 'imageUrl');
+        }
       } else {
         throw Exception('Xəta baş verdi');
       }
     } catch (e) {
       throw Exception(e);
+    } finally {
+      final updatedUploadProgress = uploadProgress..removeWhere((key, value) => key == currentKey);
+
+      _uploadProgressController.add(updatedUploadProgress);
     }
   }
 

@@ -62,19 +62,24 @@ class Statuses {
 
       if (imageValid(image) && textValid(text) || imageValid(image)) {
         statuses.add(
-          StoryItem.inlineProviderImage(
-            NetworkImage(image),
-            key: ValueKey(id),
-            caption: Text(
-              text,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: Colors.black,
-                fontSize: 18.0,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
+          StoryItem.inlineImage(
+            url: image,
+            controller: StoryController(),
+            imageFit: BoxFit.contain,
           ),
+          //   StoryItem.inlineProviderImage(
+          //     NetworkImage(image),
+          //     key: ValueKey(id),
+          //     caption: Text(
+          //       text,
+          //       textAlign: TextAlign.center,
+          //       style: const TextStyle(
+          //         color: Colors.black,
+          //         fontSize: 18.0,
+          //         fontWeight: FontWeight.w400,
+          //       ),
+          //     ),
+          //   ),
         );
       }
 
@@ -93,7 +98,7 @@ class Statuses {
       }
     }
 
-    return statuses;
+    return statuses.reversed.toList();
   }
 
   static Future<bool> deleteStatus(statusId) async {

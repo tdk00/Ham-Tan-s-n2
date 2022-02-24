@@ -7,14 +7,14 @@ class StatusBubble extends StatelessWidget {
   final ReceivedMessageModel message;
   final bool isOwn;
   final String username;
-  final String profilePicture;
+  final String? profilePicture;
 
   const StatusBubble(
     this.message, {
     Key? key,
     required this.isOwn,
     required this.username,
-    required this.profilePicture,
+    this.profilePicture,
   }) : super(key: key);
 
   @override
@@ -39,16 +39,21 @@ class StatusBubble extends StatelessWidget {
                     shape: BoxShape.circle,
                     color: profileEditImageColor,
                   ),
-                  child: Image.network(
-                    profilePicture,
-                    fit: BoxFit.cover,
-                    errorBuilder: (ctx, obj, stck) {
-                      return Image.asset(
-                        'assets/icon.png',
-                        fit: BoxFit.cover,
-                      );
-                    },
-                  ),
+                  child: profilePicture != null
+                      ? Image.network(
+                          profilePicture!,
+                          fit: BoxFit.cover,
+                          errorBuilder: (ctx, obj, stck) {
+                            return Image.asset(
+                              'assets/icon.png',
+                              fit: BoxFit.cover,
+                            );
+                          },
+                        )
+                      : Image.asset(
+                          'assets/icon.png',
+                          fit: BoxFit.cover,
+                        ),
                 ),
               Flexible(
                 child: GestureDetector(
@@ -76,16 +81,13 @@ class StatusBubble extends StatelessWidget {
                               ),
                             ),
                           if (!isOwn) const SizedBox(width: 8.0),
-                          Container(
-                            color: Colors.red,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(15.0),
-                              child: Image.network(
-                                message.statusImage ?? '',
-                                height: 150.0,
-                                width: 96.0,
-                                fit: BoxFit.cover,
-                              ),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(15.0),
+                            child: Image.network(
+                              message.statusImage ?? '',
+                              height: 150.0,
+                              width: 96.0,
+                              fit: BoxFit.cover,
                             ),
                           ),
                           if (isOwn) const SizedBox(width: 8.0),
@@ -100,21 +102,6 @@ class StatusBubble extends StatelessWidget {
                             ),
                         ],
                       ),
-                      // const SizedBox(height: 12.0),
-                      // const Divider(
-                      //   color: Colors.black45,
-                      //   height: 24,
-                      // ),
-
-                      // if (message.message != null)
-                      //   Text(
-                      //     message.message ?? '',
-                      //     style: const TextStyle(
-                      //       color: Colors.black,
-                      //       fontSize: 15.0,
-                      //     ),
-                      //   ),
-                      // const SizedBox(height: 12.0),
                       Container(
                         margin: const EdgeInsets.fromLTRB(5, 5, 5, 0),
                         padding: const EdgeInsets.all(12.0),
@@ -126,6 +113,7 @@ class StatusBubble extends StatelessWidget {
                           message.message ?? '',
                           style: const TextStyle(
                             color: messageTextColor,
+                            fontFamily: 'Montserrat',
                           ),
                         ),
                       ),

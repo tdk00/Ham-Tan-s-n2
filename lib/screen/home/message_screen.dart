@@ -151,17 +151,17 @@ class _MessageScreenState extends State<MessageScreen> with ManualNavigatorMixin
                                 ),
                               ],
                             ),
-                            subtitle: (message.isImage ?? false)
+                            subtitle: ((message.message ?? '').trim() == '')
                                 ? Row(
                                     children: [
                                       Icon(
                                         Icons.photo,
-                                        size: 20.0,
+                                        size: 18.0,
                                         color: (message.isRead ?? false) ? textColorGrey : Colors.black,
                                       ),
                                       const SizedBox(width: 6.0),
                                       CustomTextView(
-                                        textPaste: 'Şəkil',
+                                        textPaste: 'Şəkil göndərildi',
                                         textSize: 15,
                                         textColor: (message.isRead ?? false) ? textColorGrey : Colors.black,
                                         fontWeight: FontWeight.w400,

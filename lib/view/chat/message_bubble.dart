@@ -27,7 +27,7 @@ class MessageBubble extends StatelessWidget {
         message,
         isOwn: isMe,
         username: fullName,
-        profilePicture: image!,
+        profilePicture: image,
       );
     }
     //
@@ -36,7 +36,7 @@ class MessageBubble extends StatelessWidget {
         message,
         isOwn: isMe,
         username: fullName,
-        profilePicture: image!,
+        profilePicture: image,
       );
     }
     //
@@ -45,7 +45,7 @@ class MessageBubble extends StatelessWidget {
         message,
         isOwn: isMe,
         username: fullName,
-        profilePicture: image!,
+        profilePicture: image,
       );
     }
 

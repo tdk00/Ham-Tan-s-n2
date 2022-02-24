@@ -35,14 +35,14 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  late final ChatCubit _cubit;
+  final ChatCubit _cubit = ChatCubit();
 
   final TextEditingController _messageEditingController = TextEditingController();
 
   @override
-  void initState() {
-    super.initState();
-    _cubit = ChatCubit();
+  void dispose() {
+    _messageEditingController.dispose();
+    super.dispose();
   }
 
   @override
@@ -116,6 +116,44 @@ class _ChatScreenState extends State<ChatScreen> {
             },
           ),
         ),
+        StreamBuilder<Map<int, double?>>(
+          stream: _cubit.uploadProgress$,
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) return const SizedBox.shrink();
+
+            final progressMap = snapshot.data!;
+
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (progressMap.isNotEmpty) ...[
+                    Row(
+                      key: Key(progressMap.entries.length.toString()),
+                      children: progressMap.entries.map((e) {
+                        final newValue = e.value == 100.0 ? null : (e.value! / 100);
+
+                        return Flexible(
+                          child: Padding(
+                            padding: EdgeInsets.only(right: progressMap.entries.length == 1 ? 0.0 : 12.0),
+                            child: LinearProgressIndicator(
+                              minHeight: 1,
+                              color: buttonColor,
+                              value: newValue,
+                              backgroundColor: messageBubble,
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                    const SizedBox(height: 12.0),
+                  ],
+                ],
+              ),
+            );
+          },
+        ),
         _buildSendMessage(),
       ],
     );
@@ -142,7 +180,11 @@ class _ChatScreenState extends State<ChatScreen> {
               minSize: 0,
               padding: EdgeInsets.zero,
               onPressed: () {
-                _cubit.sendImage();
+                if (_cubit.uploadProgress.entries.length == 2) {
+                  Fluttertoast.showToast(msg: 'Sıradakı şəkillərinizin yüklənməsini gözləyin.');
+                } else {
+                  _cubit.sendImage();
+                }
               },
               child: Image.asset('assets/image_icon.png'),
             ),

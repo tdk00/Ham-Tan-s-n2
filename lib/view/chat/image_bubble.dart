@@ -8,14 +8,14 @@ class ImageBubble extends StatelessWidget {
   final ReceivedMessageModel message;
   final bool isOwn;
   final String username;
-  final String profilePicture;
+  final String? profilePicture;
 
   const ImageBubble(
     this.message, {
     Key? key,
     required this.isOwn,
     required this.username,
-    required this.profilePicture,
+    this.profilePicture,
   }) : super(key: key);
 
   @override
@@ -40,16 +40,21 @@ class ImageBubble extends StatelessWidget {
                     shape: BoxShape.circle,
                     color: profileEditImageColor,
                   ),
-                  child: Image.network(
-                    profilePicture,
-                    fit: BoxFit.cover,
-                    errorBuilder: (ctx, obj, stck) {
-                      return Image.asset(
-                        'assets/icon.png',
-                        fit: BoxFit.cover,
-                      );
-                    },
-                  ),
+                  child: profilePicture != null
+                      ? Image.network(
+                          profilePicture!,
+                          fit: BoxFit.cover,
+                          errorBuilder: (ctx, obj, stck) {
+                            return Image.asset(
+                              'assets/icon.png',
+                              fit: BoxFit.cover,
+                            );
+                          },
+                        )
+                      : Image.asset(
+                          'assets/icon.png',
+                          fit: BoxFit.cover,
+                        ),
                 ),
               Flexible(
                 child: GestureDetector(

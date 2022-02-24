@@ -65,7 +65,7 @@ class _CustomStoryViewState extends State<CustomStoryView> {
         final storyController = snapshot.data!;
 
         return Container(
-          color: Colors.black,
+          color: Colors.red,
           child: Stack(
             children: [
               StoryView(
@@ -99,9 +99,6 @@ class _CustomStoryViewState extends State<CustomStoryView> {
                     padding: const EdgeInsets.only(top: 30, right: 10),
                     child: IconButton(
                       onPressed: () {
-                        //   setState(() {
-                        //     widget.controller.pause();
-                        //   });
                         storyController.pause();
 
                         showCupertinoDialog(
@@ -197,12 +194,6 @@ class _CustomStoryViewState extends State<CustomStoryView> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    // setState(() {
-                    //   // controller.infoPlay();
-
-                    //   widget.controller.play();
-                    //   Navigator.pop(context);
-                    // });
                     controller.play();
                     Navigator.of(context).pop();
                   },
@@ -225,27 +216,6 @@ class _CustomStoryViewState extends State<CustomStoryView> {
   Widget _buildUserInfo() {
     return Align(
       alignment: Alignment.topLeft,
-      //   child: CupertinoButton(
-      //     padding: EdgeInsets.zero,
-      //     minSize: 0,
-      //     onPressed: () async {
-      //       final user = widget.userInfo!;
-      //       final prefs = await SharedPreferences.getInstance();
-      //       final userId = prefs.getString('user_id');
-
-      //       if (user.id != userId) {
-      //         Navigator.of(context).push(
-      //           MaterialPageRoute(
-      //             builder: (context) => ChatScreen(
-      //               userId: int.tryParse(user.id)!,
-      //               firstname: user.name,
-      //               lastname: user.surname,
-      //               image: user.image,
-      //             ),
-      //           ),
-      //         );
-      //       }
-      //     },
       child: Padding(
         padding: const EdgeInsets.only(top: 30.0, left: 16.0),
         child: Row(

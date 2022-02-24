@@ -140,9 +140,9 @@ class _OtpVerficationScreenState extends State<OtpVerficationScreen> with Manual
                       final checkUserInfo = await User.getInfo();
 
                       if (checkUserInfo == "completed") {
-                        manualNavigatorTransition(
-                          context,
-                          const NavigationScreen(),
+                        Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(builder: (context) => const NavigationScreen()),
+                          (route) => false,
                         );
                       } else {
                         manualNavigatorTransition(

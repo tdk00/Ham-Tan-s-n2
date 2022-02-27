@@ -238,6 +238,7 @@ class _StatusViewScreenState extends State<StatusViewScreen> {
                   color: Colors.white,
                   fontWeight: FontWeight.w500,
                   fontSize: 18.0,
+                    fontFamily: "Montserrat"
                   shadows: <Shadow>[
                     Shadow(
                       offset: Offset(1.0, 1.0),

@@ -93,6 +93,7 @@ class _OtpScreenState extends State<OtpScreen> with ManualNavigatorMixin {
                                     fontSize: 25,
                                     color: textColor,
                                     fontWeight: FontWeight.w400,
+                                      fontFamily: "Montserrat"
                                   ),
                                   decoration: const InputDecoration(
                                     hintText: "(00) 000-00-00",
@@ -102,11 +103,13 @@ class _OtpScreenState extends State<OtpScreen> with ManualNavigatorMixin {
                                       fontSize: 25,
                                       color: textColor,
                                       fontWeight: FontWeight.w400,
+                                        fontFamily: "Montserrat"
                                     ),
                                     hintStyle: TextStyle(
                                       fontSize: 25,
                                       color: textColorGrey,
                                       fontWeight: FontWeight.w400,
+                                        fontFamily: "Montserrat"
                                     ),
                                   ),
                                 ),

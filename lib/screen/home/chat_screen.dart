@@ -232,7 +232,11 @@ class _ChatScreenState extends State<ChatScreen> {
       child: TextField(
         controller: _messageEditingController,
         textCapitalization: TextCapitalization.sentences,
-        style: TextStyle(color: Theme.of(context).iconTheme.color, fontSize: 14.0),
+        style: TextStyle(
+            color: Theme.of(context).iconTheme.color,
+            fontSize: 14.0,
+            fontFamily: "Montserrat"
+        ),
         decoration: const InputDecoration(
           prefix: SizedBox(width: 24.0),
           border: InputBorder.none,
@@ -241,6 +245,7 @@ class _ChatScreenState extends State<ChatScreen> {
             fontSize: 14,
             color: textColorGrey,
             fontWeight: FontWeight.w500,
+              fontFamily: "Montserrat"
           ),
         ),
       ),

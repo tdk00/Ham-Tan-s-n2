@@ -110,7 +110,10 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                     child: DropdownButton<String>(
                       value: _chosenValue,
                       underline: const SizedBox(),
-                      style: const TextStyle(color: Colors.black),
+                      style: const TextStyle(
+                          color: Colors.black,
+                          fontFamily: "Montserrat"
+                      ),
                       isExpanded: true,
                       items: maritalStatus.map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
@@ -124,6 +127,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                           color: textColorGrey,
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
+                            fontFamily: "Montserrat"
                         ),
                       ),
                       onChanged: (value) {
@@ -149,7 +153,10 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                     child: DropdownButton<String>(
                       value: _chosenValueBusiness,
                       underline: const SizedBox(),
-                      style: const TextStyle(color: Colors.black),
+                      style: const TextStyle(
+                          color: Colors.black,
+                          fontFamily: "Montserrat"
+                      ),
                       isExpanded: true,
                       items: sampleBiznesModels.map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
@@ -163,6 +170,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                           color: textColorGrey,
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
+                            fontFamily: "Montserrat"
                         ),
                       ),
                       onChanged: (value) {
@@ -207,6 +215,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                       fontSize: 15,
                       color: textColorGrey,
                       fontWeight: FontWeight.w500,
+                        fontFamily: "Montserrat"
                     ),
                   ),
                 ),

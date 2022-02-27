@@ -130,6 +130,7 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> with ManualNavi
                                     fontSize: 13,
                                     color: textColorGrey,
                                     fontWeight: FontWeight.w500,
+                                      fontFamily: "Montserrat"
                                   ),
                                 ),
                               ),
@@ -188,6 +189,7 @@ class _AuthRegisterScreenState extends State<AuthRegisterScreen> with ManualNavi
                                     fontSize: 13,
                                     color: textColorGrey,
                                     fontWeight: FontWeight.w500,
+                                      fontFamily: "Montserrat"
                                   ),
                                 ),
                               ),

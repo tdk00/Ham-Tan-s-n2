@@ -251,6 +251,7 @@ class _CustomStoryViewState extends State<CustomStoryView> {
                 color: Colors.white,
                 fontWeight: FontWeight.w500,
                 fontSize: 18.0,
+                  fontFamily: "Montserrat"
                 shadows: <Shadow>[
                   Shadow(
                     offset: Offset(1.0, 1.0),
@@ -303,6 +304,7 @@ class _CustomStoryViewState extends State<CustomStoryView> {
                       fontSize: 14,
                       color: textColorGrey,
                       fontWeight: FontWeight.w500,
+                        fontFamily: "Montserrat"
                     ),
                   ),
                 ),

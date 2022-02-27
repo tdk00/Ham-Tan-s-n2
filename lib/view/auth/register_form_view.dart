@@ -81,6 +81,7 @@ class RegisterFormView extends StatelessWidget {
                         fontSize: hintFontSize ?? 13,
                         color: textColorGrey,
                         fontWeight: FontWeight.w500,
+                        fontFamily: "Montserrat"
                       ),
                     ),
                   ),

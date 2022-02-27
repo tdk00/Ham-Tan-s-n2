@@ -113,6 +113,7 @@ class _AddStatusScreenState extends State<AddStatusScreen> {
                       fontSize: 14,
                       fontWeight: FontWeight.w400,
                       color: textColorGrey,
+                        fontFamily: "Montserrat"
                     ),
                   ),
                 ),

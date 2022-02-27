@@ -92,6 +92,7 @@ class Statuses {
             textStyle: const TextStyle(
               fontSize: 18.0,
               fontWeight: FontWeight.w400,
+                fontFamily: "Montserrat"
             ),
           ),
         );

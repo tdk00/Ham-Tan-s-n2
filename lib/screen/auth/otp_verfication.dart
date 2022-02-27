@@ -119,6 +119,7 @@ class _OtpVerficationScreenState extends State<OtpVerficationScreen> with Manual
                           fontSize: 13,
                           color: textColorGrey,
                           fontWeight: FontWeight.w500,
+                            fontFamily: "Montserrat"
                         ),
                       ),
                     ),

@@ -41,6 +41,7 @@ class MessageSendButton extends StatelessWidget {
                       fontSize: 14,
                       color: textColorGrey,
                       fontWeight: FontWeight.w500,
+                        fontFamily: "Montserrat"
                     ),
                   ),
                 ),

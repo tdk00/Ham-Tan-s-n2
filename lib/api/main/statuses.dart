@@ -60,12 +60,36 @@ class Statuses {
       final id = u['id'];
       final text = u['text'];
 
-      if (imageValid(image) && textValid(text) || imageValid(image)) {
+      if (imageValid(image) && textValid(text)) {
+        log('bura girir');
         statuses.add(
           StoryItem.inlineImage(
+            key: ValueKey(id),
             url: image,
             controller: StoryController(),
             imageFit: BoxFit.contain,
+            caption: Text(
+              text,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 18.0,
+                fontWeight: FontWeight.w400,
+                fontFamily: "Montserrat",
+                shadows: <Shadow>[
+                  Shadow(
+                    offset: Offset(1.0, 1.0),
+                    blurRadius: 3.0,
+                    color: Color.fromARGB(255, 0, 0, 0),
+                  ),
+                  Shadow(
+                    offset: Offset(1.0, 1.0),
+                    blurRadius: 8.0,
+                    color: Color.fromARGB(124, 0, 0, 0),
+                  ),
+                ],
+              ),
+            ),
           ),
           //   StoryItem.inlineProviderImage(
           //     NetworkImage(image),
@@ -81,9 +105,16 @@ class Statuses {
           //     ),
           //   ),
         );
-      }
-
-      if (textValid(text) && !imageValid(image)) {
+      } else if (imageValid(image)) {
+        statuses.add(
+          StoryItem.inlineImage(
+            key: ValueKey(id),
+            url: image,
+            controller: StoryController(),
+            imageFit: BoxFit.contain,
+          ),
+        );
+      } else if (textValid(text) && !imageValid(image)) {
         statuses.add(
           StoryItem.text(
             key: ValueKey(id),
@@ -92,7 +123,7 @@ class Statuses {
             textStyle: const TextStyle(
               fontSize: 18.0,
               fontWeight: FontWeight.w400,
-                fontFamily: "Montserrat"
+              fontFamily: "Montserrat",
             ),
           ),
         );

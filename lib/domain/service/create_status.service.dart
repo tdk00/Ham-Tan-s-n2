@@ -9,12 +9,13 @@ import 'package:path/path.dart';
 
 class CreateStatusService {
   Future<UserCreateStatus?> createStatusForUserint(
-    String id,
+    String? id,
+    String? token,
     String text, {
     File? imgUrl,
   }) async {
     Map<String, dynamic> headers = <String, dynamic>{};
-    headers.putIfAbsent("Authorization", () => 'Token 07f96707138a508f80418e0bd5dd31f80a56f204');
+    headers.putIfAbsent("Authorization", () => 'Token $token');
     headers.putIfAbsent("Content-Type", () => "multipart/form-data");
     headers.putIfAbsent("X-CSRFToken", () => "QQ80uhVlBRPjjNi9PGxdADoljTafbkc7t4ORKM3pQ1iJDXrXqkXcGDtzAZSoXnpt");
     headers.putIfAbsent("Content-Type", () => "application/json");
@@ -23,7 +24,7 @@ class CreateStatusService {
     dio.options.contentType = Headers.formUrlEncodedContentType;
     var formData = FormData.fromMap({
       'text': text,
-      'user': int.tryParse(id),
+      'user': int.tryParse(id!),
       if (imgUrl != null)
         'image': await MultipartFile.fromFile(
           imgUrl.path,

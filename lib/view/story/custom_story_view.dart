@@ -251,7 +251,7 @@ class _CustomStoryViewState extends State<CustomStoryView> {
                 color: Colors.white,
                 fontWeight: FontWeight.w500,
                 fontSize: 18.0,
-                  fontFamily: "Montserrat",
+                fontFamily: "Montserrat",
                 shadows: <Shadow>[
                   Shadow(
                     offset: Offset(1.0, 1.0),
@@ -300,12 +300,7 @@ class _CustomStoryViewState extends State<CustomStoryView> {
                   decoration: const InputDecoration(
                     border: InputBorder.none,
                     hintText: "İsmarıcınızı daxil edin...",
-                    hintStyle: TextStyle(
-                      fontSize: 14,
-                      color: textColorGrey,
-                      fontWeight: FontWeight.w500,
-                        fontFamily: "Montserrat"
-                    ),
+                    hintStyle: TextStyle(fontSize: 14, color: textColorGrey, fontWeight: FontWeight.w500, fontFamily: "Montserrat"),
                   ),
                 ),
               ),

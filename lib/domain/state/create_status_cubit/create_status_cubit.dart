@@ -1,12 +1,14 @@
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
+import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:everyone_know_app/domain/model/status.dart';
 import 'package:everyone_know_app/domain/repository/create_user.repo.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:logger/logger.dart';
+import 'package:path/path.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path_provider/path_provider.dart';
@@ -43,23 +45,24 @@ class CreateStatusCubit extends Cubit<CreateStatusState> {
     try {
       emit(CreateStatusLoading());
 
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      final id = prefs.getString('user_id') ?? '';
+      final prefs = await SharedPreferences.getInstance();
+      final userId = prefs.getString('user_id');
+      final token = prefs.getString('token');
 
       if (pickedImage == null && (text == null || text == '')) {
         emit(const CreateStatusError('Status boş ola bilməz'));
       } else if (pickedImage == null) {
-        statusModel = (await repository.createUserStatusRepository(id, '$text'))!;
+        statusModel = (await repository.createUserStatusRepository(userId, token, '$text'))!;
 
         emit(CreateStatusLoaded(statusModel));
         Logger().i("Status Cubit Initazlized : " + statusModel.user.toString());
       } else if (text == null) {
-        statusModel = (await repository.createUserStatusRepository(id, '', imgUrl: pickedImage))!;
+        statusModel = (await repository.createUserStatusRepository(userId, token, '', imgUrl: pickedImage))!;
 
         emit(CreateStatusLoaded(statusModel));
         Logger().i("Status Cubit Initazlized : " + statusModel.user.toString());
       } else {
-        statusModel = (await repository.createUserStatusRepository(id, '$text', imgUrl: pickedImage))!;
+        statusModel = (await repository.createUserStatusRepository(userId, token, '$text', imgUrl: pickedImage))!;
 
         emit(CreateStatusLoaded(statusModel));
         Logger().i("Status Cubit Initazlized : " + statusModel.user.toString());
@@ -102,5 +105,52 @@ class CreateStatusCubit extends Cubit<CreateStatusState> {
     );
 
     return result;
+  }
+
+  Future<UserCreateStatus> createStory(
+    String storyText, {
+    File? imgUrl,
+  }) async {
+    try {
+      final dio = Dio();
+      const endpoint = 'https://hamitanisin.digital/api/chat/image/';
+
+      final prefs = await SharedPreferences.getInstance();
+      final myUserId = prefs.getString('user_id');
+      final token = prefs.getString('token');
+
+      final myId = int.tryParse(myUserId!);
+
+      final formData = FormData.fromMap({
+        'text': storyText,
+        'user': myId,
+        if (imgUrl != null)
+          'image': await MultipartFile.fromFile(
+            imgUrl.path,
+            filename: basename(imgUrl.path),
+          )
+      });
+
+      final result = await dio.post(
+        endpoint,
+        data: formData,
+        onSendProgress: (int sent, int total) {
+          final progress = sent / total * 100;
+        },
+        options: Options(
+          headers: {
+            'Authorization': 'Token $token',
+          },
+        ),
+      );
+
+      if (result.statusCode == 201) {
+        return UserCreateStatus.fromJson(result.data!);
+      } else {
+        throw Exception('Bilinməyən xəta baş verdi');
+      }
+    } catch (e) {
+      throw Exception(e);
+    }
   }
 }

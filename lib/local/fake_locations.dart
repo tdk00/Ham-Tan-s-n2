@@ -1,5 +1,17 @@
 List<String> fakeLocations = [
   "Ağcabədi",
-  "Füzuli-Horadiz",
-  "Tərtər"
+  "Bakı-xəzər",
+  "Bərdə",
+  "Biləsuvar",
+  "Cəlilabad",
+  "Füzuli-horadiz",
+  "Xaçmaz",
+  "Qusar",
+  "Masallı",
+  "Neftçala",
+  "Sabirabad",
+  "Salyan",
+  "Sumqayıt",
+  "Tərtər",
+  "Zaqatala"
 ];

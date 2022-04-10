@@ -5,6 +5,23 @@ List<String> maritalStatus = [
 ];
 
 List<String> sampleBiznesModels = [
+  "Bitkiçilik",
+  "Heyvandarlıq",
+  "Ovlama xidməti",
+  "Şitilçilik xidməti",
+  "Meşə təsərrüfatı",
+  "Ətin konservləşdirilməsi",
+  "Çörəkçi",
+  "Şirniyyatçı",
+  "Xalçaçı",
   "Dərzi",
-  "Aşpaz"
+  "Aşpaz",
+  "Baytarlıq",
+  "Təhsil xidmətləri",
+  "Səhiyyə xidmətləri",
+  "Fotoqraf",
+  "Gülçü",
+  "Manikür ustası",
+  "Pedikür ustası",
+  "Qənnad"
 ];

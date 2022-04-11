@@ -4,6 +4,8 @@ import 'dart:developer';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../constants/constants.dart';
+
 class Profile {
   static Future<List<ProfileInfo>> getProfileInfo() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -49,9 +51,10 @@ class Profile {
     final uri = Uri.parse('https://hamitanisin.digital/api/account/user/update/' + userId + '/');
     final headers = {'Content-Type': 'application/json', 'Authorization': "Token " + token.toString()};
 
-    print(userId + "usssss");
-    Map<String, dynamic> body = {"name": name, "surname": surname, "about": about, "business": 1};
-    print(marriage.toString() + "abbbbbbb");
+
+    int businessId = (sampleBiznesModels.indexWhere((item) => item == business) + 1);
+
+    Map<String, dynamic> body = {"name": name, "surname": surname, "about": about, "business": businessId};
     if( marriage.toString() == "E" || marriage.toString() == "S")
       {
           body['marriage'] = marriage.toString();

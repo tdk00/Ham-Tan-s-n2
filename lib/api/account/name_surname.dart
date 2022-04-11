@@ -8,7 +8,7 @@ class NameSurname {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var userId = prefs.getString('user_id') ?? '';
     var token = prefs.getString('token') ?? '';
-    business = business < 1 ? 1 : business;
+    business = business + 1;
     final uri = Uri.parse('https://hamitanisin.digital/api/account/user/update/' + userId + '/');
     final headers = {'Content-Type': 'application/json', 'Authorization': "Token " + token.toString()};
 

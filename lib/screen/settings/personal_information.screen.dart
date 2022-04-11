@@ -53,7 +53,8 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
     if (mstatus.isNotEmpty) {
       setState(() {
         _chosenValue = mstatus[0].marriage == "E" ? "Evli" : (mstatus[0].marriage == "S" ? "Subay" : null);
-        _chosenValueBusiness = "Dərzi";
+        int businessId = int.parse(mstatus[0].business) - 1;
+        _chosenValueBusiness = sampleBiznesModels.elementAt(businessId);
       });
     }
   }

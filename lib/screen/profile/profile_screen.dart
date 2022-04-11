@@ -53,6 +53,14 @@ class _ProfileScreenState extends State<ProfileScreen> with ManualNavigatorMixin
             future: Profile.getProfileInfo(),
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               if (snapshot.hasData && snapshot.data.length > 0) {
+                int businessElementAt = 0;
+                if(int.tryParse(snapshot.data[0].business) != null)
+                  {
+                    if(int.parse(snapshot.data[0].business) > 0 && int.parse(snapshot.data[0].business) <= sampleBiznesModels.length )
+                      {
+                          businessElementAt = int.parse(snapshot.data[0].business) - 1;
+                      }
+                  }
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -160,7 +168,8 @@ class _ProfileScreenState extends State<ProfileScreen> with ManualNavigatorMixin
                                 child: Center(
                                   child: CustomTextView(
                                     textPaste: sampleBiznesModels.elementAt(
-                                        ((int.tryParse(snapshot.data[0].business) ?? 0) + 1) < sampleBiznesModels.length && ((int.tryParse(snapshot.data[0].business) ?? 0) + 1) > -1 ? ((int.tryParse(snapshot.data[0].business) ?? 0) + 1) : 0),
+                                      businessElementAt
+                                    ),
                                     textSize: 14,
                                     textColor: Colors.white,
                                     fontWeight: FontWeight.w400,

@@ -13,6 +13,7 @@ List<String> sampleBiznesModels = [
   "Ətin konservləşdirilməsi",
   "Çörəkçi",
   "Şirniyyatçı",
+  "Toxuyucu"
   "Xalçaçı",
   "Dərzi",
   "Aşpaz",

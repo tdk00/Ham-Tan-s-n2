@@ -1,6 +1,6 @@
 import 'package:everyone_know_app/api/main/statuses.dart';
+import 'package:everyone_know_app/widget/story/story_view.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:story_view/controller/story_controller.dart';
 
 class StoryBloc {
   StoryBloc() {

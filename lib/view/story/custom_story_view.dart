@@ -3,9 +3,9 @@ import 'package:everyone_know_app/color/app_color.dart';
 import 'package:everyone_know_app/screen/home/chat_screen.dart';
 import 'package:everyone_know_app/view/story/bloc/story_bloc.dart';
 import 'package:everyone_know_app/view/text/text_view.dart';
+import 'package:everyone_know_app/widget/story/story_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:story_view/story_view.dart';
 
 class CustomStoryView extends StatefulWidget {
   final List<StoryItem?> storyItems;
@@ -64,70 +64,120 @@ class _CustomStoryViewState extends State<CustomStoryView> {
       builder: (context, snapshot) {
         final storyController = snapshot.data!;
 
-        return Container(
-          color: Colors.red,
-          child: Stack(
-            children: [
-              StoryView(
-                controller: widget.controller,
-                storyItems: widget.storyItems,
-                onStoryShow: (storyItem) {
-                  String id = storyItem.view.key.toString();
+        return Stack(
+          children: [
+            StoryView(
+              controller: widget.controller,
+              storyItems: widget.storyItems,
+              onStoryShow: (storyItem) {
+                String id = storyItem.view.key.toString();
 
-                  id = id.replaceAll('[<', '');
-                  id = id.replaceAll('>]', '');
+                id = id.replaceAll('[<', '');
+                id = id.replaceAll('>]', '');
 
-                  _storyBloc.updateStoryId(id);
-                },
-                onComplete: () {
+                _storyBloc.updateStoryId(id);
+              },
+              onComplete: () {
+                Navigator.of(context).pop();
+              },
+              onVerticalSwipeComplete: (Direction? direction) {
+                if (direction == Direction.down) {
                   Navigator.of(context).pop();
-                },
-                onVerticalSwipeComplete: (Direction? direction) {
-                  if (direction == Direction.down) {
-                    Navigator.of(context).pop();
-                  }
-                  if (direction == Direction.up) {
-                    _focusNode.requestFocus();
-                  }
-                },
-              ),
-              _buildUserInfo(),
-              if (widget.isMe)
-                Align(
-                  alignment: Alignment.topRight,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 30, right: 10),
-                    child: IconButton(
-                      onPressed: () {
-                        storyController.pause();
+                }
+                if (direction == Direction.up) {
+                  _focusNode.requestFocus();
+                }
+              },
+            ),
+            _buildUserInfo(),
+            if (widget.isMe)
+              Align(
+                alignment: Alignment.topRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 30, right: 10),
+                  child: IconButton(
+                    onPressed: () {
+                      storyController.pause();
 
-                        showCupertinoDialog(
-                          context: context,
-                          builder: (ctx) {
-                            return Center(
-                              child: alertDialog(context, storyController),
-                            );
-                          },
-                        );
-                      },
-                      icon: const Icon(
-                        Icons.delete_outline,
-                        color: Colors.white,
-                        size: 22,
-                      ),
+                      showCupertinoDialog(
+                        context: context,
+                        builder: (ctx) {
+                          return Center(
+                            child: alertDialog(context, storyController),
+                          );
+                        },
+                      );
+                    },
+                    icon: const Icon(
+                      Icons.delete_outline,
+                      color: Colors.white,
+                      size: 22,
                     ),
                   ),
                 ),
-              if (!widget.isMe)
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: _buildMessageField(storyController),
-                  ),
+              ),
+            // if (!widget.isMe)
+            //   Align(
+            //     alignment: Alignment.bottomCenter,
+            //     child: GestureDetector(
+            //       onTap: () {
+            //         _focusNode.requestFocus();
+            //       },
+            //       child: Column(
+            //         mainAxisAlignment: MainAxisAlignment.end,
+            //         children: [
+            //           Container(
+            //             decoration: const BoxDecoration(
+            //               boxShadow: <BoxShadow>[
+            //                 BoxShadow(
+            //                   offset: Offset(1.0, 1.0),
+            //                   blurRadius: 3.0,
+            //                   color: Color.fromARGB(255, 0, 0, 0),
+            //                 ),
+            //                 BoxShadow(
+            //                   offset: Offset(1.0, 1.0),
+            //                   blurRadius: 8.0,
+            //                   color: Color.fromARGB(124, 0, 0, 0),
+            //                 ),
+            //               ],
+            //             ),
+            //             child: const Icon(
+            //               CupertinoIcons.chevron_up,
+            //               color: Colors.white,
+            //             ),
+            //           ),
+            //           const Text(
+            //             'Mesaj yaz',
+            //             style: TextStyle(
+            //               color: Colors.white,
+            //               fontSize: 16.0,
+            //               shadows: <Shadow>[
+            //                 Shadow(
+            //                   offset: Offset(1.0, 1.0),
+            //                   blurRadius: 3.0,
+            //                   color: Color.fromARGB(255, 0, 0, 0),
+            //                 ),
+            //                 Shadow(
+            //                   offset: Offset(1.0, 1.0),
+            //                   blurRadius: 8.0,
+            //                   color: Color.fromARGB(124, 0, 0, 0),
+            //                 ),
+            //               ],
+            //             ),
+            //           ),
+            //         ],
+            //       ),
+            //     ),
+            //   ),
+            if (!widget.isMe)
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: _buildMessageField(storyController),
                 ),
-            ],
-          ),
+              ),
+          ],
         );
       },
     );

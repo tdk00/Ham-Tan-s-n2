@@ -2,10 +2,10 @@ import 'package:everyone_know_app/api/main/statuses.dart';
 import 'package:everyone_know_app/screen/home/chat_screen.dart';
 import 'package:everyone_know_app/view/story/custom_story_view.dart';
 import 'package:everyone_know_app/view/text/text_view.dart';
+import 'package:everyone_know_app/widget/story/story_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:story_view/story_view.dart';
 
 class StatusViewScreen extends StatefulWidget {
   final bool? checkUserStory;
@@ -45,53 +45,14 @@ class _StatusViewScreenState extends State<StatusViewScreen> {
     return Scaffold(
       backgroundColor: Colors.black,
       body: SafeArea(
-        child: SizedBox(
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-          child: Stack(
-            children: [
-              Positioned.fill(
-                child: CustomStoryView(
-                  isMe: widget.checkUserStory ?? false,
-                  userInfo: widget.userInfo,
-                  userName: widget.statusUserName ?? "İstifadəçi adı",
-                  storyItems: widget.storyItems!,
-                  controller: controller,
-                  regionId: widget.regionId,
-                  imageUrl: widget.statusUserImgUrl ?? "https://i.pinimg.com/564x/8b/30/de/8b30dead52fb583f2561eee302f6a672.jpg",
-                ),
-              ),
-              //   _buildUserInfo(),
-              //   widget.checkUserStory == false
-              //       ? const SizedBox()
-              //       : Align(
-              //           alignment: Alignment.topRight,
-              //           child: Padding(
-              //             padding: const EdgeInsets.only(top: 30, right: 10),
-              //             child: IconButton(
-              //               onPressed: () {
-              //                 setState(() {
-              //                   controller.pause();
-              //                 });
-              //                 showCupertinoDialog(
-              //                   context: context,
-              //                   builder: (ctx) {
-              //                     return Center(
-              //                       child: alertDialog(context),
-              //                     );
-              //                   },
-              //                 );
-              //               },
-              //               icon: const Icon(
-              //                 Icons.delete_outline,
-              //                 color: Colors.white,
-              //                 size: 22,
-              //               ),
-              //             ),
-              //           ),
-              //         ),
-            ],
-          ),
+        child: CustomStoryView(
+          isMe: widget.checkUserStory ?? false,
+          userInfo: widget.userInfo,
+          userName: widget.statusUserName ?? "İstifadəçi adı",
+          storyItems: widget.storyItems!,
+          controller: controller,
+          regionId: widget.regionId,
+          imageUrl: widget.statusUserImgUrl ?? "https://i.pinimg.com/564x/8b/30/de/8b30dead52fb583f2561eee302f6a672.jpg",
         ),
       ),
       // body: SafeArea(

@@ -49,7 +49,7 @@ class MessageListCubit extends Cubit<MessageListState> {
         },
       );
 
-      log(result.body);
+      log('Message List ${result.body}');
 
       return List<MessageListModel>.from(json.decode(result.body).map((x) => MessageListModel.fromJson(x)));
     } catch (e) {

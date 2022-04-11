@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
@@ -49,12 +50,12 @@ class CreateStatusCubit extends Cubit<CreateStatusState> {
       final userId = prefs.getString('user_id');
       final token = prefs.getString('token');
 
+      log(token.toString() + '-' + userId.toString());
+
       if (pickedImage == null && (text == null || text == '')) {
         emit(const CreateStatusError('Status boş ola bilməz'));
       } else if (pickedImage == null) {
-        statusModel = (await repository.createUserStatusRepository(userId, token, '$text'))!;
-
-        emit(CreateStatusLoaded(statusModel));
+        emit(const CreateStatusError('Status boş ola bilməz'));
         Logger().i("Status Cubit Initazlized : " + statusModel.user.toString());
       } else if (text == null) {
         statusModel = (await repository.createUserStatusRepository(userId, token, '', imgUrl: pickedImage))!;

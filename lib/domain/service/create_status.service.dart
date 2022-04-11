@@ -17,7 +17,7 @@ class CreateStatusService {
     Map<String, dynamic> headers = <String, dynamic>{};
     headers.putIfAbsent("Authorization", () => 'Token $token');
     headers.putIfAbsent("Content-Type", () => "multipart/form-data");
-    headers.putIfAbsent("X-CSRFToken", () => "QQ80uhVlBRPjjNi9PGxdADoljTafbkc7t4ORKM3pQ1iJDXrXqkXcGDtzAZSoXnpt");
+    // headers.putIfAbsent("X-CSRFToken", () => "QQ80uhVlBRPjjNi9PGxdADoljTafbkc7t4ORKM3pQ1iJDXrXqkXcGDtzAZSoXnpt");
     headers.putIfAbsent("Content-Type", () => "application/json");
     headers.putIfAbsent("Accept", () => "application/json");
     Dio dio = Dio();

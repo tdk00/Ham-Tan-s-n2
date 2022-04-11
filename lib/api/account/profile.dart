@@ -19,7 +19,7 @@ class Profile {
     int statusCode = response.statusCode;
     String responseBody = response.body;
 
-    log(responseBody);
+    log('Profile $responseBody');
 
     List<ProfileInfo> profileInfo = [];
 
@@ -51,14 +51,12 @@ class Profile {
     final uri = Uri.parse('https://hamitanisin.digital/api/account/user/update/' + userId + '/');
     final headers = {'Content-Type': 'application/json', 'Authorization': "Token " + token.toString()};
 
-
     int businessId = (sampleBiznesModels.indexWhere((item) => item == business) + 1);
 
     Map<String, dynamic> body = {"name": name, "surname": surname, "about": about, "business": businessId};
-    if( marriage.toString() == "E" || marriage.toString() == "S")
-      {
-          body['marriage'] = marriage.toString();
-      }
+    if (marriage.toString() == "E" || marriage.toString() == "S") {
+      body['marriage'] = marriage.toString();
+    }
     String jsonBody = json.encode(body);
     final encoding = Encoding.getByName('utf-8');
 

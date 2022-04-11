@@ -21,7 +21,7 @@ class Otp {
     String jsonBody = json.encode(body);
     final encoding = Encoding.getByName('utf-8');
 
-    log('$body');
+    log('Otp $body');
 
     prefs.setString("phone", phone2);
 
@@ -37,7 +37,7 @@ class Otp {
   static Future<String> onValue(http.Response response) async {
     String result;
 
-    log(response.body);
+    log('OTP ${response.body}');
     final Map<String, dynamic> responseData = json.decode(response.body);
 
     if (response.statusCode == 200) {

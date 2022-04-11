@@ -4,7 +4,6 @@ import 'package:everyone_know_app/mixin/manual_navigator.dart';
 import 'package:everyone_know_app/screen/auth/choose_region.dart';
 import 'package:everyone_know_app/utils/size/size.dart';
 import 'package:everyone_know_app/view/text/text_view.dart';
-import 'package:everyone_know_app/widget/splash/splash_image_widget.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -52,10 +51,11 @@ class _SplashScreenState extends State<SplashScreen> with ManualNavigatorMixin {
                         top: 30,
                         left: screenWidth(context, 0.1),
                       ),
-                      child: const SplashImageWidget(
-                        imageUrl:
-                            "https://st.depositphotos.com/1006706/2671/i/600/depositphotos_26715369-stock-photo-which-way-to-choose-3d.jpg",
-                      ),
+                      child: Image.asset('assets/images/circle1.png'),
+                      //   child: const SplashImageWidget(
+                      //     imageUrl:
+                      //         "https://st.depositphotos.com/1006706/2671/i/600/depositphotos_26715369-stock-photo-which-way-to-choose-3d.jpg",
+                      //   ),
                     ),
                   ),
                   Align(
@@ -65,12 +65,12 @@ class _SplashScreenState extends State<SplashScreen> with ManualNavigatorMixin {
                         left: 5,
                         bottom: screenHeight(context, 0.08),
                       ),
-                      child: const SplashImageWidget(
-                        widthSize: 82,
-                        heightSize: 82,
-                        imageUrl:
-                            "http://www.goodmorningimagesdownload.com/wp-content/uploads/2020/06/Alone-Boys-Girls-Images-6.jpg",
-                      ),
+                      child: Image.asset('assets/images/circle2.png'),
+                      //   child: const SplashImageWidget(
+                      //     widthSize: 82,
+                      //     heightSize: 82,
+                      //     imageUrl: "http://www.goodmorningimagesdownload.com/wp-content/uploads/2020/06/Alone-Boys-Girls-Images-6.jpg",
+                      //   ),
                     ),
                   ),
                   Align(
@@ -80,12 +80,12 @@ class _SplashScreenState extends State<SplashScreen> with ManualNavigatorMixin {
                         right: 12,
                         bottom: screenHeight(context, 0.06),
                       ),
-                      child: const SplashImageWidget(
-                        widthSize: 54,
-                        heightSize: 54,
-                        imageUrl:
-                            "https://media.istockphoto.com/photos/hiker-on-top-of-the-mountain-enjoying-sunset-picture-id1284549418?b=1&k=20&m=1284549418&s=170667a&w=0&h=3LP-ngMkpGNWH605WJWUkvyYK7uYPHsiIXVs69yz0I4=",
-                      ),
+                      child: Image.asset('assets/images/circle3.png'),
+                      //   child: const SplashImageWidget(
+                      //     widthSize: 54,
+                      //     heightSize: 54,
+                      //     imageUrl: "https://media.istockphoto.com/photos/hiker-on-top-of-the-mountain-enjoying-sunset-picture-id1284549418?b=1&k=20&m=1284549418&s=170667a&w=0&h=3LP-ngMkpGNWH605WJWUkvyYK7uYPHsiIXVs69yz0I4=",
+                      //   ),
                     ),
                   ),
                   Align(
@@ -95,12 +95,12 @@ class _SplashScreenState extends State<SplashScreen> with ManualNavigatorMixin {
                         right: screenWidth(context, 0.13),
                         bottom: screenHeight(context, 0.08),
                       ),
-                      child: const SplashImageWidget(
-                        widthSize: 96,
-                        heightSize: 96,
-                        imageUrl:
-                            "https://t3.ftcdn.net/jpg/02/92/27/64/360_F_292276450_c2RWJJlHcgUeA7Q0Gyr4IVNLIapSlfqE.jpg",
-                      ),
+                      child: Image.asset('assets/images/circle4.png'),
+                      //   child: const SplashImageWidget(
+                      //     widthSize: 96,
+                      //     heightSize: 96,
+                      //     imageUrl: "https://t3.ftcdn.net/jpg/02/92/27/64/360_F_292276450_c2RWJJlHcgUeA7Q0Gyr4IVNLIapSlfqE.jpg",
+                      //   ),
                     ),
                   ),
                   Align(
@@ -110,12 +110,12 @@ class _SplashScreenState extends State<SplashScreen> with ManualNavigatorMixin {
                         top: screenHeight(context, 0.25),
                         left: screenWidth(context, 0.25),
                       ),
-                      child: const SplashImageWidget(
-                        widthSize: 55,
-                        heightSize: 55,
-                        imageUrl:
-                            "https://d5nunyagcicgy.cloudfront.net/external_assets/hero_examples/hair_beach_v391182663/original.jpeg",
-                      ),
+                      child: Image.asset('assets/images/circle5.png'),
+                      //   child: const SplashImageWidget(
+                      //     widthSize: 55,
+                      //     heightSize: 55,
+                      //     imageUrl: "https://d5nunyagcicgy.cloudfront.net/external_assets/hero_examples/hair_beach_v391182663/original.jpeg",
+                      //   ),
                     ),
                   ),
                 ],

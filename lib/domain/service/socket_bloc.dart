@@ -25,13 +25,11 @@ class SocketBloc {
 
     final url = '$_baseUrl/$id/?token=$token';
 
-    print(url);
-
     final channel = WebSocketChannel.connect(Uri.parse(url));
 
     channel.stream.listen(
       (data) {
-        log(data.toString());
+        log('Socket connect $data');
       },
       onDone: () => print('Socket closed'),
       onError: (error) => log(error.toString()),

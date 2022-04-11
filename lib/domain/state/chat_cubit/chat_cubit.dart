@@ -91,7 +91,7 @@ class ChatCubit extends Cubit<ChatState> {
   void _connect() {
     final url = '$_baseUrl/$userId/?token=$token';
 
-    log(url);
+    log('Socket url $url');
 
     _socketChannel = WebSocketChannel.connect(Uri.parse(url));
   }
@@ -101,7 +101,7 @@ class ChatCubit extends Cubit<ChatState> {
       (data) {
         final remoteMessage = ReceivedMessageModel.fromJson(jsonDecode(data));
 
-        log(data);
+        log('Socket data $data');
 
         final previousState = state as ChatFetched;
         final messages = previousState.messages;
@@ -116,6 +116,8 @@ class ChatCubit extends Cubit<ChatState> {
           statusId: remoteMessage.statusId,
           statusImage: statusImage,
         );
+
+        log(remoteMessage.username.toString());
 
         final updatedMessages = [message, ...messages];
 
@@ -135,6 +137,10 @@ class ChatCubit extends Cubit<ChatState> {
     String? statusImage,
     String? statusId,
   }) async {
+    final prefs = await SharedPreferences.getInstance();
+    final myUserId = prefs.getString('user_id');
+    final myId = int.tryParse(myUserId!);
+
     log('stsImage: $statusImage,stsId: $statusId, ${(statusId == null && _storyImage == null)} text: $text, image: $image');
 
     if (statusId != null) {
@@ -145,6 +151,7 @@ class ChatCubit extends Cubit<ChatState> {
         json.encode(
           {
             'message': text,
+            'sender': myId,
             'image': image ?? '',
             'status_id': statusId,
             'status_image': _storyImage ?? '',
@@ -156,6 +163,7 @@ class ChatCubit extends Cubit<ChatState> {
         json.encode(
           {
             'message': text,
+            'sender': myId,
             'image': image ?? '',
             'status_id': '',
             'status_image': '',
@@ -185,7 +193,7 @@ class ChatCubit extends Cubit<ChatState> {
         },
       );
 
-      log(result.body.toString());
+      log('Get messages ${result.body}');
 
       return chatMessagesModelFromJson(result.body);
     } catch (e) {
@@ -269,7 +277,7 @@ class ChatCubit extends Cubit<ChatState> {
 
       final imageUrl = result.data['imagex'];
 
-      log(imageUrl);
+      log('IMG $imageUrl');
 
       if (imageUrl != null) {
         _pickedImage = null;
@@ -326,7 +334,7 @@ class ChatCubit extends Cubit<ChatState> {
 
       _storyImage = response['image'];
 
-      log(result.body);
+      log('StoryImages ${result.body}');
     } catch (e) {
       throw Exception(e);
     }

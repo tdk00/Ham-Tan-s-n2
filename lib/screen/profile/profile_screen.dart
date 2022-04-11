@@ -54,13 +54,11 @@ class _ProfileScreenState extends State<ProfileScreen> with ManualNavigatorMixin
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               if (snapshot.hasData && snapshot.data.length > 0) {
                 int businessElementAt = 0;
-                if(int.tryParse(snapshot.data[0].business) != null)
-                  {
-                    if(int.parse(snapshot.data[0].business) > 0 && int.parse(snapshot.data[0].business) <= sampleBiznesModels.length )
-                      {
-                          businessElementAt = int.parse(snapshot.data[0].business) - 1;
-                      }
+                if (int.tryParse(snapshot.data[0].business) != null) {
+                  if (int.parse(snapshot.data[0].business) > 0 && int.parse(snapshot.data[0].business) <= sampleBiznesModels.length) {
+                    businessElementAt = int.parse(snapshot.data[0].business) - 1;
                   }
+                }
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -153,27 +151,23 @@ class _ProfileScreenState extends State<ProfileScreen> with ManualNavigatorMixin
                                 fontWeight: FontWeight.w400,
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+                              margin: const EdgeInsets.only(
                                 left: 33,
                                 top: 14,
                               ),
-                              child: Container(
-                                width: 100,
-                                height: 40,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(30),
-                                  color: buttonColor,
-                                ),
-                                child: Center(
-                                  child: CustomTextView(
-                                    textPaste: sampleBiznesModels.elementAt(
-                                      businessElementAt
-                                    ),
-                                    textSize: 14,
-                                    textColor: Colors.white,
-                                    fontWeight: FontWeight.w400,
-                                  ),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(30),
+                                color: buttonColor,
+                              ),
+                              child: Text(
+                                sampleBiznesModels.elementAt(businessElementAt),
+                                style: const TextStyle(
+                                  fontFamily: 'Montserrat',
+                                  fontSize: 14.0,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.white,
                                 ),
                               ),
                             ),

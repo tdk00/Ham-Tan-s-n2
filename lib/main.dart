@@ -8,9 +8,9 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  var token = prefs.getString('token') ?? '';
+  final token = prefs.getString('token') ?? '';
 
-  log(token);
+  log('User Token $token');
 
   final userLogged = token.length > 1;
 

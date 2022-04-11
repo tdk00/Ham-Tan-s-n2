@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+import 'package:everyone_know_app/widget/story/story_view.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:story_view/story_view.dart';
 
 class Statuses {
   static Future<List<UserInfo>> getAll(locationId) async {
@@ -51,7 +51,7 @@ class Statuses {
     int statusCode = response.statusCode;
     String responseBody = response.body;
 
-    log(responseBody);
+    log('UserStatuses $responseBody');
 
     List<StoryItem> statuses = [];
 
@@ -60,8 +60,9 @@ class Statuses {
       final id = u['id'];
       final text = u['text'];
 
+      log('STATUS ID $id');
+
       if (imageValid(image) && textValid(text)) {
-        log('bura girir');
         statuses.add(
           StoryItem.inlineImage(
             key: ValueKey(id),
@@ -144,7 +145,7 @@ class Statuses {
     int statusCode = response.statusCode;
     String responseBody = response.body;
 
-    log(responseBody);
+    log('DeleteStatus $responseBody');
 
     if (statusCode == 204) {
       print("removed");

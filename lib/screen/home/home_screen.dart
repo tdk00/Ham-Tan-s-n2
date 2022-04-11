@@ -344,6 +344,14 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
   }
 
   SizedBox friendOfferGridItem(String image, String name, String business) {
+    int businessElementAt = 0;
+    if(int.tryParse(business) != null)
+    {
+      if(int.parse(business) > 0 && int.parse(business) <= sampleBiznesModels.length )
+      {
+        businessElementAt = int.parse(business) - 1;
+      }
+    }
     String imageLink = image;
     return SizedBox(
       width: 90,
@@ -415,7 +423,7 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
             height: 8,
           ),
           CustomTextView(
-            textPaste: sampleBiznesModels.elementAt(((int.tryParse(business) ?? 0) + 1) < sampleBiznesModels.length && ((int.tryParse(business) ?? 0) + 1) > -1 ? ((int.tryParse(business) ?? 0) + 1) : 0),
+            textPaste: sampleBiznesModels.elementAt(businessElementAt),
             textSize: 13,
             textAlign: TextAlign.center,
             textColor: textColor,

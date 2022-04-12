@@ -67,7 +67,7 @@ class ChatCubit extends Cubit<ChatState> {
       for (final message in result) {
         final messageModel = ReceivedMessageModel(
           message: message.message,
-          username: int.tryParse(message.sender!),
+          sender: int.tryParse(message.sender!),
           image: message.image,
           statusImage: message.statusImage,
         );
@@ -111,13 +111,11 @@ class ChatCubit extends Cubit<ChatState> {
 
         final message = ReceivedMessageModel(
           message: remoteMessage.message,
-          username: remoteMessage.username,
+          sender: remoteMessage.sender,
           image: imageMessage,
           statusId: remoteMessage.statusId,
           statusImage: statusImage,
         );
-
-        log(remoteMessage.username.toString());
 
         final updatedMessages = [message, ...messages];
 

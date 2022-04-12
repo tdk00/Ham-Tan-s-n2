@@ -1,7 +1,7 @@
 name: everyone_know_app
 description: A new Flutter project.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-version: 1.0.3+4
+version: 1.0.4+5
 
 environment:
   sdk: ">=2.15.0 <3.0.0"
@@ -36,6 +36,7 @@ dependencies:
   video_player: ^2.3.0
   collection: ^1.15.0
   flutter_svg: ^1.0.3
+  flutter_keyboard_visibility: ^5.2.0
 
 dev_dependencies:
   flutter_test:

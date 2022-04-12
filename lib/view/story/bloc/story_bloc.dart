@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:everyone_know_app/api/main/statuses.dart';
 import 'package:everyone_know_app/widget/story/story_view.dart';
 import 'package:rxdart/rxdart.dart';
@@ -5,6 +7,7 @@ import 'package:rxdart/rxdart.dart';
 class StoryBloc {
   StoryBloc() {
     _isKeyboardOpenController.stream.listen((value) {
+      log('Keyboard $value');
       if (value) {
         controller.pause();
       } else {
@@ -13,9 +16,12 @@ class StoryBloc {
     });
   }
 
-  final BehaviorSubject<String?> _storyIdController = BehaviorSubject<String?>();
-  final BehaviorSubject<StoryController> _storyController = BehaviorSubject<StoryController>();
-  final BehaviorSubject<bool> _isKeyboardOpenController = BehaviorSubject<bool>.seeded(false);
+  final BehaviorSubject<String?> _storyIdController =
+      BehaviorSubject<String?>();
+  final BehaviorSubject<StoryController> _storyController =
+      BehaviorSubject<StoryController>();
+  final BehaviorSubject<bool> _isKeyboardOpenController =
+      BehaviorSubject<bool>.seeded(false);
 
   Stream<StoryController> get controller$ => _storyController.stream;
   Stream<bool> get isKeyboardOpen$ => _isKeyboardOpenController.stream;
@@ -34,7 +40,7 @@ class StoryBloc {
 
       return true;
     } catch (e) {
-      print(e);
+      print(e.toString());
       return false;
     }
   }

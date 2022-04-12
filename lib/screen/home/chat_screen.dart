@@ -1,12 +1,11 @@
+import 'package:everyone_know_app/color/app_color.dart';
+import 'package:everyone_know_app/component/custom_appbar.dart';
+import 'package:everyone_know_app/domain/state/chat_cubit/chat_cubit.dart';
 import 'package:everyone_know_app/view/chat/message_bubble.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
-import 'package:everyone_know_app/color/app_color.dart';
-import 'package:everyone_know_app/component/custom_appbar.dart';
-import 'package:everyone_know_app/domain/state/chat_cubit/chat_cubit.dart';
 
 class ChatScreen extends StatefulWidget {
   final int userId;
@@ -37,7 +36,8 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final ChatCubit _cubit = ChatCubit();
 
-  final TextEditingController _messageEditingController = TextEditingController();
+  final TextEditingController _messageEditingController =
+      TextEditingController();
 
   @override
   void dispose() {
@@ -68,7 +68,9 @@ class _ChatScreenState extends State<ChatScreen> {
           backgroundColor: Colors.white,
           appBar: PreferredSize(
             child: SafeArea(
-              child: CustomAppBarComponent(appBarText: (widget.firstname ?? '') + ' ' + (widget.lastname ?? '')),
+              child: CustomAppBarComponent(
+                  appBarText:
+                      (widget.firstname ?? '') + ' ' + (widget.lastname ?? '')),
             ),
             preferredSize: const Size.fromHeight(62.0),
           ),
@@ -104,12 +106,14 @@ class _ChatScreenState extends State<ChatScreen> {
               final message = state.messages.elementAt(index);
 
               return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
                 child: MessageBubble(
-                  isMe: message.username != widget.userId,
+                  isMe: message.sender != widget.userId,
                   message: message,
                   image: widget.image,
-                  fullName: (widget.firstname ?? '') + ' ' + (widget.lastname ?? ''),
+                  fullName:
+                      (widget.firstname ?? '') + ' ' + (widget.lastname ?? ''),
                   isStory: widget.isStory,
                 ),
               );
@@ -132,11 +136,15 @@ class _ChatScreenState extends State<ChatScreen> {
                     Row(
                       key: Key(progressMap.entries.length.toString()),
                       children: progressMap.entries.map((e) {
-                        final newValue = e.value == 100.0 ? null : (e.value! / 100);
+                        final newValue =
+                            e.value == 100.0 ? null : (e.value! / 100);
 
                         return Flexible(
                           child: Padding(
-                            padding: EdgeInsets.only(right: progressMap.entries.length == 1 ? 0.0 : 12.0),
+                            padding: EdgeInsets.only(
+                                right: progressMap.entries.length == 1
+                                    ? 0.0
+                                    : 12.0),
                             child: LinearProgressIndicator(
                               minHeight: 1,
                               color: buttonColor,
@@ -181,7 +189,8 @@ class _ChatScreenState extends State<ChatScreen> {
               padding: EdgeInsets.zero,
               onPressed: () {
                 if (_cubit.uploadProgress.entries.length == 2) {
-                  Fluttertoast.showToast(msg: 'Sıradakı şəkillərinizin yüklənməsini gözləyin.');
+                  Fluttertoast.showToast(
+                      msg: 'Sıradakı şəkillərinizin yüklənməsini gözləyin.');
                 } else {
                   _cubit.sendImage();
                 }
@@ -235,18 +244,16 @@ class _ChatScreenState extends State<ChatScreen> {
         style: TextStyle(
             color: Theme.of(context).iconTheme.color,
             fontSize: 14.0,
-            fontFamily: "Montserrat"
-        ),
+            fontFamily: "Montserrat"),
         decoration: const InputDecoration(
           prefix: SizedBox(width: 24.0),
           border: InputBorder.none,
           hintText: "İsmarıcınızı daxil edin...",
           hintStyle: TextStyle(
-            fontSize: 14,
-            color: textColorGrey,
-            fontWeight: FontWeight.w500,
-              fontFamily: "Montserrat"
-          ),
+              fontSize: 14,
+              color: textColorGrey,
+              fontWeight: FontWeight.w500,
+              fontFamily: "Montserrat"),
         ),
       ),
     );

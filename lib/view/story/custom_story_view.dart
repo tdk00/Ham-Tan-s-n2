@@ -6,6 +6,7 @@ import 'package:everyone_know_app/view/text/text_view.dart';
 import 'package:everyone_know_app/widget/story/story_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
 class CustomStoryView extends StatefulWidget {
   final List<StoryItem?> storyItems;
@@ -33,7 +34,8 @@ class CustomStoryView extends StatefulWidget {
 
 class _CustomStoryViewState extends State<CustomStoryView> {
   final StoryBloc _storyBloc = StoryBloc();
-  final TextEditingController _messageTextEditingController = TextEditingController();
+  final TextEditingController _messageTextEditingController =
+      TextEditingController();
   final FocusNode _focusNode = FocusNode();
 
   @override
@@ -52,132 +54,90 @@ class _CustomStoryViewState extends State<CustomStoryView> {
 
   @override
   Widget build(BuildContext context) {
-    if (WidgetsBinding.instance!.window.viewInsets.bottom > 0.0) {
-      _storyBloc.updateIsKeyboardOpen(true);
-    } else {
-      _storyBloc.updateIsKeyboardOpen(false);
-    }
+    // log('Bottom ${MediaQuery.of(context).viewInsets.bottom}');
+    // if (MediaQuery.of(context).viewInsets.bottom > 0) {
+    //   _storyBloc.updateIsKeyboardOpen(true);
+    // } else {
+    //   _storyBloc.updateIsKeyboardOpen(false);
+    // }
 
-    return StreamBuilder<StoryController>(
-      initialData: widget.controller,
-      stream: _storyBloc.controller$,
-      builder: (context, snapshot) {
-        final storyController = snapshot.data!;
+    return KeyboardVisibilityBuilder(
+      builder: (context, isKeyboardVisible) {
+        if (isKeyboardVisible) {
+          _storyBloc.updateIsKeyboardOpen(true);
+        } else {
+          _storyBloc.updateIsKeyboardOpen(false);
+        }
 
-        return Stack(
-          children: [
-            StoryView(
-              controller: widget.controller,
-              storyItems: widget.storyItems,
-              onStoryShow: (storyItem) {
-                String id = storyItem.view.key.toString();
+        return StreamBuilder<StoryController>(
+          initialData: widget.controller,
+          stream: _storyBloc.controller$,
+          builder: (context, snapshot) {
+            final storyController = snapshot.data!;
 
-                id = id.replaceAll('[<', '');
-                id = id.replaceAll('>]', '');
+            return Stack(
+              children: [
+                StoryView(
+                  controller: widget.controller,
+                  storyItems: widget.storyItems,
+                  onStoryShow: (storyItem) {
+                    String id = storyItem.view.key.toString();
 
-                _storyBloc.updateStoryId(id);
-              },
-              onComplete: () {
-                Navigator.of(context).pop();
-              },
-              onVerticalSwipeComplete: (Direction? direction) {
-                if (direction == Direction.down) {
-                  Navigator.of(context).pop();
-                }
-                if (direction == Direction.up) {
-                  _focusNode.requestFocus();
-                }
-              },
-            ),
-            _buildUserInfo(),
-            if (widget.isMe)
-              Align(
-                alignment: Alignment.topRight,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 30, right: 10),
-                  child: IconButton(
-                    onPressed: () {
-                      storyController.pause();
+                    id = id.replaceAll('[<', '');
+                    id = id.replaceAll('>]', '');
 
-                      showCupertinoDialog(
-                        context: context,
-                        builder: (ctx) {
-                          return Center(
-                            child: alertDialog(context, storyController),
+                    _storyBloc.updateStoryId(id);
+                  },
+                  onComplete: () {
+                    Navigator.of(context).pop();
+                  },
+                  onVerticalSwipeComplete: (Direction? direction) {
+                    if (direction == Direction.down) {
+                      Navigator.of(context).pop();
+                    }
+                    if (direction == Direction.up) {
+                      _focusNode.requestFocus();
+                    }
+                  },
+                ),
+                _buildUserInfo(),
+                if (widget.isMe)
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 30, right: 10),
+                      child: IconButton(
+                        onPressed: () {
+                          storyController.pause();
+
+                          showCupertinoDialog(
+                            context: context,
+                            builder: (ctx) {
+                              return Center(
+                                child: alertDialog(context, storyController),
+                              );
+                            },
                           );
                         },
-                      );
-                    },
-                    icon: const Icon(
-                      Icons.delete_outline,
-                      color: Colors.white,
-                      size: 22,
+                        icon: const Icon(
+                          Icons.delete_outline,
+                          color: Colors.white,
+                          size: 22,
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ),
-            // if (!widget.isMe)
-            //   Align(
-            //     alignment: Alignment.bottomCenter,
-            //     child: GestureDetector(
-            //       onTap: () {
-            //         _focusNode.requestFocus();
-            //       },
-            //       child: Column(
-            //         mainAxisAlignment: MainAxisAlignment.end,
-            //         children: [
-            //           Container(
-            //             decoration: const BoxDecoration(
-            //               boxShadow: <BoxShadow>[
-            //                 BoxShadow(
-            //                   offset: Offset(1.0, 1.0),
-            //                   blurRadius: 3.0,
-            //                   color: Color.fromARGB(255, 0, 0, 0),
-            //                 ),
-            //                 BoxShadow(
-            //                   offset: Offset(1.0, 1.0),
-            //                   blurRadius: 8.0,
-            //                   color: Color.fromARGB(124, 0, 0, 0),
-            //                 ),
-            //               ],
-            //             ),
-            //             child: const Icon(
-            //               CupertinoIcons.chevron_up,
-            //               color: Colors.white,
-            //             ),
-            //           ),
-            //           const Text(
-            //             'Mesaj yaz',
-            //             style: TextStyle(
-            //               color: Colors.white,
-            //               fontSize: 16.0,
-            //               shadows: <Shadow>[
-            //                 Shadow(
-            //                   offset: Offset(1.0, 1.0),
-            //                   blurRadius: 3.0,
-            //                   color: Color.fromARGB(255, 0, 0, 0),
-            //                 ),
-            //                 Shadow(
-            //                   offset: Offset(1.0, 1.0),
-            //                   blurRadius: 8.0,
-            //                   color: Color.fromARGB(124, 0, 0, 0),
-            //                 ),
-            //               ],
-            //             ),
-            //           ),
-            //         ],
-            //       ),
-            //     ),
-            //   ),
-            if (!widget.isMe)
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: _buildMessageField(storyController),
-                ),
-              ),
-          ],
+                if (!widget.isMe)
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: _buildMessageField(storyController),
+                    ),
+                  ),
+              ],
+            );
+          },
         );
       },
     );
@@ -350,7 +310,11 @@ class _CustomStoryViewState extends State<CustomStoryView> {
                   decoration: const InputDecoration(
                     border: InputBorder.none,
                     hintText: "İsmarıcınızı daxil edin...",
-                    hintStyle: TextStyle(fontSize: 14, color: textColorGrey, fontWeight: FontWeight.w500, fontFamily: "Montserrat"),
+                    hintStyle: TextStyle(
+                        fontSize: 14,
+                        color: textColorGrey,
+                        fontWeight: FontWeight.w500,
+                        fontFamily: "Montserrat"),
                   ),
                 ),
               ),
@@ -366,7 +330,8 @@ class _CustomStoryViewState extends State<CustomStoryView> {
                     onPressed: () async {
                       final user = widget.userInfo!;
 
-                      if (_messageTextEditingController.text.trim() != '' && _messageTextEditingController.text.isNotEmpty) {
+                      if (_messageTextEditingController.text.trim() != '' &&
+                          _messageTextEditingController.text.isNotEmpty) {
                         Navigator.of(context)
                             .push(
                           MaterialPageRoute(
@@ -381,9 +346,11 @@ class _CustomStoryViewState extends State<CustomStoryView> {
                             ),
                           ),
                         )
-                            .then((value) {
-                          _messageTextEditingController.clear();
-                        });
+                            .then(
+                          (value) {
+                            _messageTextEditingController.clear();
+                          },
+                        );
                       }
                     },
                     child: Container(

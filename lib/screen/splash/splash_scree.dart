@@ -5,6 +5,7 @@ import 'package:everyone_know_app/screen/auth/choose_region.dart';
 import 'package:everyone_know_app/utils/size/size.dart';
 import 'package:everyone_know_app/view/text/text_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -21,9 +22,23 @@ class _SplashScreenState extends State<SplashScreen> with ManualNavigatorMixin {
       body: SafeArea(
         child: Column(
           children: [
+            SizedBox(child:
+            Align(
+              alignment: Alignment.topCenter,
+              child: Padding(
+                padding: EdgeInsets.only(
+                  top: 30,
+                ),
+                child: SvgPicture.asset('assets/logo.svg'),
+                //   child: const SplashImageWidget(
+                //     imageUrl:
+                //         "https://st.depositphotos.com/1006706/2671/i/600/depositphotos_26715369-stock-photo-which-way-to-choose-3d.jpg",
+                //   ),
+              ),
+            ),),
             SizedBox(
               width: double.infinity,
-              height: screenHeight(context, 0.6),
+              height: screenHeight(context, 0.4),
               child: Stack(
                 children: [
                   Align(
@@ -32,7 +47,7 @@ class _SplashScreenState extends State<SplashScreen> with ManualNavigatorMixin {
                       width: 275,
                       height: 275,
                       margin: const EdgeInsets.only(
-                        top: 40,
+                        top: 80,
                       ),
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
@@ -62,8 +77,8 @@ class _SplashScreenState extends State<SplashScreen> with ManualNavigatorMixin {
                     alignment: Alignment.centerLeft,
                     child: Padding(
                       padding: EdgeInsets.only(
-                        left: 5,
-                        bottom: screenHeight(context, 0.08),
+                        left: 45,
+                        bottom: screenHeight(context, 0.02),
                       ),
                       child: Image.asset('assets/images/circle2.png'),
                       //   child: const SplashImageWidget(
@@ -77,8 +92,8 @@ class _SplashScreenState extends State<SplashScreen> with ManualNavigatorMixin {
                     alignment: Alignment.centerRight,
                     child: Padding(
                       padding: EdgeInsets.only(
-                        right: 12,
-                        bottom: screenHeight(context, 0.06),
+                        right: 32,
+                        bottom: screenHeight(context, 0.01),
                       ),
                       child: Image.asset('assets/images/circle3.png'),
                       //   child: const SplashImageWidget(
@@ -92,8 +107,8 @@ class _SplashScreenState extends State<SplashScreen> with ManualNavigatorMixin {
                     alignment: Alignment.bottomRight,
                     child: Padding(
                       padding: EdgeInsets.only(
-                        right: screenWidth(context, 0.13),
-                        bottom: screenHeight(context, 0.08),
+                        right: screenWidth(context, 0.23),
+                        bottom: screenHeight(context, 0.01),
                       ),
                       child: Image.asset('assets/images/circle4.png'),
                       //   child: const SplashImageWidget(

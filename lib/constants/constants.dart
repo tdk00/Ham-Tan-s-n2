@@ -24,5 +24,7 @@ List<String> sampleBiznesModels = [
   "Gülçü",
   "Manikür ustası",
   "Pedikür ustası",
-  "Qənnad"
+  "Qənnad",
+  "Çap xidməti",
+  "Alıcı"
 ];

@@ -17,8 +17,7 @@ class ChooseRegionScreen extends StatefulWidget {
   _ChooseRegionScreenState createState() => _ChooseRegionScreenState();
 }
 
-class _ChooseRegionScreenState extends State<ChooseRegionScreen>
-    with ManualNavigatorMixin {
+class _ChooseRegionScreenState extends State<ChooseRegionScreen> with ManualNavigatorMixin {
   bool visibleSpinner = false;
   int lastIndex = -1;
   @override
@@ -83,7 +82,7 @@ class _ChooseRegionScreenState extends State<ChooseRegionScreen>
                     Padding(
                       padding: const EdgeInsets.only(right: 14, top: 5),
                       child: Transform.rotate(
-                        angle: visibleSpinner == true ? 20.5 : 17.3,
+                        angle: visibleSpinner ? 20.5 : 17.3,
                         child: const Icon(
                           Icons.arrow_back_ios,
                           size: 14,
@@ -97,44 +96,47 @@ class _ChooseRegionScreenState extends State<ChooseRegionScreen>
             ),
             visibleSpinner == true
                 ? Align(
-              alignment: Alignment.center,
-              child: Container(
-                width: screenWidth(context, 1),
-                height: 135,
-                margin: const EdgeInsets.only(
-                  left: 37,
-                  right: 37,
-                  top: 80,
-                ),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
-                  color: const Color.fromRGBO(238, 236, 249, 1),
-                ),
-                child: ListView.builder(
-                  itemCount: fakeLocations.length,
-                  physics: const BouncingScrollPhysics(),
-                  itemBuilder: (ctx, index) {
-                    return InkWell(
-                      onTap: () async {
-                        print(index.toString() + 'indexxxxxxxxxx');
-                        SharedPreferences prefs = await SharedPreferences.getInstance();
-                        prefs.setString("region_id", '0');
-                        prefs.setString("region_id", (index + 1).toString());
-                        setState(() {
-                          lastIndex = index;
-                        });
-                      },
-                      child: regionListItem(
-                        context,
-                        fakeLocations[index],
-                        index,
-                        lastIndex,
+                    alignment: Alignment.center,
+                    child: Container(
+                      width: screenWidth(context, 1),
+                      height: screenHeight(context, 0.25),
+                      margin: const EdgeInsets.only(
+                        left: 37,
+                        right: 37,
+                        top: 120,
                       ),
-                    );
-                  },
-                ),
-              ),
-            )
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        color: const Color.fromRGBO(238, 236, 249, 1),
+                      ),
+                      child: Scrollbar(
+                        thumbVisibility: true,
+                        child: ListView.builder(
+                          itemCount: fakeLocations.length,
+                          physics: const BouncingScrollPhysics(),
+                          itemBuilder: (ctx, index) {
+                            return InkWell(
+                              onTap: () async {
+                                print(index.toString() + 'indexxxxxxxxxx');
+                                SharedPreferences prefs = await SharedPreferences.getInstance();
+                                prefs.setString("region_id", '0');
+                                prefs.setString("region_id", (index + 1).toString());
+                                setState(() {
+                                  lastIndex = index;
+                                });
+                              },
+                              child: regionListItem(
+                                context,
+                                fakeLocations[index],
+                                index,
+                                lastIndex,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  )
                 : const SizedBox(),
             Align(
               alignment: Alignment.bottomCenter,
@@ -144,26 +146,14 @@ class _ChooseRegionScreenState extends State<ChooseRegionScreen>
                 ),
                 child: CustomButton(
                   callback: () {
-                    if( lastIndex == -1 )
-                    {
-                      Fluttertoast.showToast(
-                          msg: "Region Seçin",
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.CENTER,
-                          timeInSecForIosWeb: 1,
-                          backgroundColor: Colors.red,
-                          textColor: Colors.white,
-                          fontSize: 16.0
-                      );
-                    }
-                    else
-                    {
+                    if (lastIndex == -1) {
+                      Fluttertoast.showToast(msg: "Region Seçin", toastLength: Toast.LENGTH_SHORT, gravity: ToastGravity.CENTER, timeInSecForIosWeb: 1, backgroundColor: Colors.red, textColor: Colors.white, fontSize: 16.0);
+                    } else {
                       manualNavigatorTransition(
                         context,
                         const OtpScreen(),
                       );
                     }
-
                   },
                   buttonTextPaste: "Davam et",
                 ),

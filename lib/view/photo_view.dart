@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class PhotoView extends StatelessWidget {
@@ -33,8 +34,14 @@ class PhotoView extends StatelessWidget {
             minScale: 0.1,
             maxScale: 3.0,
             child: Center(
-              child: Image.network(
-                url,
+              child: CachedNetworkImage(
+                imageUrl: url,
+                errorWidget: (ctx, _, __) {
+                  return Image.asset(
+                    'assets/icon.png',
+                    fit: BoxFit.cover,
+                  );
+                },
               ),
             ),
           ),

@@ -41,10 +41,10 @@ class ImageBubble extends StatelessWidget {
                     color: profileEditImageColor,
                   ),
                   child: profilePicture != null
-                      ? Image.network(
-                          profilePicture!,
+                      ? CachedNetworkImage(
+                          imageUrl: profilePicture!,
                           fit: BoxFit.cover,
-                          errorBuilder: (ctx, obj, stck) {
+                          errorWidget: (_, __, ___) {
                             return Image.asset(
                               'assets/icon.png',
                               fit: BoxFit.cover,
@@ -76,6 +76,12 @@ class ImageBubble extends StatelessWidget {
                       borderRadius: BorderRadius.circular(18),
                       child: CachedNetworkImage(
                         imageUrl: message.image ?? '',
+                        errorWidget: (_, __, ___) {
+                          return Image.asset(
+                            'assets/icon.png',
+                            fit: BoxFit.cover,
+                          );
+                        },
                       ),
                     ),
                   ),

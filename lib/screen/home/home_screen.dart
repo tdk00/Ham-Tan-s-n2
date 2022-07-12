@@ -91,7 +91,7 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
                                     alignment: Alignment.topLeft,
                                     child: Container(
                                       width: screenWidth(context, 1),
-                                      height: 135,
+                                      height: screenHeight(context, 0.25),
                                       margin: EdgeInsets.only(
                                         left: 13,
                                         right: screenWidth(context, 0.15),
@@ -101,29 +101,32 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
                                         borderRadius: BorderRadius.circular(5),
                                         color: const Color.fromRGBO(238, 236, 249, 1),
                                       ),
-                                      child: ListView.builder(
-                                        itemCount: fakeLocations.length,
-                                        physics: const BouncingScrollPhysics(),
-                                        itemBuilder: (ctx, index) {
-                                          return GestureDetector(
-                                            onTap: () async {
-                                              SharedPreferences prefs = await SharedPreferences.getInstance();
-                                              prefs.setInt("statusLocation", index + 1);
-                                              setState(() {
-                                                _future = Statuses.getAll(index + 1);
-                                                Navigator.pop(context);
-                                                locationName = fakeLocations[index];
-                                                lastIndex = index;
-                                              });
-                                            },
-                                            child: regionListItem(
-                                              context,
-                                              fakeLocations[index],
-                                              index,
-                                              lastIndex,
-                                            ),
-                                          );
-                                        },
+                                      child: Scrollbar(
+                                        thumbVisibility: true,
+                                        child: ListView.builder(
+                                          itemCount: fakeLocations.length,
+                                          physics: const BouncingScrollPhysics(),
+                                          itemBuilder: (ctx, index) {
+                                            return GestureDetector(
+                                              onTap: () async {
+                                                SharedPreferences prefs = await SharedPreferences.getInstance();
+                                                prefs.setInt("statusLocation", index + 1);
+                                                setState(() {
+                                                  _future = Statuses.getAll(index + 1);
+                                                  Navigator.pop(context);
+                                                  locationName = fakeLocations[index];
+                                                  lastIndex = index;
+                                                });
+                                              },
+                                              child: regionListItem(
+                                                context,
+                                                fakeLocations[index],
+                                                index,
+                                                lastIndex,
+                                              ),
+                                            );
+                                          },
+                                        ),
                                       ),
                                     ),
                                   )
@@ -345,10 +348,8 @@ class _HomeScreenState extends State<HomeScreen> with ManualNavigatorMixin {
 
   SizedBox friendOfferGridItem(String image, String name, String business) {
     int businessElementAt = 0;
-    if(int.tryParse(business) != null)
-    {
-      if(int.parse(business) > 0 && int.parse(business) <= sampleBiznesModels.length )
-      {
+    if (int.tryParse(business) != null) {
+      if (int.parse(business) > 0 && int.parse(business) <= sampleBiznesModels.length) {
         businessElementAt = int.parse(business) - 1;
       }
     }

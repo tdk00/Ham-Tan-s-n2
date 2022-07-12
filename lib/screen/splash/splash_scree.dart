@@ -22,20 +22,21 @@ class _SplashScreenState extends State<SplashScreen> with ManualNavigatorMixin {
       body: SafeArea(
         child: Column(
           children: [
-            SizedBox(child:
-            Align(
-              alignment: Alignment.topCenter,
-              child: Padding(
-                padding: EdgeInsets.only(
-                  top: 30,
+            SizedBox(
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    top: 30,
+                  ),
+                  child: SvgPicture.asset('assets/logo.svg'),
+                  //   child: const SplashImageWidget(
+                  //     imageUrl:
+                  //         "https://st.depositphotos.com/1006706/2671/i/600/depositphotos_26715369-stock-photo-which-way-to-choose-3d.jpg",
+                  //   ),
                 ),
-                child: SvgPicture.asset('assets/logo.svg'),
-                //   child: const SplashImageWidget(
-                //     imageUrl:
-                //         "https://st.depositphotos.com/1006706/2671/i/600/depositphotos_26715369-stock-photo-which-way-to-choose-3d.jpg",
-                //   ),
               ),
-            ),),
+            ),
             SizedBox(
               width: double.infinity,
               height: screenHeight(context, 0.4),

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:everyone_know_app/color/app_color.dart';
 import 'package:everyone_know_app/domain/model/received_message_model.dart';
 import 'package:everyone_know_app/view/photo_view.dart';
@@ -40,10 +41,10 @@ class StatusBubble extends StatelessWidget {
                     color: profileEditImageColor,
                   ),
                   child: profilePicture != null
-                      ? Image.network(
-                          profilePicture!,
+                      ? CachedNetworkImage(
+                          imageUrl: profilePicture!,
                           fit: BoxFit.cover,
-                          errorBuilder: (ctx, obj, stck) {
+                          errorWidget: (ctx, _, __) {
                             return Image.asset(
                               'assets/icon.png',
                               fit: BoxFit.cover,
@@ -83,11 +84,17 @@ class StatusBubble extends StatelessWidget {
                           if (!isOwn) const SizedBox(width: 8.0),
                           ClipRRect(
                             borderRadius: BorderRadius.circular(15.0),
-                            child: Image.network(
-                              message.statusImage ?? '',
+                            child: CachedNetworkImage(
+                              imageUrl: message.statusImage ?? '',
                               height: 150.0,
                               width: 96.0,
                               fit: BoxFit.cover,
+                              errorWidget: (ctx, _, __) {
+                                return Image.asset(
+                                  'assets/icon.png',
+                                  fit: BoxFit.cover,
+                                );
+                              },
                             ),
                           ),
                           if (isOwn) const SizedBox(width: 8.0),
